@@ -1,3 +1,19 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-menu contentId="main-content" type="overlay">
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-title>Menu</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-item routerLink="/tabs/tab1/home">Home</ion-item>
+        <ion-item routerLink="/tabs/tab1/daily-readings">Daily Readings</ion-item>
+        <ion-item routerLink="/tabs/tab1/growth-blog">Growth Blog</ion-item>
+        <!-- Add more menu items as needed -->
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <ion-router-outlet id="main-content"></ion-router-outlet>
 </ion-app>

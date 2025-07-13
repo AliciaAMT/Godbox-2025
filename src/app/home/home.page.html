@@ -1,20 +1,75 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>The Way</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeXl="4" offsetXl="4" sizeLg="4" offsetLg="4" sizeMd="6" offsetMd="3" sizeSm="8" offsetSm="2" sizeXs="10" offsetXs="1" class="ion-text-center">
+        <h2>The Way</h2>
+        <img src="../../../assets/images/light.webp" alt="" />
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col sizeXl="8" offsetXl="2" sizeLg="8" offsetLg="2" sizeMd="10" offsetMd="1" class="ion-text-center ion-padding" style="margin-bottom: 30px;">
+        <span class="verse">
+          <div class="ion-text-left">
+            <i>
+              Thomas saith unto him, Lord, we know not whither thou goest; and how can we know the way? <br />
+              Jesus saith unto him, I am the way, the truth, and the life: no man cometh unto the Father, but by me.
+            </i>
+          </div>
+          <div class="ion-text-right">-John 14:5-6</div>
+        </span>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-text-center" sizeXl="4" offsetXl="0" sizeLg="4" offsetLg="0" sizeMd="6" offsetMd="0" sizeSm="8" offsetSm="2" sizeXs="10" offsetXs="1">
+        <ion-card routerLink="/tabs/tab1/daily-readings" routerDirection="forward" style="height: 100%;">
+          <ion-card-header>
+            <ion-img src="../../../assets/images/bible.webp"></ion-img>
+            <ion-card-title>
+              <h2>Daily Bible Readings</h2>
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p>Join us in a united schedule to read the Bible in a year!</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col class="ion-text-center" sizeXl="4" offsetXl="0" sizeLg="4" offsetLg="0" sizeMd="6" offsetMd="0" sizeSm="8" offsetSm="2" sizeXs="10" offsetXs="1">
+        <ion-card routerLink="/tabs/tab1/growth-blog" routerDirection="forward" style="height: 100%;">
+          <ion-card-header>
+            <ion-img src="../../../assets/images/istockphoto-1085122436-612x612(1).webp"></ion-img>
+            <ion-card-title>
+              <h2>Growth Blog</h2>
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p>Articles concerning personal spiritual insights, stories, and testimonies.</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col *ngFor="let post of posts" class="ion-text-center" sizeXl="4" offsetXl="0" sizeLg="4" offsetLg="0" sizeMd="6" offsetMd="0" sizeSm="8" offsetSm="2" sizeXs="10" offsetXs="1">
+        <div *ngIf="post.privacy !== 'private'" style="height: 100%;">
+          <ion-card style="height: 100%;" [routerLink]="['/tabs/tab1/view-collection', post.series]" routerDirection="forward">
+            <ion-card-header>
+              <ion-img [src]="post.imageUrl"></ion-img>
+              <ion-card-title>
+                <h2>{{ post.title }}</h2>
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <p>{{post.description}}</p>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

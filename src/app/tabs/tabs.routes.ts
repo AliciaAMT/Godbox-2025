@@ -7,18 +7,18 @@ export const routes: Routes = [
     children: [
       {
         path: 'tab1',
-        loadChildren: () => import('../tab1/tab1.routes').then(m => m.routes)
+        loadComponent: () => import('../tab1/tab1.page').then(m => m.Tab1Page)
       },
       {
         path: '',
-        redirectTo: '/tabs/tab1/home',
+        redirectTo: '/tabs/tab1',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/tab1/home',
+    redirectTo: '/tabs/tab1',
     pathMatch: 'full'
   }
 ];

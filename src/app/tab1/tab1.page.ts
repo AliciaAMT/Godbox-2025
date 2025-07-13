@@ -46,8 +46,19 @@ export class Tab1Page {
   series = signal<Serie[]>([]);
 
   constructor() {
+    // Set a default profile for testing
+    this.profile.set({
+      id: 'test-user',
+      userName: 'Test User',
+      imageUrl: null,
+      userRole: 'user'
+    });
+
+    // Load data from Firebase
     this.avatarService.getUserProfile().subscribe((data) => {
-      this.profile.set(data);
+      if (data) {
+        this.profile.set(data);
+      }
     });
 
     this.dataService.getSeries().subscribe(res => {

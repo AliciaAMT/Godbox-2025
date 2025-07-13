@@ -11,4 +11,6 @@ import { RouterLink } from '@angular/router';
     IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonGrid, IonRow, IonCol, RouterLink
   ]
 })
-export class LandingPage {}
+export class LandingPage {
+  public readonly currentYear = new Date().getFullYear();
+}

@@ -64,6 +64,7 @@ yarn-error.log
 /libpeerconnection.log
 testem.log
 /typings
+/the-way-v-2-master
 
 # System files
 .DS_Store

@@ -107,7 +107,7 @@ export class RegisterPage {
     try {
       await this.authService.loginWithGoogle();
       await loading.dismiss();
-      this.router.navigate(['/tabs']);
+      this.router.navigate(['/home']);
     } catch (error: any) {
       await loading.dismiss();
       this.showError('Google Registration Failed', error);

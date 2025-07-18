@@ -94,7 +94,7 @@ export class VerifyEmailPage {
 
       if (this.authService.isEmailVerified()) {
         await loading.dismiss();
-        this.router.navigate(['/tabs']);
+        this.router.navigate(['/home']);
       } else {
         await loading.dismiss();
 

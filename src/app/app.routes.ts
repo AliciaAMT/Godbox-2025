@@ -33,28 +33,22 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'home',
+    loadComponent: () => import('./home/home.page').then(m => m.HomePage),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'tabs',
     loadComponent: () => import('./tabs/tabs.page').then(m => m.TabsPage),
     canActivate: [AuthGuard],
     children: [
       {
         path: 'tab1',
-        loadComponent: () => import('./tab1/tab1.page').then(m => m.Tab1Page),
-        children: [
-          {
-            path: 'home',
-            loadComponent: () => import('./home/home.page').then(m => m.HomePage)
-          },
-          {
-            path: '',
-            redirectTo: '/tabs/tab1/home',
-            pathMatch: 'full'
-          }
-        ]
+        loadComponent: () => import('./tab1/tab1.page').then(m => m.Tab1Page)
       },
       {
         path: '',
-        redirectTo: '/tabs/tab1/home',
+        redirectTo: '/tabs/tab1',
         pathMatch: 'full'
       }
     ]

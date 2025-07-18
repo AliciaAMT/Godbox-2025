@@ -85,7 +85,7 @@ export class LoginPage {
         if (userCredential?.user && !userCredential.user.emailVerified) {
           this.router.navigate(['/auth/verify-email']);
         } else {
-          this.router.navigate(['/tabs']);
+          this.router.navigate(['/home']);
         }
       } catch (error: any) {
         await loading.dismiss();
@@ -108,7 +108,7 @@ export class LoginPage {
       await loading.dismiss();
 
       // Google users are automatically verified
-      this.router.navigate(['/tabs']);
+      this.router.navigate(['/home']);
     } catch (error: any) {
       await loading.dismiss();
       this.showError('Google Sign-in Failed', error);

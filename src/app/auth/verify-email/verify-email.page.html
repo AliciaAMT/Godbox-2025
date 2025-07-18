@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/auth/login'])">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Verify Email</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="verify-email-container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">Verify Your Email</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-text color="medium" class="ion-text-center">
+          <p>We've sent a verification email to your inbox. Please check your email and click the verification link to continue.</p>
+        </ion-text>
+
+        <div class="ion-padding-top">
+          <ion-button
+            expand="block"
+            (click)="checkVerification()"
+            [disabled]="isLoading"
+            color="primary">
+            <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+            {{ isLoading ? 'Checking...' : 'I\'ve Verified My Email' }}
+          </ion-button>
+        </div>
+
+        <div class="ion-padding-top">
+          <ion-button
+            expand="block"
+            fill="outline"
+            (click)="resendVerificationEmail()"
+            [disabled]="isLoading">
+            <ion-icon name="mail" slot="start"></ion-icon>
+            Resend Verification Email
+          </ion-button>
+        </div>
+
+        <div class="ion-padding-top ion-text-center">
+          <ion-text color="medium">
+            <p>
+              <a routerLink="/auth/login">Back to Sign In</a>
+            </p>
+          </ion-text>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

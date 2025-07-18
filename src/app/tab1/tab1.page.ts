@@ -46,18 +46,26 @@ export class Tab1Page {
   series = signal<Serie[]>([]);
 
   constructor() {
-    // Set a default profile for testing
-    this.profile.set({
-      id: 'test-user',
-      userName: 'Test User',
-      imageUrl: null,
-      userRole: 'user'
-    });
-
-    // Load data from Firebase
-    this.avatarService.getUserProfile().subscribe((data) => {
-      if (data) {
-        this.profile.set(data);
+    // Subscribe to auth state changes
+    this.authService.currentUser$.subscribe(user => {
+      if (user) {
+        // Load user profile from Firebase
+        this.avatarService.getUserProfile().subscribe((data) => {
+          if (data) {
+            this.profile.set(data);
+          } else {
+            // Create default profile if none exists
+            this.profile.set({
+              id: user.uid,
+              userName: user.displayName || user.email?.split('@')[0] || 'User',
+              imageUrl: user.photoURL || null,
+              userRole: 'user',
+              email: user.email
+            });
+          }
+        });
+      } else {
+        this.profile.set(null);
       }
     });
 
@@ -68,8 +76,11 @@ export class Tab1Page {
   }
 
   async logout() {
-    await this.authService.logout();
-    this.router.navigateByUrl('login', { replaceUrl: true });
+    try {
+      await this.authService.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   }
 
   async changeImage() {

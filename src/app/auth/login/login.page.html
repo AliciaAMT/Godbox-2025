@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="router.navigate(['/landing'])">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Sign In</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="login-container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">Welcome Back</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+          <ion-item>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input
+              type="email"
+              formControlName="email"
+              placeholder="Enter your email">
+            </ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating">Password</ion-label>
+            <ion-input
+              type="password"
+              formControlName="password"
+              placeholder="Enter your password">
+            </ion-input>
+          </ion-item>
+
+          <div class="ion-padding-top">
+            <ion-button
+              expand="block"
+              type="submit"
+              [disabled]="!loginForm.valid || isLoading"
+              color="primary">
+              <ion-icon name="log-in" slot="start"></ion-icon>
+              {{ isLoading ? 'Signing In...' : 'Sign In' }}
+            </ion-button>
+          </div>
+        </form>
+
+        <div class="divider">
+          <span>or</span>
+        </div>
+
+        <ion-button
+          expand="block"
+          fill="outline"
+          (click)="onGoogleLogin()"
+          [disabled]="isLoading">
+          <ion-icon name="logo-google" slot="start"></ion-icon>
+          Sign in with Google
+        </ion-button>
+
+        <div class="ion-padding-top ion-text-center">
+          <ion-text color="medium">
+            <p>Don't have an account?
+              <a routerLink="/auth/register">Sign up</a>
+            </p>
+            <p>
+              <a routerLink="/auth/forgot-password">Forgot password?</a>
+            </p>
+          </ion-text>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

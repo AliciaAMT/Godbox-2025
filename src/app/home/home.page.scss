@@ -47,3 +47,29 @@ ion-card-title h2 {
 ion-card-content p {
   color: #ccc;
 }
+
+.active-item {
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-primary-contrast);
+}
+
+ion-menu {
+  --background: #222;
+}
+
+ion-menu ion-content {
+  --background: #222;
+}
+
+ion-menu ion-list {
+  background: #222;
+}
+
+ion-menu ion-item {
+  --background: transparent;
+  --color: #fff;
+}
+
+ion-menu ion-item:hover {
+  --background: #333;
+}

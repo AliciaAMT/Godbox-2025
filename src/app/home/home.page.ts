@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonButtons, IonMenuButton, IonMenu, IonList, IonMenuToggle, IonItem, IonLabel } from '@ionic/angular/standalone';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink } from '@angular/router';
+import { DataService, Post, User } from '../services/data.service';
 
 @Component({
   selector: 'app-home',
@@ -11,10 +12,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   imports: [
     CommonModule,
     RouterLink,
-    RouterLinkActive,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
     IonGrid,
     IonRow,
@@ -23,18 +20,26 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonImg,
-    IonButtons,
-    IonMenuButton,
-    IonMenu,
-    IonList,
-    IonMenuToggle,
-    IonItem,
-    IonLabel
+    IonImg
   ],
 })
-export class HomePage {
-  posts: any[] = []; // Will be populated from Firebase
+export class HomePage implements OnInit {
+  private dataService = inject(DataService);
+  private cd = inject(ChangeDetectorRef);
 
-  constructor() {}
+  posts: Post[] = [];
+  users: User[] = [];
+
+  constructor() {
+    this.dataService.getPostsForCollection().subscribe((data) => {
+      this.posts = data;
+      this.cd.detectChanges();
+    });
+    this.dataService.getUsers().subscribe((data) => {
+      this.users = data;
+      this.cd.detectChanges();
+    });
+  }
+
+  ngOnInit() {}
 }

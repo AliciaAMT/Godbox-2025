@@ -3,6 +3,7 @@ import { IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTit
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DataService, Post, User } from '../services/data.service';
+import { FooterLandingComponent } from '../components/footer-landing/footer-landing.component';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +21,8 @@ import { DataService, Post, User } from '../services/data.service';
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonImg
+    IonImg,
+    FooterLandingComponent
   ],
 })
 export class HomePage implements OnInit {
@@ -31,13 +33,23 @@ export class HomePage implements OnInit {
   users: User[] = [];
 
   constructor() {
-    this.dataService.getPostsForCollection().subscribe((data) => {
-      this.posts = data;
-      this.cd.detectChanges();
+    this.dataService.getPostsForCollection().subscribe({
+      next: (data) => {
+        this.posts = data;
+        this.cd.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading posts:', error);
+      }
     });
-    this.dataService.getUsers().subscribe((data) => {
-      this.users = data;
-      this.cd.detectChanges();
+    this.dataService.getUsers().subscribe({
+      next: (data) => {
+        this.users = data;
+        this.cd.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading users:', error);
+      }
     });
   }
 

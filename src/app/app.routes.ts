@@ -30,20 +30,19 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'tabs',
-    loadComponent: () => import('./tabs/tabs.page').then(m => m.TabsPage),
-    canActivate: [AuthGuard],
-    children: [
-      {
-        path: 'tab1',
-        loadComponent: () => import('./tab1/tab1.page').then(m => m.Tab1Page)
-      },
-      {
-        path: '',
-        redirectTo: '/tabs/tab1',
-        pathMatch: 'full'
-      }
-    ]
+    path: 'daily-readings',
+    loadComponent: () => import('./daily-readings/daily-readings.page').then(m => m.DailyReadingsPage),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'growth-blog',
+    loadComponent: () => import('./growth-blog/growth-blog.page').then(m => m.GrowthBlogPage),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'view-collection/:id',
+    loadComponent: () => import('./view-collection/view-collection.page').then(m => m.ViewCollectionPage),
+    canActivate: [AuthGuard]
   },
   {
     path: '**',

@@ -1,0 +1,58 @@
+<app-menu-header></app-menu-header>
+<ion-content>
+  <ion-fab vertical="top" horizontal="start" slot="fixed">
+    <ion-fab-button routerLink="/home" routerDirection="back">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+<ion-grid>
+  <ion-row>
+    <ion-col class="ion-text-center" sizeLg="4" offsetLg="4" sizeMd="6" offsetMd="3" sizeSm="8" offsetSm="2">
+<h2>Today's Readings</h2>
+<app-date></app-date>
+<!-- <script type="text/javascript" charset="utf-8"
+src="../../components/date/heb-date-en.js"></script> -->
+<div *ngIf="readings.length === 0">
+  <p>No readings found for today ({{today}}). Click the + button to upload sample data.</p>
+</div>
+<div *ngFor="let reading of readings">
+  <div *ngIf="reading.date === today">
+<h3>Parshah: {{reading.parashat}}</h3>
+<span class="heb">{{reading.parashatHeb}}</span><br />
+{{reading.parashatEng}}
+<ion-item button="true" (click)="openGateway(reading.id, 'torah')">
+  <ion-label>
+    <h4>Torah:</h4>
+  </ion-label>
+    {{ reading.torah }}
+</ion-item>
+<ion-item button="true" (click)="openGateway(reading.id, 'writings')">
+  <ion-label>
+    <h4>Ketuvium:</h4>
+  </ion-label>
+    {{ reading.writings }}
+</ion-item>
+<ion-item button="true" (click)="openGateway(reading.id, 'prophets')">
+  <ion-label>
+    <h4>Nevi'im:</h4>
+  </ion-label>
+    {{ reading.prophets }}
+</ion-item>
+<ion-item button="true" (click)="openGateway(reading.id, 'britChadashah')">
+  <ion-label>
+    <h4>Brit Chadashah:</h4>
+  </ion-label>
+    {{ reading.britChadashah }}
+</ion-item>
+    </div>
+  </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+<ion-fab vertical="bottom" horizontal="center" slot="fixed">
+  <ion-fab-button (click)="uploadData()" color="dark">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+  <app-footer-landing></app-footer-landing>
+</ion-content>

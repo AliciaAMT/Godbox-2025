@@ -29,6 +29,20 @@ ion-item {
   --padding-end: 0;
   --inner-padding-start: 0;
   --inner-padding-end: 0;
+  --highlight-color: var(--ion-color-primary);
+  --highlight-color-focused: var(--ion-color-primary);
+}
+
+ion-item.item-has-error {
+  --border-color: var(--ion-color-danger);
+  --highlight-color: var(--ion-color-danger);
+  --highlight-color-focused: var(--ion-color-danger);
+}
+
+ion-item.item-has-value {
+  --border-color: var(--ion-color-success);
+  --highlight-color: var(--ion-color-success);
+  --highlight-color-focused: var(--ion-color-success);
 }
 
 ion-label {

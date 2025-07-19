@@ -23,7 +23,7 @@
       <ion-col size-lg="4" offset-lg="4" size-md="6" offset-md="3" size-sm="8" offset-sm="2">
         <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
           <div class="input-group">
-            <ion-item>
+            <ion-item [class.item-has-error]="(loginForm.get('email')?.dirty || loginForm.get('email')?.touched) && loginForm.get('email')?.errors" [class.item-has-value]="loginForm.get('email')?.valid && loginForm.get('email')?.value">
               <ion-label position="stacked"><ion-icon name="mail-outline"></ion-icon> Email</ion-label>
               <ion-input type="email" placeholder="Email" formControlName="email"></ion-input>
             </ion-item>
@@ -32,7 +32,7 @@
               <span *ngIf="loginForm.get('email')?.errors?.['email']">Email is invalid</span>
             </div>
 
-            <ion-item>
+            <ion-item [class.item-has-error]="(loginForm.get('password')?.dirty || loginForm.get('password')?.touched) && loginForm.get('password')?.errors" [class.item-has-value]="loginForm.get('password')?.valid && loginForm.get('password')?.value">
               <ion-label position="stacked">
                 <ion-icon name="lock-closed-outline"></ion-icon>
                 Password
@@ -56,8 +56,8 @@
           </div>
 
           <ion-button type="submit" expand="block" [disabled]="!loginForm.valid || isLoading">Log in</ion-button>
-          <ion-button type="button" expand="block" routerLink="/auth/register">Create Account</ion-button>
-          <ion-button type="button" expand="block" routerLink="/auth/forgot-password">Recover Password</ion-button>
+          <ion-button type="button" expand="block" [disabled]="!loginForm.valid" (click)="onRegister()">Create Account</ion-button>
+          <ion-button type="button" expand="block" (click)="onResetPassword()">Recover Password</ion-button>
           <ion-button type="button" expand="block" color="tertiary" (click)="onGoogleLogin()">
             <ion-icon name="logo-google" slot="start"></ion-icon>
             Sign in with Google

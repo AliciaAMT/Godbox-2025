@@ -123,6 +123,53 @@ export class LoginPage {
     this.showPassword = !this.showPassword;
   }
 
+  async onRegister() {
+    if (this.loginForm.valid) {
+      this.isLoading = true;
+      const loading = await this.loadingController.create({
+        message: 'Creating account...'
+      });
+      await loading.present();
+
+      try {
+        const { email, password } = this.loginForm.value;
+        await this.authService.register({ email, password });
+        await loading.dismiss();
+        this.router.navigate(['/auth/verify-email']);
+      } catch (error: any) {
+        await loading.dismiss();
+        this.showError('Registration Failed', error);
+      } finally {
+        this.isLoading = false;
+      }
+    }
+  }
+
+  async onResetPassword() {
+    const email = this.loginForm.get('email')?.value;
+    if (!email) {
+      this.showError('Email Required', 'Please enter your email address to reset your password.');
+      return;
+    }
+
+    this.isLoading = true;
+    const loading = await this.loadingController.create({
+      message: 'Sending reset email...'
+    });
+    await loading.present();
+
+    try {
+      await this.authService.resetPassword(email);
+      await loading.dismiss();
+      this.showError('Reset Email Sent', 'Please check your email for password reset instructions.');
+    } catch (error: any) {
+      await loading.dismiss();
+      this.showError('Reset Failed', error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
   private async showError(title: string, message: string) {
     const alert = await this.alertController.create({
       header: title,

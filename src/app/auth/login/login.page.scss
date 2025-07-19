@@ -21,10 +21,14 @@ img {
 }
 
 ion-item {
-  --background: #222428;
+  --background: rgb(20, 20, 20);
   --border-color: var(--ion-color-medium);
   --color: #ffffff;
   margin-bottom: 16px;
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-start: 0;
+  --inner-padding-end: 0;
 }
 
 ion-label {
@@ -60,4 +64,9 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+ion-fab-button {
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-primary-contrast);
 }

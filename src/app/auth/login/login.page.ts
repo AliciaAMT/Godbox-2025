@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { addIcons } from 'ionicons';
+import { arrowBack, mailOutline, lockClosedOutline, eye, eyeOff, logoGoogle } from 'ionicons/icons';
 import {
   IonHeader,
   IonToolbar,
@@ -60,6 +62,7 @@ export class LoginPage {
   showPassword = false;
 
   constructor() {
+    addIcons({ arrowBack, mailOutline, lockClosedOutline, eye, eyeOff, logoGoogle });
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]

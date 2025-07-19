@@ -10,13 +10,12 @@ import {
   IonLabel,
   IonInput,
   IonButton,
-  IonButtons,
   IonIcon,
-  IonText,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
+  IonFab,
+  IonFabButton,
+  IonGrid,
+  IonRow,
+  IonCol,
   AlertController,
   LoadingController
 } from '@ionic/angular/standalone';
@@ -41,13 +40,12 @@ import { AuthService } from '../../services/auth.service';
     IonLabel,
     IonInput,
     IonButton,
-    IonButtons,
     IonIcon,
-    IonText,
-    IonCard,
-    IonCardContent,
-    IonCardHeader,
-    IonCardTitle
+    IonFab,
+    IonFabButton,
+    IonGrid,
+    IonRow,
+    IonCol
   ]
 })
 export class LoginPage {
@@ -59,6 +57,7 @@ export class LoginPage {
 
   loginForm: FormGroup;
   isLoading = false;
+  showPassword = false;
 
   constructor() {
     this.loginForm = this.formBuilder.group({
@@ -115,6 +114,10 @@ export class LoginPage {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 
   private async showError(title: string, message: string) {

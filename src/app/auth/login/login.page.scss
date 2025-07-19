@@ -1,47 +1,34 @@
-.login-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100%;
-  padding: 20px;
-}
-
-ion-card {
-  max-width: 400px;
+img {
   width: 100%;
+  height: auto;
+  display: block;
   margin: 0 auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 50px !important;
 }
 
-ion-card-header {
-  padding-bottom: 0;
+@media (min-width: 768px) {
+  img {
+    width: 33%;
+    margin: auto;
+  }
 }
 
-ion-card-title {
-  font-family: 'Philosopher', sans-serif;
-  font-size: var(--font-size-section-title);
-  font-weight: 700;
-  color: var(--ion-color-primary);
+.errors {
+  color: #eb445a;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-bottom: 8px;
 }
 
 ion-item {
-  --border-radius: 8px;
-  margin-bottom: 16px;
   --background: #222428;
   --border-color: var(--ion-color-medium);
   --color: #ffffff;
-}
-
-ion-item:focus-within {
-  --border-color: var(--ion-color-primary);
-  --background: #2d2f34;
+  margin-bottom: 16px;
 }
 
 ion-label {
   font-family: 'Philosopher', sans-serif;
-  font-weight: 500;
   --color: #ffffff;
 }
 
@@ -53,8 +40,6 @@ ion-input {
 
 ion-button {
   font-family: 'Philosopher', sans-serif;
-  font-weight: 600;
-  --border-radius: 8px;
   margin-top: 16px;
 }
 
@@ -63,57 +48,16 @@ ion-button[color="primary"] {
   --color: var(--ion-color-primary-contrast);
 }
 
-ion-button[fill="outline"] {
-  --border-color: var(--ion-color-primary);
-  --color: var(--ion-color-primary);
+ion-button[color="tertiary"] {
+  --background: var(--ion-color-tertiary);
+  --color: var(--ion-color-tertiary-contrast);
 }
 
-.divider {
-  display: flex;
-  align-items: center;
-  margin: 24px 0;
-
-  &::before,
-  &::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--ion-color-medium);
-  }
-
-  span {
-    padding: 0 16px;
-    color: var(--ion-color-medium);
-    font-family: 'Philosopher', sans-serif;
-    font-size: 14px;
-  }
-}
-
-ion-text {
-  font-family: 'Philosopher', sans-serif;
-}
-
-ion-text a {
+a {
   color: var(--ion-color-primary);
   text-decoration: none;
-  font-weight: 600;
 }
 
-ion-text a:hover {
+a:hover {
   text-decoration: underline;
-}
-
-ion-text p {
-  margin: 8px 0;
-}
-
-/* Responsive design */
-@media (max-width: 480px) {
-  .login-container {
-    padding: 10px;
-  }
-
-  ion-card {
-    margin: 0;
-  }
 }

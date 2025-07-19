@@ -264,4 +264,21 @@ export class DataService {
     const postDocRef = doc(this.firestore, `posts/${post.id}`);
     return updateDoc(postDocRef, { ...post });
   }
+
+  addReading(reading: Readings) {
+    const readingsRef = collection(this.firestore, 'readings');
+    return addDoc(readingsRef, reading);
+  }
+
+  addReadings(readings: Readings[]) {
+    const readingsRef = collection(this.firestore, 'readings');
+    const promises = readings.map(reading => addDoc(readingsRef, reading));
+    return Promise.all(promises);
+  }
+
+  clearReadingsCollection() {
+    // Note: This would require a Cloud Function or admin SDK
+    // For now, we'll just return a promise that resolves
+    return Promise.resolve();
+  }
 }

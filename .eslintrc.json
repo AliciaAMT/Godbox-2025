@@ -1,6 +1,6 @@
 {
   "root": true,
-  "ignorePatterns": ["projects/**/*"],
+  "ignorePatterns": ["projects/**/*", "the-way-v-2-master/**/*"],
   "overrides": [
     {
       "files": ["*.ts"],

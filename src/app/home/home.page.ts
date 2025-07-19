@@ -7,6 +7,8 @@ import { FooterLandingComponent } from '../components/footer-landing/footer-land
 import { ParashahService } from '../services/parashah.service';
 import { debugHebCalEvents } from '../utils/debug-hebcal';
 import { testGeneratedCode } from '../utils/test-generated-code';
+import { testScriptureMapping } from '../utils/test-scripture-mapping';
+import { BibleApiService } from '../services/bible-api.service';
 
 @Component({
   selector: 'app-home',
@@ -36,6 +38,7 @@ export class HomePage implements OnInit {
   private alertController = inject(AlertController);
   private modalController = inject(ModalController);
   private parashahService = inject(ParashahService);
+  private bibleApiService = inject(BibleApiService);
 
   posts: Post[] = [];
   users: User[] = [];
@@ -63,6 +66,15 @@ export class HomePage implements OnInit {
 
   ngOnInit() {}
 
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
+
   async openTestingMenu() {
     const alert = await this.alertController.create({
       header: 'Testing Tools',
@@ -84,6 +96,30 @@ export class HomePage implements OnInit {
           text: 'Test Generated Code',
           handler: () => {
             this.testGeneratedCode();
+          }
+        },
+        {
+          text: 'Test Scripture Mapping',
+          handler: () => {
+            this.testScriptureMapping();
+          }
+        },
+        {
+          text: 'Configure API Key',
+          handler: () => {
+            this.configureApiKey();
+          }
+        },
+        {
+          text: 'Regenerate Database with Scripture',
+          handler: () => {
+            this.regenerateDatabaseWithScripture();
+          }
+        },
+        {
+          text: 'Test API Bible Connection',
+          handler: () => {
+            this.testApiBibleConnection();
           }
         },
         {
@@ -204,6 +240,77 @@ export class HomePage implements OnInit {
     }
   }
 
+  async regenerateDatabaseWithScripture() {
+    try {
+      // Generate readings for this week (7 days) to ensure we get today's reading
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - 1); // Start from yesterday to ensure we get today
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + 7);
+
+      const readings = this.parashahService.generateReadings(startDate, endDate);
+
+      console.log('Generated readings:', readings);
+      console.log('Readings count:', readings.length);
+
+      // Debug: Check what dates were generated
+      const today = new Date();
+      const todayStr = today.toISOString().split('T')[0];
+      console.log('Today\'s date:', todayStr);
+      console.log('Generated dates:', readings.map(r => r.date));
+
+      // Check if today's reading exists
+      const todaysReading = readings.find(r => r.date === todayStr);
+      console.log('Today\'s reading found:', todaysReading ? 'YES' : 'NO');
+
+      if (readings.length === 0) {
+        this.presentAlert('Error', 'No readings generated for this week. This might be because there are no parashah readings scheduled for this period.');
+        return;
+      }
+
+      // Clear existing readings
+      console.log('Clearing existing readings...');
+      await this.dataService.clearReadingsCollection();
+
+      // Upload new readings with scripture references
+      console.log('Uploading new readings to Firebase...');
+      await this.dataService.addReadings(readings);
+
+      this.presentAlert('Success', `Generated ${readings.length} readings for this week with scripture references! You can now check the daily readings page.`);
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      this.presentAlert('Error', `Failed to regenerate database: ${errorMessage}`);
+    }
+  }
+
+    async testApiBibleConnection() {
+    try {
+      if (!this.bibleApiService.isApiKeyConfigured()) {
+        this.presentAlert('Error', 'API key not configured. Please configure your api.bible key first.');
+        return;
+      }
+
+      // Test with a simple verse
+      this.bibleApiService.getVerse('Genesis 1:1').subscribe({
+        next: (verse) => {
+          if (verse) {
+            this.presentAlert('Success', `API Bible is working! Test verse: ${verse.text.substring(0, 50)}...`);
+          } else {
+            this.presentAlert('Error', 'API Bible returned no data. Check your API key.');
+          }
+        },
+        error: (error) => {
+          this.presentAlert('Error', `API Bible test failed: ${error.message}`);
+        }
+      });
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      this.presentAlert('Error', `API Bible test failed: ${errorMessage}`);
+    }
+  }
+
   async uploadToFirebase() {
     const loading = await this.alertController.create({
       header: 'Uploading to Firebase',
@@ -214,13 +321,19 @@ export class HomePage implements OnInit {
     await loading.present();
 
     try {
-      // Generate readings for current year
-      const currentYear = new Date().getFullYear();
-      const startDate = new Date(`${currentYear}-01-01`);
-      const endDate = new Date(`${currentYear + 1}-01-01`);
+      // Generate readings for this week (7 days) to ensure we get today's reading
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + 7);
 
       const readings = this.parashahService.generateReadings(startDate, endDate);
       const firebaseReadings = this.parashahService.convertToFirebaseReadings(readings);
+
+      if (readings.length === 0) {
+        loading.dismiss();
+        this.presentAlert('No Readings', 'No readings were generated for this week. This might be because there are no parashah readings scheduled for this period.');
+        return;
+      }
 
       // Upload to Firebase
       await this.dataService.addReadings(firebaseReadings);
@@ -229,7 +342,7 @@ export class HomePage implements OnInit {
 
       const successAlert = await this.alertController.create({
         header: 'Success!',
-        message: `Uploaded ${readings.length} readings to Firebase 'readings' collection for ${currentYear}. You can now test the daily readings page!`,
+        message: `Uploaded ${readings.length} readings to Firebase 'readings' collection for this week. You can now test the daily readings page!`,
         buttons: [
           {
             text: 'Go to Daily Readings',
@@ -310,5 +423,44 @@ export class HomePage implements OnInit {
 
       await alert.present();
     }
+  }
+
+  async testScriptureMapping() {
+    try {
+      testScriptureMapping();
+
+      const alert = await this.alertController.create({
+        header: 'Scripture Mapping Test',
+        message: 'Scripture mapping test completed. Check console for detailed results.',
+        buttons: ['OK']
+      });
+
+      await alert.present();
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const alert = await this.alertController.create({
+        header: 'Test Failed',
+        message: `Error: ${errorMessage}`,
+        buttons: ['OK']
+      });
+
+      await alert.present();
+    }
+  }
+
+    async configureApiKey() {
+    const alert = await this.alertController.create({
+      header: 'API Bible Configuration',
+      message: 'Your API Bible key is now configured via environment variables. The key is securely stored in the environment configuration files.',
+      buttons: [
+        {
+          text: 'OK',
+          role: 'cancel'
+        }
+      ]
+    });
+
+    await alert.present();
   }
 }

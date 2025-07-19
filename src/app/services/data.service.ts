@@ -10,6 +10,7 @@ import {
   addDoc,
   deleteDoc,
   updateDoc,
+  getDocs,
   orderBy,
   query,
   where,
@@ -270,15 +271,52 @@ export class DataService {
     return addDoc(readingsRef, reading);
   }
 
-  addReadings(readings: Readings[]) {
-    const readingsRef = collection(this.firestore, 'readings');
-    const promises = readings.map(reading => addDoc(readingsRef, reading));
-    return Promise.all(promises);
+  async addReadings(readings: Readings[]) {
+    try {
+      const readingsRef = collection(this.firestore, 'readings');
+      console.log(`Attempting to add ${readings.length} readings to Firebase`);
+
+      const promises = readings.map(async (reading, index) => {
+        console.log(`Adding reading ${index + 1}:`, reading);
+        return addDoc(readingsRef, reading);
+      });
+
+      const results = await Promise.all(promises);
+      console.log(`Successfully added ${results.length} readings to Firebase`);
+      return results;
+    } catch (error) {
+      console.error('Error adding readings to Firebase:', error);
+      throw error;
+    }
   }
 
-  clearReadingsCollection() {
-    // Note: This would require a Cloud Function or admin SDK
-    // For now, we'll just return a promise that resolves
-    return Promise.resolve();
+  async clearReadingsCollection() {
+    try {
+      // Get all existing readings
+      const readingsRef = collection(this.firestore, 'readings');
+      const readingsSnapshot = await getDocs(readingsRef);
+
+      // Delete each reading
+      const deletePromises = readingsSnapshot.docs.map(doc => deleteDoc(doc.ref));
+      await Promise.all(deletePromises);
+
+      console.log(`Cleared ${readingsSnapshot.docs.length} existing readings from Firebase`);
+      return Promise.resolve();
+    } catch (error) {
+      console.error('Error clearing readings collection:', error);
+      return Promise.reject(error);
+    }
+  }
+
+  async updateExistingReading(readingId: string, updatedReading: Partial<Readings>) {
+    try {
+      const readingDocRef = doc(this.firestore, `readings/${readingId}`);
+      await updateDoc(readingDocRef, updatedReading);
+      console.log(`Updated reading ${readingId} with new scripture references`);
+      return Promise.resolve();
+    } catch (error) {
+      console.error('Error updating reading:', error);
+      return Promise.reject(error);
+    }
   }
 }

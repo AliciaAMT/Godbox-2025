@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HebrewCalendar, Location, Event, HDate } from '@hebcal/core';
+import { ScriptureMappingService, DailyReadings } from './scripture-mapping.service';
 
 export interface AutomatedReading {
   idNo: number;
@@ -26,6 +27,8 @@ export interface AutomatedReading {
   providedIn: 'root'
 })
 export class ParashahService {
+
+  constructor(private scriptureMappingService: ScriptureMappingService) { }
 
   private readonly parashahTranslations: { [key: string]: { heb: string, eng: string } } = {
     'Bereshit': { heb: 'בראשית', eng: 'In the Beginning' },
@@ -84,7 +87,18 @@ export class ParashahService {
     'Vezot Haberachah': { heb: 'וזאת הברכה', eng: 'And this is the blessing' }
   };
 
-  constructor() { }
+
+
+  /**
+   * Generate automated readings for today's date
+   */
+  generateReadingsForToday(): AutomatedReading[] {
+    const today = new Date();
+    const startDate = new Date(today);
+    const endDate = new Date(today);
+
+    return this.generateReadings(startDate, endDate);
+  }
 
   /**
    * Generate automated readings for a given date range
@@ -147,6 +161,20 @@ export class ParashahService {
   ): AutomatedReading {
     const translation = this.parashahTranslations[parashat] || { heb: parashat, eng: parashat };
 
+    // Get scripture references for this parashah and day
+    const scriptureReadings = this.scriptureMappingService.getScriptureReferences(parashat, kriyah);
+
+    console.log(`Creating reading for parashah: ${parashat}, kriyah: ${kriyah}, date: ${this.formatDate(date)}`);
+    console.log('Scripture readings found:', scriptureReadings);
+
+    // Format scripture references for api.bible
+    const torahRef = scriptureReadings?.torah ? scriptureReadings.torah.reference : '';
+    const prophetsRef = scriptureReadings?.prophets ? scriptureReadings.prophets.reference : '';
+    const writingsRef = scriptureReadings?.writings ? scriptureReadings.writings.reference : '';
+    const britChadashahRef = scriptureReadings?.britChadashah ? scriptureReadings.britChadashah.reference : '';
+
+    console.log('Formatted references:', { torahRef, prophetsRef, writingsRef, britChadashahRef });
+
     return {
       idNo,
       parashat,
@@ -160,12 +188,12 @@ export class ParashahService {
       kriyahHeb: this.getKriyahHebrew(kriyah),
       kriyahEng: `Reading ${kriyah}`,
       kriyahDate: this.getHebrewDate(date),
-      torah: '', // To be filled manually or from another source
-      prophets: '', // To be filled manually or from another source
-      writings: '', // To be filled manually or from another source
-      britChadashah: '', // To be filled manually or from another source
-      haftarah: kriyah === 7 ? '' : '', // Only on Shabbat (kriyah 7)
-      apostles: '' // To be filled manually or from another source
+      torah: torahRef,
+      prophets: prophetsRef,
+      writings: writingsRef,
+      britChadashah: britChadashahRef,
+      haftarah: kriyah === 7 ? prophetsRef : '', // Only on Shabbat (kriyah 7)
+      apostles: britChadashahRef // To be filled manually or from another source
     };
   }
 

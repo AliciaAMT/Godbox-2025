@@ -10,49 +10,85 @@
     <ion-col class="ion-text-center" sizeLg="4" offsetLg="4" sizeMd="6" offsetMd="3" sizeSm="8" offsetSm="2">
 <h2>Today's Readings</h2>
 <app-date></app-date>
+<ion-button (click)="testApiConnection()" fill="outline" size="small" style="margin: 10px;">
+  Test API Connection
+</ion-button>
+<ion-button (click)="testBasicApiConnectivity()" fill="outline" size="small" style="margin: 10px;" color="secondary">
+  Test Basic Connectivity
+</ion-button>
+<ion-button (click)="testReferenceFormats()" fill="outline" size="small" style="margin: 10px;" color="warning">
+  Test Reference Formats
+</ion-button>
+<ion-button (click)="testDifferentPassage()" fill="outline" size="small" style="margin: 10px;" color="secondary">
+  Test Genesis Passage
+</ion-button>
+<ion-button (click)="testApiConfiguration()" fill="outline" size="small" style="margin: 10px;" color="tertiary">
+  Test API Configuration
+</ion-button>
+<ion-button (click)="testVersesEndpoint()" fill="outline" size="small" style="margin: 10px;" color="success">
+  Test Verses Endpoint
+</ion-button>
+<ion-button (click)="testFormatReference()" fill="outline" size="small" style="margin: 10px;" color="medium">
+  Test Format Reference
+</ion-button>
+<ion-button (click)="testDifferentBibleIds()" fill="outline" size="small" style="margin: 10px;" color="primary">
+  Test Different Bible IDs
+</ion-button>
+<ion-button (click)="findBibleIdsWithNumbers()" fill="outline" size="small" style="margin: 10px;" color="primary">
+  Find Bibles With Numbers Support
+</ion-button>
+<ion-button (click)="testKJVNumbers()" fill="outline" size="small" style="margin: 10px;" color="secondary">
+  Test KJV Numbers
+</ion-button>
+<ion-button (click)="testNumbersAcrossAllBibleIds()" fill="outline" size="small" style="margin: 10px;" color="danger">
+  Test Numbers Across All Bible IDs
+</ion-button>
+<ion-button (click)="testNumbersBook()" fill="outline" size="small" style="margin: 10px;" color="warning">
+  Test Numbers Book
+</ion-button>
+<ion-button (click)="testAvailableBibleIds()" fill="outline" size="small" style="margin: 10px;" color="success">
+  Test Available Bible IDs
+</ion-button>
+<ion-button (click)="regenerateDatabase()" fill="outline" size="small" style="margin: 10px;" color="danger">
+  Regenerate Database
+</ion-button>
 <!-- <script type="text/javascript" charset="utf-8"
 src="../../components/date/heb-date-en.js"></script> -->
 <div *ngIf="readings.length === 0">
   <p>No readings found for today ({{today}}). Click the + button to upload sample data.</p>
 </div>
-<div *ngFor="let reading of readings">
-  <div *ngIf="reading.date === today">
+<div *ngFor="let reading of readings; trackBy: trackByReading">
 <h3>Parshah: {{reading.parashat}}</h3>
 <span class="heb">{{reading.parashatHeb}}</span><br />
 {{reading.parashatEng}}
-<ion-item button="true" (click)="openGateway(reading.id, 'torah')">
+<ion-item button="true" (click)="openGateway(reading.idNo, 'torah')">
   <ion-label>
     <h4>Torah:</h4>
   </ion-label>
-    {{ reading.torah }}
+    {{ reading.torah || 'No Torah reading available' }}
 </ion-item>
-<ion-item button="true" (click)="openGateway(reading.id, 'writings')">
+<ion-item button="true" (click)="openGateway(reading.idNo, 'writings')">
   <ion-label>
     <h4>Ketuvium:</h4>
   </ion-label>
-    {{ reading.writings }}
+    {{ reading.writings || 'No Writings reading available' }}
 </ion-item>
-<ion-item button="true" (click)="openGateway(reading.id, 'prophets')">
+<ion-item button="true" (click)="openGateway(reading.idNo, 'prophets')">
   <ion-label>
     <h4>Nevi'im:</h4>
   </ion-label>
-    {{ reading.prophets }}
+    {{ reading.prophets || 'No Prophets reading available' }}
 </ion-item>
-<ion-item button="true" (click)="openGateway(reading.id, 'britChadashah')">
+<ion-item button="true" (click)="openGateway(reading.idNo, 'britChadashah')">
   <ion-label>
     <h4>Brit Chadashah:</h4>
   </ion-label>
-    {{ reading.britChadashah }}
+    {{ reading.britChadashah || 'No Brit Chadashah reading available' }}
 </ion-item>
-    </div>
-  </div>
+</div>
     </ion-col>
   </ion-row>
 </ion-grid>
-<ion-fab vertical="bottom" horizontal="center" slot="fixed">
-  <ion-fab-button (click)="uploadData()" color="dark">
-    <ion-icon name="add"></ion-icon>
-  </ion-fab-button>
-</ion-fab>
+
   <app-footer-landing></app-footer-landing>
 </ion-content>

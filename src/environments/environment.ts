@@ -13,6 +13,9 @@ export const environment = {
     messagingSenderId: '243646012961',
     measurementId: 'G-TKSL4BP27T',
   },
+  apiBible: {
+    apiKey: 'd48547befffed9092098d65ef059d036'
+  },
   production: false
 };
 

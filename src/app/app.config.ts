@@ -1,6 +1,32 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter, withPreloading, PreloadAllModules, RouteReuseStrategy } from '@angular/router';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
+import { provideHttpClient, withFetch } from '@angular/common/http';
+import { addIcons } from 'ionicons';
+import {
+  settingsOutline,
+  constructOutline,
+  personOutline,
+  mailOutline,
+  lockClosedOutline,
+  eyeOutline,
+  eyeOffOutline,
+  chevronForwardOutline,
+  homeOutline,
+  calendarOutline,
+  bookOutline,
+  searchOutline,
+  menuOutline,
+  closeOutline,
+  addOutline,
+  trashOutline,
+  createOutline,
+  downloadOutline,
+  cloudUploadOutline,
+  checkmarkOutline,
+  alertOutline,
+  informationCircleOutline
+} from 'ionicons/icons';
 
 import { routes } from './app.routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
@@ -14,10 +40,37 @@ import { providePerformance, getPerformance } from '@angular/fire/performance';
 import { provideRemoteConfig, getRemoteConfig } from '@angular/fire/remote-config';
 import { provideStorage, getStorage } from '@angular/fire/storage';
 
+// Register all the icons we need
+addIcons({
+  settingsOutline,
+  constructOutline,
+  personOutline,
+  mailOutline,
+  lockClosedOutline,
+  eyeOutline,
+  eyeOffOutline,
+  chevronForwardOutline,
+  homeOutline,
+  calendarOutline,
+  bookOutline,
+  searchOutline,
+  menuOutline,
+  closeOutline,
+  addOutline,
+  trashOutline,
+  createOutline,
+  downloadOutline,
+  cloudUploadOutline,
+  checkmarkOutline,
+  alertOutline,
+  informationCircleOutline
+});
+
 export const appConfig: ApplicationConfig = {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
+    provideHttpClient(withFetch()),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAnalytics(() => getAnalytics()),

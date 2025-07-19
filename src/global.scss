@@ -52,3 +52,8 @@ ion-title {
   text-align: left !important;
   padding-left: 16px !important;
 }
+
+/* Black background for content */
+ion-content {
+  --background: #000000;
+}

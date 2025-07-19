@@ -1,3 +1,27 @@
+ion-content {
+  --background: #000000;
+  color: #ffffff;
+}
+
+ion-grid {
+  background: #000000;
+}
+
+ion-row {
+  background: #000000;
+}
+
+ion-col {
+  background: #000000;
+  color: #ffffff;
+}
+
+.container1 {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 #container {
   text-align: center;
 
@@ -75,34 +99,33 @@ ion-avatar {
   background: rgba(0,0,0,0.2);
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   pointer-events: none;
 }
 .overtext {
   color: #fff;
-  text-align: right;
+  text-align: center;
   font-family: 'Philosopher', sans-serif;
   z-index: 3;
   width: 100%;
-  max-width: 60vw;
-  padding: 3% 5% 3% 2%;
-  font-size: 2.8vw; /* scales with masthead width */
+  max-width: 80vw;
+  padding: 3% 5% 3% 5%;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   pointer-events: auto;
 }
 .overtext h1 {
-  font-size: 2.2em;
+  font-size: var(--font-size-hero-title);
   margin: 0 0 0.2em 0;
 }
 .overtext sub {
-  font-size: 1em;
+  font-size: var(--font-size-hero-subtitle);
   margin-bottom: 1em;
 }
 .overtext p {
-  font-size: 0.8em;
+  font-size: var(--font-size-hero-description);
   margin: 0;
 }
 
@@ -154,7 +177,19 @@ border-radius: 0% !important;
 }
  ion-toolbar {
   padding-right: 20px;
- }
+}
+
+/* Toolbar button styling - moved from global.scss */
+ion-toolbar ion-button {
+  font-size: 0.75rem !important;
+  --border-radius: 4px !important;
+  --padding-start: 12px !important;
+  --padding-end: 12px !important;
+  --padding-top: 12px !important;
+  --padding-bottom: 12px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+}
 .hebrew {
   font-family: 'Frank Ruhl Libre', serif;
   font-size: 2.2rem;
@@ -170,6 +205,7 @@ border-radius: 0% !important;
   font-size: var(--font-size-body-text);
   padding-left: 50px;
   padding-right: 50px;
+  color: #ffffff;
 }
 .primary {
   color: var(--ion-color-primary);
@@ -190,11 +226,12 @@ border-radius: 0% !important;
 .message {
   font-size: var(--font-size-message-text);
   font-family: 'Philosopher', sans-serif;
+  color: #ffffff;
 }
 
 ion-button[color="primary"] {
-  background: #1abc9c;
-  color: #fff;
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-primary-contrast);
   font-size: var(--font-size-button-text);
   font-family: 'Philosopher', sans-serif;
   border-radius: 8px;
@@ -220,7 +257,8 @@ ion-title {
   .overtext {
     max-width: 95vw;
     padding: 4% 2% 4% 2%;
-    font-size: 4vw;
+    text-align: center;
+    align-items: center;
   }
 
   .overtext h1 {
@@ -251,7 +289,8 @@ ion-title {
   .overtext {
     max-width: 99vw;
     padding: 4% 1% 4% 1%;
-    font-size: 5vw;
+    text-align: center;
+    align-items: center;
   }
 }
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HebrewCalendar, Location, Event, HDate } from '@hebcal/core';
 import { ScriptureMappingService, DailyReadings } from './scripture-mapping.service';
+import { HaftarahService } from './haftarah.service';
 
 export interface AutomatedReading {
   idNo: number;
@@ -28,7 +29,10 @@ export interface AutomatedReading {
 })
 export class ParashahService {
 
-  constructor(private scriptureMappingService: ScriptureMappingService) { }
+  constructor(
+    private scriptureMappingService: ScriptureMappingService,
+    private haftarahService: HaftarahService
+  ) { }
 
   private readonly parashahTranslations: { [key: string]: { heb: string, eng: string } } = {
     'Bereshit': { heb: 'בראשית', eng: 'In the Beginning' },
@@ -173,7 +177,10 @@ export class ParashahService {
     const writingsRef = scriptureReadings?.writings ? scriptureReadings.writings.reference : '';
     const britChadashahRef = scriptureReadings?.britChadashah ? scriptureReadings.britChadashah.reference : '';
 
-    console.log('Formatted references:', { torahRef, prophetsRef, writingsRef, britChadashahRef });
+    // Get haftarah reading for Shabbat (kriyah 7)
+    const haftarahRef = kriyah === 7 ? this.haftarahService.getHaftarahReference(parashat) : '';
+
+    console.log('Formatted references:', { torahRef, prophetsRef, writingsRef, britChadashahRef, haftarahRef });
 
     return {
       idNo,
@@ -192,7 +199,7 @@ export class ParashahService {
       prophets: prophetsRef,
       writings: writingsRef,
       britChadashah: britChadashahRef,
-      haftarah: kriyah === 7 ? prophetsRef : '', // Only on Shabbat (kriyah 7)
+      haftarah: haftarahRef,
       apostles: britChadashahRef // To be filled manually or from another source
     };
   }

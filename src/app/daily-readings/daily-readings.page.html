@@ -52,39 +52,106 @@
 <ion-button (click)="regenerateDatabase()" fill="outline" size="small" style="margin: 10px;" color="danger">
   Regenerate Database
 </ion-button>
+<ion-button (click)="testScriptureMapping()" fill="outline" size="small" style="margin: 10px;" color="success">
+  Test Scripture Mapping
+</ion-button>
+<ion-button (click)="downloadUpdatedDatabase()" fill="outline" size="small" style="margin: 10px;" color="warning">
+  Download Updated Database
+</ion-button>
+<ion-button (click)="showUpdatedDatabaseContent()" fill="outline" size="small" style="margin: 10px;" color="medium">
+  Show Database Content
+</ion-button>
+<ion-button (click)="uploadToFirebase()" fill="outline" size="small" style="margin: 10px;" color="danger">
+  Upload to Firebase
+</ion-button>
+<ion-button expand="block" color="success" (click)="testFixedFormat()">
+  TEST FIXED FORMAT
+</ion-button>
+
+<ion-button expand="block" color="warning" (click)="fixAllDatabaseFormats()">
+  FIX ALL DATABASE FORMATS & UPLOAD TO FIREBASE
+</ion-button>
+
+<ion-button expand="block" color="primary" (click)="testWithSpecificDate()">
+  TEST WITH PINCHAS SABBATH DATE (2025-07-25)
+</ion-button>
 <!-- <script type="text/javascript" charset="utf-8"
 src="../../components/date/heb-date-en.js"></script> -->
 <div *ngIf="readings.length === 0">
-  <p>No readings found for today ({{today}}). Click the + button to upload sample data.</p>
+  <p>No readings found for today ({{today}}). Click "Regenerate Database" to upload enhanced readings with haftarah.</p>
 </div>
+
+<!-- Sabbath Reading Display -->
 <div *ngFor="let reading of readings; trackBy: trackByReading">
-<h3>Parshah: {{reading.parashat}}</h3>
-<span class="heb">{{reading.parashatHeb}}</span><br />
-{{reading.parashatEng}}
-<ion-item button="true" (click)="openGateway(reading.idNo, 'torah')">
-  <ion-label>
-    <h4>Torah:</h4>
-  </ion-label>
-    {{ reading.torah || 'No Torah reading available' }}
-</ion-item>
-<ion-item button="true" (click)="openGateway(reading.idNo, 'writings')">
-  <ion-label>
-    <h4>Ketuvium:</h4>
-  </ion-label>
-    {{ reading.writings || 'No Writings reading available' }}
-</ion-item>
-<ion-item button="true" (click)="openGateway(reading.idNo, 'prophets')">
-  <ion-label>
-    <h4>Nevi'im:</h4>
-  </ion-label>
-    {{ reading.prophets || 'No Prophets reading available' }}
-</ion-item>
-<ion-item button="true" (click)="openGateway(reading.idNo, 'britChadashah')">
-  <ion-label>
-    <h4>Brit Chadashah:</h4>
-  </ion-label>
-    {{ reading.britChadashah || 'No Brit Chadashah reading available' }}
-</ion-item>
+  <div *ngIf="reading.isSabbath">
+    <h3>Parshah: {{reading.parashat}}</h3>
+    <span class="heb">{{reading.parashatHeb}}</span><br />
+    {{reading.parashatEng}}
+
+    <!-- Complete Torah Reading for Sabbath -->
+    <div *ngIf="reading.weekReadings && reading.weekReadings.length > 0">
+      <h4>Complete Torah Reading:</h4>
+      <ion-item *ngFor="let weekReading of reading.weekReadings" button="true" (click)="openGateway(reading.idNo, 'torah', weekReading.torahReading)">
+        <ion-label>
+          <h5>{{weekReading.dayName}} ({{weekReading.day}}):</h5>
+          <p>{{weekReading.torahReading}}</p>
+        </ion-label>
+      </ion-item>
+    </div>
+
+    <!-- Fallback if no weekReadings -->
+    <ion-item *ngIf="!reading.weekReadings || reading.weekReadings.length === 0" button="true" (click)="openGateway(reading.idNo, 'torah')">
+      <ion-label>
+        <h4>Complete Torah Reading:</h4>
+      </ion-label>
+      {{ reading.completeTorahReading || reading.torah || 'No Torah reading available' }}
+    </ion-item>
+
+    <!-- Haftarah Reading for Sabbath -->
+    <ion-item button="true" (click)="openGateway(reading.idNo, 'prophets')">
+      <ion-label>
+        <h4>Haftarah:</h4>
+      </ion-label>
+      {{ reading.haftarah || reading.prophets || 'No Haftarah reading available' }}
+    </ion-item>
+
+
+  </div>
+
+  <!-- Regular Daily Reading Display -->
+  <div *ngIf="!reading.isSabbath">
+    <h3>Parshah: {{reading.parashat}}</h3>
+    <span class="heb">{{reading.parashatHeb}}</span><br />
+    {{reading.parashatEng}}
+
+    <ion-item button="true" (click)="openGateway(reading.idNo, 'torah')">
+      <ion-label>
+        <h4>Torah:</h4>
+      </ion-label>
+      {{ reading.torah || 'No Torah reading available' }}
+    </ion-item>
+
+    <ion-item button="true" (click)="openGateway(reading.idNo, 'writings')">
+      <ion-label>
+        <h4>Ketuvium:</h4>
+      </ion-label>
+      {{ reading.writings || 'No Writings reading available' }}
+    </ion-item>
+
+    <ion-item button="true" (click)="openGateway(reading.idNo, 'prophets')">
+      <ion-label>
+        <h4>Nevi'im:</h4>
+      </ion-label>
+      {{ reading.prophets || 'No Prophets reading available' }}
+    </ion-item>
+
+    <ion-item button="true" (click)="openGateway(reading.idNo, 'britChadashah')">
+      <ion-label>
+        <h4>Brit Chadashah:</h4>
+      </ion-label>
+      {{ reading.britChadashah || 'No Brit Chadashah reading available' }}
+    </ion-item>
+  </div>
 </div>
     </ion-col>
   </ion-row>

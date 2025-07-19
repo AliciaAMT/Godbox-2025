@@ -1,57 +1,118 @@
-import { ParashahService } from '../services/parashah.service';
-import { ScriptureMappingService } from '../services/scripture-mapping.service';
+import { updateDatabaseWithScriptureReadings, generateUpdatedDatabaseContent, createDownloadableDatabaseFile, getUpdatedDatabaseContent, uploadToFirebase } from './update-database';
 
+/**
+ * Test script to update database with scripture readings
+ */
 export function testScriptureMapping() {
-  const scriptureMappingService = new ScriptureMappingService();
-  const parashahService = new ParashahService(scriptureMappingService);
+  console.log('🧪 Testing scripture mapping and database update...');
 
-  console.log('=== Testing Scripture Mapping ===');
+  try {
+    // Test the update function
+    const updatedKriyah = updateDatabaseWithScriptureReadings();
 
-  // Test available parashot
-  const availableParashot = scriptureMappingService.getAvailableParashot();
-  console.log('Available parashot:', availableParashot.length);
-  console.log('First 5 parashot:', availableParashot.slice(0, 5));
+    // Generate the new database content
+    const newDatabaseContent = generateUpdatedDatabaseContent();
 
-  // Test scripture references for a specific parashah
-  const testParashah = 'Vayigash';
-  console.log(`\nTesting scripture references for ${testParashah}:`);
+    console.log('\n✅ Database update completed successfully!');
+    console.log(`📊 Total readings updated: ${Object.keys(updatedKriyah).length}`);
 
-  for (let day = 1; day <= 7; day++) {
-    const readings = scriptureMappingService.getScriptureReferences(testParashah, day);
-    if (readings) {
-      console.log(`Day ${day}:`);
-      console.log(`  Torah: ${readings.torah.reference}`);
-      if (readings.prophets) {
-        console.log(`  Prophets: ${readings.prophets.reference}`);
-      }
-      if (readings.writings) {
-        console.log(`  Writings: ${readings.writings.reference}`);
-      }
-      if (readings.britChadashah) {
-        console.log(`  Brit Chadashah: ${readings.britChadashah.reference}`);
-      }
-    }
+    // Show a preview of the updated content
+    console.log('\n📝 Database content preview (first 1000 chars):');
+    console.log(newDatabaseContent.substring(0, 1000) + '...');
+
+    return {
+      success: true,
+      updatedKriyah,
+      newDatabaseContent,
+      message: 'Database update completed successfully'
+    };
+
+  } catch (error) {
+    console.error('❌ Error updating database:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+      message: 'Database update failed'
+    };
   }
-
-  // Test generating readings with scripture references
-  console.log('\n=== Testing Generated Readings with Scripture References ===');
-  const startDate = new Date('2025-01-04'); // Vayigash week
-  const endDate = new Date('2025-01-10');
-
-  const readings = parashahService.generateReadings(startDate, endDate);
-  console.log(`Generated ${readings.length} readings`);
-
-  // Show first few readings with scripture references
-  readings.slice(0, 3).forEach((reading, index) => {
-    console.log(`\nReading ${index + 1}:`);
-    console.log(`  Date: ${reading.date}`);
-    console.log(`  Parashah: ${reading.parashat}`);
-    console.log(`  Kriyah: ${reading.kriyah}`);
-    console.log(`  Torah: ${reading.torah}`);
-    console.log(`  Prophets: ${reading.prophets}`);
-    console.log(`  Writings: ${reading.writings}`);
-    console.log(`  Brit Chadashah: ${reading.britChadashah}`);
-  });
-
-  return true;
 }
+
+/**
+ * Upload updated readings to Firebase
+ */
+export async function uploadToFirebaseCollection(dataService: any) {
+  console.log('🔥 Uploading updated readings to Firebase collection...');
+
+  try {
+    const result = await uploadToFirebase(dataService);
+
+    if (result.success) {
+      console.log('✅ Firebase upload completed successfully!');
+      console.log(`📊 Uploaded ${result.uploadedCount}/${result.totalCount} readings`);
+    } else {
+      console.error('❌ Firebase upload failed:', result.error);
+    }
+
+    return result;
+
+  } catch (error) {
+    console.error('❌ Error in Firebase upload:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+      message: 'Firebase upload failed'
+    };
+  }
+}
+
+/**
+ * Download the updated database file
+ */
+export function downloadUpdatedDatabase() {
+  console.log('📁 Downloading updated database file...');
+
+  try {
+    const content = createDownloadableDatabaseFile();
+
+    return {
+      success: true,
+      message: 'Database file download initiated. Check your downloads folder for kriyah-updated.ts'
+    };
+
+  } catch (error) {
+    console.error('❌ Error downloading database:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+      message: 'Database download failed'
+    };
+  }
+}
+
+/**
+ * Show the updated database content for manual replacement
+ */
+export function showUpdatedDatabaseContent() {
+  console.log('📝 Showing updated database content for manual replacement...');
+
+  try {
+    const content = getUpdatedDatabaseContent();
+
+    return {
+      success: true,
+      content,
+      message: 'Database content shown in console. Copy and replace src/app/database/kriyah.ts content.'
+    };
+
+  } catch (error) {
+    console.error('❌ Error showing database content:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+      message: 'Failed to show database content'
+    };
+  }
+}
+
+// Export for use in other files
+export { updateDatabaseWithScriptureReadings, generateUpdatedDatabaseContent };

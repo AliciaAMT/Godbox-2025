@@ -45,6 +45,14 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'sabbath-test',
+    loadComponent: () => import('./components/sabbath-readings-test/sabbath-readings-test.component').then(m => m.SabbathReadingsTestComponent)
+  },
+  {
+    path: 'database-updater',
+    loadComponent: () => import('./components/database-updater/database-updater.component').then(m => m.DatabaseUpdaterComponent)
+  },
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full'

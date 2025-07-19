@@ -1,9 +1,11 @@
 import { ParashahService } from '../services/parashah.service';
 import { ScriptureMappingService } from '../services/scripture-mapping.service';
+import { HaftarahService } from '../services/haftarah.service';
 
 export function testGeneratedCode() {
   const scriptureMappingService = new ScriptureMappingService();
-  const parashahService = new ParashahService(scriptureMappingService);
+  const haftarahService = new HaftarahService();
+  const parashahService = new ParashahService(scriptureMappingService, haftarahService);
 
   // Test with a small date range
   const startDate = new Date('2024-01-01');

@@ -10,6 +10,10 @@ import { FooterLandingComponent } from '../components/footer-landing/footer-land
 import { MenuHeaderComponent } from '../components/menu-header/menu-header.component';
 import { DateComponent } from '../components/date/date.component';
 import { ParashahService } from '../services/parashah.service';
+import { EnhancedDailyReadingsService, EnhancedReading } from '../services/enhanced-daily-readings.service';
+import { FirebaseUpdaterService } from '../services/firebase-updater.service';
+import { ScriptureMappingService } from '../services/scripture-mapping.service';
+import { FixAllDatabaseFormatsService } from '../utils/fix-all-database-formats';
 
 @Component({
   selector: 'app-daily-readings',
@@ -21,32 +25,56 @@ import { ParashahService } from '../services/parashah.service';
 export class DailyReadingsPage implements OnInit {
   dateS = new Date();
   today = formatDate(this.dateS, 'yyyy-MM-dd', 'en');
-  readings: Readings[] = [];
-
-
+  readings: EnhancedReading[] = [];
+  isSabbath = false;
 
   private dataService = inject(DataService);
   private bibleApiService = inject(BibleApiService);
   private parashahService = inject(ParashahService);
+  private enhancedReadingsService = inject(EnhancedDailyReadingsService);
+  private firebaseUpdaterService = inject(FirebaseUpdaterService);
   private cd = inject(ChangeDetectorRef);
+  private scriptureMappingService = inject(ScriptureMappingService);
+  private fixAllDatabaseFormatsService = inject(FixAllDatabaseFormatsService);
 
   constructor() {
     console.log('Today\'s date:', this.today);
-    this.dataService.getReadingByThisDate().subscribe(res => {
-      console.log('Readings found:', res);
-      console.log('Readings count:', res.length);
+    console.log('🔍 App is looking for readings on date:', this.today);
+    this.loadEnhancedReadings();
+  }
+
+  private loadEnhancedReadings() {
+    this.enhancedReadingsService.getEnhancedDailyReadings().subscribe(res => {
+      console.log('Enhanced readings found:', res);
+      console.log('Enhanced readings count:', res.length);
+
       res.forEach((reading, index) => {
-        console.log(`Reading ${index}:`, {
+        console.log(`Enhanced Reading ${index}:`, {
           id: reading.id,
           idNo: reading.idNo,
           date: reading.date,
+          isSabbath: reading.isSabbath,
           torah: reading.torah,
           prophets: reading.prophets,
-          writings: reading.writings,
-          britChadashah: reading.britChadashah
+          haftarah: reading.haftarah,
+          haftarahReference: reading.haftarahReference,
+          completeTorahReading: reading.completeTorahReading
         });
+
+        // Log the exact haftarah values for debugging
+        if (reading.isSabbath) {
+          console.log('🔍 Sabbath reading haftarah debug:', {
+            haftarah: reading.haftarah,
+            prophets: reading.prophets,
+            haftarahReference: reading.haftarahReference,
+            haftarahType: typeof reading.haftarah,
+            prophetsType: typeof reading.prophets
+          });
+        }
       });
+
       this.readings = res;
+      this.isSabbath = res.some(reading => reading.isSabbath);
       this.cd.detectChanges();
     });
   }
@@ -54,39 +82,43 @@ export class DailyReadingsPage implements OnInit {
   ngOnInit() {
   }
 
-  trackByReading(index: number, reading: Readings): number {
+  trackByReading(index: number, reading: EnhancedReading): number {
     return reading.idNo || index;
   }
 
-  async openGateway(id: string | number | undefined, kiriyah: string) {
+  async openGateway(id: string | number | undefined, kiriyah: string, referenceOverride?: string) {
     if (id) {
-      console.log('Opening gateway for:', id, kiriyah);
+      console.log('Opening gateway for:', id, kiriyah, referenceOverride ? `with override: ${referenceOverride}` : '');
 
-      // Find the reading by ID
-      const reading = this.readings.find(r => r.idNo?.toString() === id?.toString());
-      if (!reading) {
-        console.error('Reading not found for ID:', id);
-        return;
-      }
+      // Use the override reference if provided, otherwise find the reading by ID
+      let reference = referenceOverride;
 
-      // Get the scripture reference based on the type
-      let reference = '';
-      switch (kiriyah) {
-        case 'torah':
-          reference = reading.torah;
-          break;
-        case 'prophets':
-          reference = reading.prophets;
-          break;
-        case 'writings':
-          reference = reading.writings;
-          break;
-        case 'britChadashah':
-          reference = reading.britChadashah;
-          break;
-        default:
-          console.error('Unknown kiriyah type:', kiriyah);
+      if (!reference) {
+        // Find the reading by ID
+        const reading = this.readings.find(r => r.idNo?.toString() === id?.toString());
+        if (!reading) {
+          console.error('Reading not found for ID:', id);
           return;
+        }
+
+        // Get the scripture reference based on the type
+        switch (kiriyah) {
+          case 'torah':
+            reference = reading.torah;
+            break;
+          case 'prophets':
+            reference = reading.prophets;
+            break;
+          case 'writings':
+            reference = reading.writings;
+            break;
+          case 'britChadashah':
+            reference = reading.britChadashah;
+            break;
+          default:
+            console.error('Unknown kiriyah type:', kiriyah);
+            return;
+        }
       }
 
       if (!reference) {
@@ -472,53 +504,20 @@ export class DailyReadingsPage implements OnInit {
     this.showSuccessMessage('Format reference test completed. Check console for results.');
   }
 
-  /**
-   * Regenerate database with corrected scripture references
+    /**
+   * Regenerate database with enhanced readings including haftarah and complete Torah readings for Sabbath
    */
   async regenerateDatabase() {
     try {
-      console.log('Regenerating database with corrected scripture references...');
+      console.log('🔄 Regenerating database with enhanced readings...');
 
-      // Generate readings for this week (7 days) to ensure we get today's reading
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - 1); // Start from yesterday to ensure we get today
-      const endDate = new Date();
-      endDate.setDate(endDate.getDate() + 7);
+      // Use the Firebase updater service to update Firebase
+      await this.firebaseUpdaterService.updateFirebaseWithEnhancedReadings();
 
-      const readings = this.parashahService.generateReadings(startDate, endDate);
+      // Reload readings
+      this.loadEnhancedReadings();
 
-      console.log('Generated readings:', readings);
-      console.log('Readings count:', readings.length);
-
-      // Debug: Check what dates were generated
-      const today = new Date();
-      const todayStr = today.toISOString().split('T')[0];
-      console.log('Today\'s date:', todayStr);
-      console.log('Generated dates:', readings.map(r => r.date));
-
-      // Check if today's reading exists
-      const todaysReading = readings.find(r => r.date === todayStr);
-      console.log('Today\'s reading found:', todaysReading ? 'YES' : 'NO');
-
-      if (readings.length === 0) {
-        this.showErrorMessage('No readings generated for this week. This might be because there are no parashah readings scheduled for this period.');
-        return;
-      }
-
-      // Clear existing readings
-      console.log('Clearing existing readings...');
-      await this.dataService.clearReadingsCollection();
-
-      // Upload new readings with scripture references
-      console.log('Uploading new readings to Firebase...');
-      await this.dataService.addReadings(readings);
-
-      this.showSuccessMessage(`Generated ${readings.length} readings for this week with corrected scripture references! The page will reload to show the updated readings.`);
-
-      // Reload the page to show the updated readings
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+      this.showSuccessMessage('Successfully updated Firebase database with enhanced readings including haftarah and complete Torah readings for Sabbath!');
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -792,6 +791,165 @@ export class DailyReadingsPage implements OnInit {
         console.log('🔍 Accessible modal created with passage:', passage.reference);
   }
 
+  testScriptureMapping() {
+    console.log('🧪 Testing scripture mapping...');
+
+    // Import the test function dynamically to avoid circular dependencies
+    import('../utils/test-scripture-mapping').then(module => {
+      const result = module.testScriptureMapping();
+
+      if (result.success) {
+        this.showSuccessMessage('Scripture mapping test completed successfully! Check console for details.');
+        console.log('📊 Test results:', result);
+      } else {
+        this.showErrorMessage(`Scripture mapping test failed: ${result.error}`);
+      }
+    }).catch(error => {
+      console.error('❌ Error importing test module:', error);
+      this.showErrorMessage('Failed to load test module');
+    });
+  }
+
+  downloadUpdatedDatabase() {
+    console.log('📁 Downloading updated database...');
+
+    import('../utils/test-scripture-mapping').then(module => {
+      const result = module.downloadUpdatedDatabase();
+
+      if (result.success) {
+        this.showSuccessMessage('Database file download initiated! Check your downloads folder.');
+        console.log('📁 Download result:', result);
+      } else {
+        this.showErrorMessage(`Database download failed: ${result.error}`);
+      }
+    }).catch(error => {
+      console.error('❌ Error importing download module:', error);
+      this.showErrorMessage('Failed to load download module');
+    });
+  }
+
+  showUpdatedDatabaseContent() {
+    console.log('📝 Showing updated database content...');
+
+    import('../utils/test-scripture-mapping').then(module => {
+      const result = module.showUpdatedDatabaseContent();
+
+      if (result.success) {
+        this.showSuccessMessage('Database content shown in console! Copy and replace the kriyah.ts file.');
+        console.log('📝 Content result:', result);
+      } else {
+        this.showErrorMessage(`Failed to show database content: ${result.error}`);
+      }
+    }).catch(error => {
+      console.error('❌ Error importing content module:', error);
+      this.showErrorMessage('Failed to load content module');
+    });
+  }
+
+  uploadToFirebase() {
+    console.log('🔥 Uploading to Firebase...');
+
+    import('../utils/test-scripture-mapping').then(async module => {
+      try {
+        const result = await module.uploadToFirebaseCollection(this.dataService);
+
+        if (result.success) {
+          this.showSuccessMessage(`Firebase upload successful! Uploaded ${result.uploadedCount} readings.`);
+          console.log('🔥 Firebase upload result:', result);
+
+          // Reload the readings after successful upload
+          this.loadEnhancedReadings();
+        } else {
+          this.showErrorMessage(`Firebase upload failed: ${result.error}`);
+        }
+      } catch (error) {
+        console.error('❌ Error in Firebase upload:', error);
+        this.showErrorMessage('Firebase upload failed');
+      }
+    }).catch(error => {
+      console.error('❌ Error importing Firebase module:', error);
+      this.showErrorMessage('Failed to load Firebase module');
+    });
+  }
+
+  testFixedFormat() {
+    console.log('🧪 Testing fixed database format...');
+
+    // Test the Pinchas readings with correct format
+    const testReferences = [
+      'NUM.25.10-NUM.25.18',
+      'NUM.26.1-NUM.26.11',
+      'NUM.26.12-NUM.26.34',
+      'NUM.26.35-NUM.26.51',
+      'NUM.26.52-NUM.26.65',
+      'NUM.27.1-NUM.27.11',
+      'NUM.27.12-NUM.27.23',
+      '1KG.18.46-1KG.19.21' // Test haftarah
+    ];
+
+    testReferences.forEach((ref, index) => {
+      console.log(`Day ${index + 1}: ${ref}`);
+      this.bibleApiService.getPassage(ref).subscribe({
+        next: (passage) => {
+          console.log(`✅ Success for ${ref}:`, passage);
+        },
+        error: (error) => {
+          console.log(`❌ Error for ${ref}:`, error);
+        }
+      });
+    });
+  }
+
+  fixAllDatabaseFormats() {
+    console.log('🔧 Starting comprehensive database format fix...');
+
+    this.fixAllDatabaseFormatsService.uploadFixedDatabaseToFirebase()
+      .then(() => {
+        console.log('✅ Successfully fixed all database formats and uploaded to Firebase!');
+        alert('Database formats fixed and uploaded to Firebase successfully!');
+      })
+      .catch((error) => {
+        console.error('❌ Error fixing database formats:', error);
+        alert('Error fixing database formats: ' + error.message);
+      });
+  }
+
+  testWithSpecificDate() {
+    console.log('🧪 Testing with specific date: 2025-07-25 (Pinchas Sabbath)');
+
+    // Create a test date for July 25, 2025 (Pinchas Sabbath)
+    const testDate = new Date('2025-07-25');
+    const testDateStr = formatDate(testDate, 'yyyy-MM-dd', 'en');
+    console.log('🔍 Test date formatted:', testDateStr);
+
+    // Use the Sabbath readings method instead of the regular date method
+    this.enhancedReadingsService.getEnhancedReadingsForDate(testDate).subscribe(res => {
+      console.log('🧪 Test readings for specific date:', res);
+      console.log('🧪 Test readings count:', res.length);
+
+      res.forEach((reading, index) => {
+        console.log(`🧪 Test Reading ${index}:`, {
+          id: reading.id,
+          idNo: reading.idNo,
+          date: reading.date,
+          isSabbath: reading.isSabbath,
+          torah: reading.torah,
+          prophets: reading.prophets,
+          haftarah: reading.haftarah,
+          haftarahReference: reading.haftarahReference
+        });
+      });
+
+      if (res.length > 0) {
+        this.readings = res;
+        this.isSabbath = res.some(reading => reading.isSabbath);
+        this.cd.detectChanges();
+        console.log('✅ Test readings loaded successfully');
+      } else {
+        console.log('❌ No test readings found for date:', testDateStr);
+      }
+    });
+  }
 
 
 }

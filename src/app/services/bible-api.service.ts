@@ -464,6 +464,12 @@ export class BibleApiService {
     let formatted = reference.trim();
     console.log('Original reference:', reference);
 
+    // If the reference is already in the correct format (e.g., "NUM.25.10-18"), return it as is
+    if (formatted.includes('.')) {
+      console.log('Reference already in correct format:', formatted);
+      return formatted;
+    }
+
     // Common book name mappings for api.bible
     const bookMappings: { [key: string]: string } = {
       'Genesis': 'Gen',

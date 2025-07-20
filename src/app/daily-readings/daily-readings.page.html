@@ -103,6 +103,10 @@
 <ion-button expand="block" color="danger" (click)="generateReadingsWithHebCal()">
   GENERATE READINGS WITH HEBCAL
 </ion-button>
+
+<ion-button expand="block" color="warning" (click)="testModalCreation()">
+  TEST MODAL CREATION
+</ion-button>
 <!-- <script type="text/javascript" charset="utf-8"
 src="../../components/date/heb-date-en.js"></script> -->
 <div *ngIf="readings.length === 0">
@@ -111,6 +115,11 @@ src="../../components/date/heb-date-en.js"></script> -->
 
 <!-- Sabbath Reading Display -->
 <div *ngFor="let reading of readings; trackBy: trackByReading">
+  <!-- Debug info -->
+  <div style="background: #1a1a1a; color: #ccc; padding: 5px; margin: 5px; font-size: 12px; border: 1px solid #333;">
+    Debug: Reading ID: {{reading.idNo}}, isSabbath: {{reading.isSabbath}}, Parashat: {{reading.parashat}}
+  </div>
+
   <div *ngIf="reading.isSabbath">
     <h3>Parshah: {{reading.parashat}}</h3>
     <span class="heb">{{reading.parashatHeb}}</span><br />
@@ -128,7 +137,7 @@ src="../../components/date/heb-date-en.js"></script> -->
     </div>
 
     <!-- Fallback if no weekReadings -->
-    <ion-item *ngIf="!reading.weekReadings || reading.weekReadings.length === 0" button="true" (click)="openGateway(reading.idNo, 'torah')">
+    <ion-item *ngIf="!reading.weekReadings || reading.weekReadings.length === 0" button="true" (click)="handleReadingClick($event, reading.idNo, 'torah')" style="cursor: pointer; pointer-events: auto;">
       <ion-label>
         <h4>Complete Torah Reading:</h4>
       </ion-label>
@@ -136,7 +145,7 @@ src="../../components/date/heb-date-en.js"></script> -->
     </ion-item>
 
     <!-- Haftarah Reading for Sabbath -->
-    <ion-item button="true" (click)="openGateway(reading.idNo, 'haftarah')">
+    <ion-item button="true" (click)="handleReadingClick($event, reading.idNo, 'haftarah')" style="cursor: pointer; pointer-events: auto;">
       <ion-label>
         <h4>Haftarah:</h4>
       </ion-label>
@@ -152,28 +161,28 @@ src="../../components/date/heb-date-en.js"></script> -->
     <span class="heb">{{reading.parashatHeb}}</span><br />
     {{reading.parashatEng}}
 
-    <ion-item button="true" (click)="openGateway(reading.idNo, 'torah')">
+    <ion-item button="true" (click)="handleReadingClick($event, reading.idNo, 'torah')" style="cursor: pointer; pointer-events: auto;">
       <ion-label>
         <h4>Torah:</h4>
       </ion-label>
       {{ reading.torah || 'No Torah reading available' }}
     </ion-item>
 
-    <ion-item button="true" (click)="openGateway(reading.idNo, 'writings')">
+    <ion-item button="true" (click)="handleReadingClick($event, reading.idNo, 'writings')" style="cursor: pointer; pointer-events: auto;">
       <ion-label>
         <h4>Ketuvium:</h4>
       </ion-label>
       {{ reading.writings || 'No Writings reading available' }}
     </ion-item>
 
-    <ion-item button="true" (click)="openGateway(reading.idNo, 'prophets')">
+    <ion-item button="true" (click)="handleReadingClick($event, reading.idNo, 'prophets')" style="cursor: pointer; pointer-events: auto;">
       <ion-label>
         <h4>Nevi'im:</h4>
       </ion-label>
       {{ reading.prophets || 'No Prophets reading available' }}
     </ion-item>
 
-    <ion-item button="true" (click)="openGateway(reading.idNo, 'britChadashah')">
+    <ion-item button="true" (click)="handleReadingClick($event, reading.idNo, 'britChadashah')" style="cursor: pointer; pointer-events: auto;">
       <ion-label>
         <h4>Brit Chadashah:</h4>
       </ion-label>

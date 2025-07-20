@@ -98,64 +98,159 @@ export class DailyReadingsPage implements OnInit {
   }
 
   async openGateway(id: string | number | undefined, kiriyah: string, referenceOverride?: string) {
+    console.log('🔍 openGateway called with:', { id, kiriyah, referenceOverride });
+
+    // If id is undefined, try to find the reading by other means
+    if (!id) {
+      console.log('🔍 No ID provided, using first reading as fallback');
+      if (this.readings.length > 0) {
+        const firstReading = this.readings[0];
+        id = firstReading.id || firstReading.idNo || 'fallback';
+        console.log('🔍 Using fallback ID:', id);
+      } else {
+        console.error('❌ No readings available for fallback');
+        return;
+      }
+    }
+
     if (id) {
-      console.log('Opening gateway for:', id, kiriyah, referenceOverride ? `with override: ${referenceOverride}` : '');
+      console.log('🔍 Opening gateway for:', id, kiriyah, referenceOverride ? `with override: ${referenceOverride}` : '');
 
       // Use the override reference if provided, otherwise find the reading by ID
       let reference = referenceOverride;
 
       if (!reference) {
-        // Find the reading by ID
-        const reading = this.readings.find(r => r.idNo?.toString() === id?.toString());
-        if (!reading) {
-          console.error('Reading not found for ID:', id);
-          return;
-        }
+        // Find the reading by ID - try both id and idNo properties
+        const reading = this.readings.find(r =>
+          (r.idNo?.toString() === id?.toString()) ||
+          (r.id?.toString() === id?.toString())
+        );
 
-        // Get the scripture reference based on the type
-        switch (kiriyah) {
-          case 'torah':
-            reference = reading.torah;
-            break;
-          case 'prophets':
-            reference = reading.prophets;
-            break;
-          case 'writings':
-            reference = reading.writings;
-            break;
-          case 'britChadashah':
-            reference = reading.britChadashah;
-            break;
-          case 'haftarah':
-            reference = reading.haftarah;
-            break;
-          default:
-            console.error('Unknown kiriyah type:', kiriyah);
+        if (!reading) {
+          console.error('❌ Reading not found for ID:', id);
+          console.log('🔍 Available readings:', this.readings.map(r => ({ id: r.id, idNo: r.idNo, parashat: r.parashat })));
+
+          // Use first reading as fallback
+          if (this.readings.length > 0) {
+            const fallbackReading = this.readings[0];
+            console.log('🔍 Using fallback reading:', fallbackReading);
+
+            // Get the scripture reference based on the type
+            switch (kiriyah) {
+              case 'torah':
+                reference = fallbackReading.torah;
+                break;
+              case 'prophets':
+                reference = fallbackReading.prophets;
+                break;
+              case 'writings':
+                reference = fallbackReading.writings;
+                break;
+              case 'britChadashah':
+                reference = fallbackReading.britChadashah;
+                break;
+              case 'haftarah':
+                reference = fallbackReading.haftarah;
+                break;
+              default:
+                console.error('❌ Unknown kiriyah type:', kiriyah);
+                return;
+            }
+          } else {
             return;
+          }
+        } else {
+          console.log('🔍 Found reading:', reading);
+
+          // Get the scripture reference based on the type
+          switch (kiriyah) {
+            case 'torah':
+              reference = reading.torah;
+              break;
+            case 'prophets':
+              reference = reading.prophets;
+              break;
+            case 'writings':
+              reference = reading.writings;
+              break;
+            case 'britChadashah':
+              reference = reading.britChadashah;
+              break;
+            case 'haftarah':
+              reference = reading.haftarah;
+              break;
+            default:
+              console.error('❌ Unknown kiriyah type:', kiriyah);
+              return;
+          }
         }
       }
+
+      console.log('🔍 Reference to fetch:', reference);
 
       if (!reference) {
-        console.error('No reference found for:', kiriyah);
+        console.error('❌ No reference found for:', kiriyah);
         return;
       }
+
+      console.log('🔍 About to call Bible API for reference:', reference);
 
       // Fetch the scripture passage from api.bible
       this.bibleApiService.getPassage(reference).subscribe({
         next: (passage) => {
+          console.log('🔍 Bible API response received:', passage);
           if (passage) {
+            console.log('🔍 About to display scripture passage');
             // Display the passage in a modal or alert
             this.displayScripturePassage(passage, kiriyah);
           } else {
-            console.error('Failed to fetch passage for:', reference);
+            console.error('❌ Failed to fetch passage for:', reference);
             this.showErrorMessage(`Unable to fetch scripture for ${reference}. Please check your internet connection and try again.`);
           }
         },
         error: (error) => {
-          console.error('Error fetching scripture:', error);
+          console.error('❌ Error fetching scripture:', error);
           this.showErrorMessage(`Error loading scripture for ${reference}. Please try again later.`);
         }
       });
+    }
+  }
+
+  /**
+   * Alternative click handler that bypasses aria-hidden issues
+   */
+  handleReadingClick(event: Event, id: string | number | undefined, kiriyah: string, referenceOverride?: string) {
+    console.log('🔍 handleReadingClick called:', { id, kiriyah, referenceOverride });
+
+    // Prevent event bubbling
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Force the click to work even with aria-hidden
+    console.log('🔍 Forcing click handler execution');
+
+    // Call the original openGateway method
+    this.openGateway(id, kiriyah, referenceOverride);
+  }
+
+  /**
+   * Test if modals can be created at all
+   */
+  testModalCreation() {
+    console.log('🧪 Testing modal creation...');
+
+    // Create a simple test passage
+    const testPassage: BiblePassage = {
+      reference: 'Test Reference',
+      text: 'This is a test passage to verify that modals can be created and displayed properly.',
+      verses: []
+    };
+
+    try {
+      this.displayScripturePassage(testPassage, 'test');
+      console.log('✅ Modal creation test completed');
+    } catch (error) {
+      console.error('❌ Modal creation test failed:', error);
     }
   }
 

@@ -551,27 +551,40 @@ export class BibleApiService {
 
     console.log('Formatted reference:', formatted);
 
-    // Ensure proper format (e.g., "Num 25:10-30")
-    const match = formatted.match(/^([A-Za-z]+)\s+(\d+):(\d+)(?:-(\d+))?$/);
-    if (!match) {
-      console.error('Invalid reference format after formatting:', formatted);
-      return null;
+    // Handle chapter ranges like "1Kgs 18:46-19:21"
+    const chapterRangeMatch = formatted.match(/^([A-Za-z]+)\s+(\d+):(\d+)-(\d+):(\d+)$/);
+    if (chapterRangeMatch) {
+      const book = chapterRangeMatch[1];
+      const startChapter = chapterRangeMatch[2];
+      const startVerse = chapterRangeMatch[3];
+      const endChapter = chapterRangeMatch[4];
+      const endVerse = chapterRangeMatch[5];
+
+      // Format as "Book.StartChapter.StartVerse-Book.EndChapter.EndVerse"
+      const result = `${book}.${startChapter}.${startVerse}-${book}.${endChapter}.${endVerse}`;
+      console.log('Chapter range format result:', result);
+      return result;
     }
 
-    // Convert to the format expected by the Bible API
-    // The API expects format like "Gen.1.1" or "Gen.1.1-5"
-    const book = match[1];
-    const chapter = match[2];
-    const verseStart = match[3];
-    const verseEnd = match[4];
+    // Handle verse ranges within same chapter like "Gen 1:1-5"
+    const verseRangeMatch = formatted.match(/^([A-Za-z]+)\s+(\d+):(\d+)(?:-(\d+))?$/);
+    if (verseRangeMatch) {
+      const book = verseRangeMatch[1];
+      const chapter = verseRangeMatch[2];
+      const verseStart = verseRangeMatch[3];
+      const verseEnd = verseRangeMatch[4];
 
-    if (verseEnd) {
-      // Range format: "Gen.1.1-Gen.1.5" (Book.Chapter.StartVerse-Book.Chapter.EndVerse)
-      return `${book}.${chapter}.${verseStart}-${book}.${chapter}.${verseEnd}`;
-    } else {
-      // Single verse format: "Gen.1.1"
-      return `${book}.${chapter}.${verseStart}`;
+      if (verseEnd) {
+        // Range format: "Book.Chapter.StartVerse-Book.Chapter.EndVerse"
+        return `${book}.${chapter}.${verseStart}-${book}.${chapter}.${verseEnd}`;
+      } else {
+        // Single verse format: "Book.Chapter.Verse"
+        return `${book}.${chapter}.${verseStart}`;
+      }
     }
+
+    console.error('Invalid reference format after formatting:', formatted);
+    return null;
   }
 
   /**

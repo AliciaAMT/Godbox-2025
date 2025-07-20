@@ -243,7 +243,15 @@ export class DailyReadingsPage implements OnInit {
     `;
 
     const title = document.createElement('h2');
-    title.textContent = `${type.charAt(0).toUpperCase() + type.slice(1)} Reading`;
+    let displayTitle = type.charAt(0).toUpperCase() + type.slice(1);
+    if (type === 'britChadashah') {
+      displayTitle = 'Brit Chadashah';
+    } else if (type === 'prophets') {
+      displayTitle = 'Nevi\'im';
+    } else if (type === 'writings') {
+      displayTitle = 'Ketuvim';
+    }
+    title.textContent = `${displayTitle} Reading`;
     title.style.cssText = `
       color: #ffffff;
       margin: 0;
@@ -379,7 +387,6 @@ export class DailyReadingsPage implements OnInit {
     const date = new Date(year, month - 1, day); // month is 0-indexed
     const dayOfWeek = date.getDay();
     const isSabbath = dayOfWeek === 6; // Saturday
-    console.log(`🔍 isSabbath check for ${reading.date}: parsed date=${date.toDateString()}, dayOfWeek=${dayOfWeek}, isSabbath=${isSabbath}`);
     return isSabbath;
   }
 

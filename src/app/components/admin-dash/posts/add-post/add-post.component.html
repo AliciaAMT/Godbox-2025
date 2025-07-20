@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Post</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-fab vertical="top" horizontal="start" slot="fixed">
+    <ion-fab-button routerLink="/admin-dash/posts">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <h2 class="ion-text-center">Create Post</h2>
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeLg="6" offsetLg="3" sizeMd="8" offsetMd="2" sizeSm="10" offsetSm="1">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title class="ion-text-center">
+              Create Post
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-item class="ion-padding">
+              <ion-label position="stacked">Title</ion-label>
+              <ion-input [(ngModel)]="post.title"></ion-input>
+            </ion-item>
+            <ion-item class="ion-padding">
+              <ion-label position="stacked">Description</ion-label>
+              <ion-textarea [(ngModel)]="post.description"></ion-textarea>
+            </ion-item>
+            <ion-item class="ion-padding">
+              <ion-label position="stacked">Category</ion-label>
+              <ion-select [(ngModel)]="post.category" [multiple]="true">
+                <ion-select-option *ngFor="let category of categories" value="{{ category.categoryName }}">{{ category.categoryName }}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item class="ion-padding">
+              <ion-label position="stacked">Privacy</ion-label>
+              <ion-select [(ngModel)]="post.privacy">
+                <ion-select-option value="public">Public</ion-select-option>
+                <ion-select-option value="private">Private</ion-select-option>
+                <ion-select-option value="anonymous">Anonymous</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item class="ion-padding">
+              <ion-label position="stacked">Keywords</ion-label>
+              <ion-textarea [(ngModel)]="post.keywords"></ion-textarea>
+            </ion-item>
+            <ion-item class="ion-padding">
+              <ion-label position="stacked">Preview</ion-label>
+              <ion-textarea [(ngModel)]="post.preview" rows="4"></ion-textarea>
+            </ion-item>
+            <ion-item class="ion-padding">
+              <ion-label position="stacked">Content</ion-label>
+              <ion-textarea [(ngModel)]="post.content" rows="8"></ion-textarea>
+            </ion-item>
+            <ion-button expand="block" color="success" (click)="addPost()">
+              <ion-icon name="save" slot="start"></ion-icon>
+              Post
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

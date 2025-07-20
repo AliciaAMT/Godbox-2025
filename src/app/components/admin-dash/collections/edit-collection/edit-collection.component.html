@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Edit Collection</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-fab vertical="top" horizontal="start" slot="fixed">
+    <ion-fab-button routerLink="/admin-dash/collections">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <h2 class="ion-text-center">Edit Collection</h2>
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeSm="4" offsetSm="4">
+        <ion-card *ngIf="serie">
+          <ion-card-header>
+            <ion-card-title>
+              <h4 class="ion-text-center">Edit Collection</h4>
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content *ngIf="serie">
+            <ion-item>
+              <ion-label position="stacked"><h5>Name</h5></ion-label>
+              <ion-input [(ngModel)]="serie.serieName"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked"><h5>Privacy</h5></ion-label>
+              <ion-select [(ngModel)]="serie.privacy">
+                <ion-select-option value="public">Public</ion-select-option>
+                <ion-select-option value="private">Private</ion-select-option>
+                <ion-select-option value="anonymous">Anonymous</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-sm="4" offset-sm="4">
+        <ion-button expand="block" color="success" (click)="updateSerie()">
+          <ion-icon name="save" slot="start"></ion-icon>
+          Update
+        </ion-button>
+        <ion-button expand="block" color="danger" (click)="deleteSerie()">
+          <ion-icon name="trash" slot="start"></ion-icon>
+          Delete
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

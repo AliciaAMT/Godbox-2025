@@ -55,6 +55,76 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'admin-dash/categories',
+    loadComponent: () => import('./components/admin-dash/categories/categories.component').then(m => m.CategoriesComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dash/categories/edit-category/:id',
+    loadComponent: () => import('./components/admin-dash/categories/edit-category/edit-category.component').then(m => m.EditCategoryComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dash/posts',
+    loadComponent: () => import('./components/admin-dash/posts/posts.component').then(m => m.PostsComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dash/posts/add-post',
+    loadComponent: () => import('./components/admin-dash/posts/add-post/add-post.component').then(m => m.AddPostComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dash/posts/edit-post/:id',
+    loadComponent: () => import('./components/admin-dash/posts/edit-post/edit-post.component').then(m => m.EditPostComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dash/posts/view-post/:id',
+    loadComponent: () => import('./components/admin-dash/posts/view-post/view-post.component').then(m => m.ViewPostComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dash/collections',
+    loadComponent: () => import('./components/admin-dash/collections/collections.component').then(m => m.CollectionsComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dash/collections/edit-collection/:id',
+    loadComponent: () => import('./components/admin-dash/collections/edit-collection/edit-collection.component').then(m => m.EditCollectionComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dash/notes',
+    loadComponent: () => import('./components/admin-dash/notes/notes.component').then(m => m.NotesComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dash/notes/edit-note/:id',
+    loadComponent: () => import('./components/admin-dash/notes/edit-note/edit-note.component').then(m => m.EditNoteComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dash/comments',
+    loadComponent: () => import('./components/admin-dash/comments/comments.component').then(m => m.CommentsComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dash/archive',
+    loadComponent: () => import('./components/admin-dash/archive/archive.component').then(m => m.ArchiveComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dash/users',
+    loadComponent: () => import('./components/admin-dash/users/users.component').then(m => m.UsersComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dash/users/view-user/:id',
+    loadComponent: () => import('./components/admin-dash/users/view-user/view-user.component').then(m => m.ViewUserComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'sabbath-test',
     loadComponent: () => import('./components/sabbath-readings-test/sabbath-readings-test.component').then(m => m.SabbathReadingsTestComponent)
   },

@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Collections</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-text-center">
+  <ion-fab vertical="top" horizontal="start" slot="fixed">
+    <ion-fab-button routerLink="/admin-dash">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <h2>Collections</h2>
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeSm="4" offsetSm="4">
+        <ion-list>
+          <ion-item *ngFor="let serie of series" [routerLink]="['/admin-dash/collections/edit-collection', serie.id]" router-direction="forward">
+            <ion-label>
+              <h2>{{serie.serieName}}</h2>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addSeries()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

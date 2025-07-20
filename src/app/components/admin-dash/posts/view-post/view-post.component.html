@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>View Post</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-fab vertical="top" horizontal="start" slot="fixed">
+    <ion-fab-button routerLink="/admin-dash/posts">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <h2 class="ion-text-center">View Post</h2>
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeLg="6" offsetLg="3" sizeMd="8" offsetMd="2" sizeSm="10" offsetSm="1">
+        <ion-card *ngIf="post">
+          <ion-card-header>
+            <ion-card-title>
+              <h4 class="ion-text-center">{{ post.title }}</h4>
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p><strong>Author:</strong> {{ getUserName(post.author) }}</p>
+            <p><strong>Date:</strong> {{ post.date | date }}</p>
+            <p><strong>Category:</strong> {{ post.category }}</p>
+            <p><strong>Privacy:</strong> {{ post.privacy }}</p>
+            <p><strong>Description:</strong> {{ post.description }}</p>
+            <p><strong>Keywords:</strong> {{ post.keywords }}</p>
+            <p><strong>Preview:</strong> {{ post.preview }}</p>
+            <div [innerHTML]="post.content"></div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-sm="4" offset-sm="4">
+        <ion-button expand="block" color="primary" [routerLink]="['/admin-dash/posts/edit-post', post?.id]">
+          <ion-icon name="create" slot="start"></ion-icon>
+          Edit Post
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

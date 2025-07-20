@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Users</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-text-center">
+  <ion-fab vertical="top" horizontal="start" slot="fixed">
+    <ion-fab-button routerLink="/admin-dash">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <h2>Users</h2>
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeSm="4" offsetSm="4">
+        <ion-list>
+          <ion-item *ngFor="let user of users" [routerLink]="['/admin-dash/users/view-user', user.id]" router-direction="forward">
+            <ion-label>
+              <h2>{{user.userName}}</h2>
+              <p>{{user.email}}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -23,7 +23,7 @@
 
   <div class="preview" *ngIf="profile?.id !== user?.id">
     <ion-avatar>
-      <img *ngIf="user?.imageUrl; else placeholder_avatar;" [src]="user?.imageUrl" [alt]="user?.userName || 'Profile Picture'">
+      <img *ngIf="user.imageUrl; else placeholder_avatar;" [src]="user.imageUrl" [alt]="user.userName || 'Profile Picture'">
       <ng-template #placeholder_avatar>
         <div class="fallback">
           <p>Select avatar</p>
@@ -32,7 +32,7 @@
     </ion-avatar>
   </div>
 
-  <h3 class="ion-text-center" *ngIf="user?.userName">{{ user?.userName }}</h3>
+  <h3 class="ion-text-center" *ngIf="user.userName">{{ user.userName }}</h3>
 
   <ion-grid>
     <ion-row>

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { QuillModule } from 'ngx-quill';
 import { IonicModule } from '@ionic/angular';
-import { QuillConfig } from '../../utils/quill-config';
 
 @Component({
   selector: 'app-quill-editor-simple',
@@ -17,13 +16,8 @@ import { QuillConfig } from '../../utils/quill-config';
         [placeholder]="placeholder"
         [theme]="theme"
         [readOnly]="readOnly"
-        [formats]="formats"
         (onEditorCreated)="onEditorCreated($event)"
-        (onContentChanged)="onContentChanged($event)"
-        (onSelectionChanged)="onSelectionChanged($event)"
-        (onTextChange)="onTextChange($event)"
-        (onEditorBlur)="onEditorBlur($event)"
-        (onEditorFocus)="onEditorFocus($event)">
+        (onTextChange)="onTextChange($event)">
       </quill-editor>
     </div>
   `,
@@ -34,15 +28,16 @@ import { QuillConfig } from '../../utils/quill-config';
 
     /* Custom Quill styling for dark theme compatibility */
     ::ng-deep .ql-editor {
-      background: var(--ion-color-light);
-      color: var(--ion-color-dark);
-      min-height: 200px;
+      background: var(--ion-color-dark);
+      color: var(--ion-color-light);
+      min-height: 150px;
       border-radius: 8px;
       padding: 16px;
+      border: 1px solid var(--ion-color-medium);
     }
 
     ::ng-deep .ql-toolbar {
-      background: var(--ion-color-light-shade);
+      background: var(--ion-color-dark-shade);
       border: 1px solid var(--ion-color-medium);
       border-radius: 8px 8px 0 0;
     }
@@ -53,21 +48,9 @@ import { QuillConfig } from '../../utils/quill-config';
       border-radius: 0 0 8px 8px;
     }
 
-    /* Dark theme adjustments */
-    @media (prefers-color-scheme: dark) {
-      ::ng-deep .ql-editor {
-        background: var(--ion-color-dark);
-        color: var(--ion-color-light);
-      }
-
-      ::ng-deep .ql-toolbar {
-        background: var(--ion-color-dark-shade);
-        border-color: var(--ion-color-medium);
-      }
-
-      ::ng-deep .ql-container {
-        border-color: var(--ion-color-medium);
-      }
+    ::ng-deep .ql-editor.ql-blank::before {
+      color: var(--ion-color-medium);
+      font-style: italic;
     }
   `]
 })
@@ -76,46 +59,26 @@ export class QuillEditorSimpleComponent implements OnInit, OnDestroy {
   @Input() placeholder: string = 'Write something great...';
   @Input() theme: 'snow' | 'bubble' = 'snow';
   @Input() readOnly: boolean = false;
-  @Input() formats: string[] = [
-    'bold', 'italic', 'underline', 'strike',
-    'blockquote', 'code-block', 'list', 'bullet',
-    'link', 'clean'
-  ];
-  @Input() toolbarOptions: any[] = [
-    ['bold', 'italic', 'underline', 'strike'],
-    ['blockquote', 'code-block'],
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    [{ 'script': 'sub'}, { 'script': 'super' }],
-    [{ 'indent': '-1'}, { 'indent': '+1' }],
-    [{ 'direction': 'rtl' }],
-    [{ 'size': ['small', false, 'large', 'huge'] }],
-    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-    [{ 'color': [] }, { 'background': [] }],
-    [{ 'font': [] }],
-    [{ 'align': [] }],
-    ['clean'],
-    ['link']
-  ];
 
   @Output() contentChange = new EventEmitter<string>();
   @Output() editorCreated = new EventEmitter<any>();
-  @Output() contentChanged = new EventEmitter<any>();
-  @Output() selectionChanged = new EventEmitter<any>();
   @Output() textChange = new EventEmitter<any>();
-  @Output() editorBlur = new EventEmitter<any>();
-  @Output() editorFocus = new EventEmitter<any>();
 
   modules: any = {};
 
   constructor(private ngZone: NgZone) {}
 
   ngOnInit() {
-    // Get base modules from config
-    const baseModules = QuillConfig.getModules(this.ngZone);
-
+    // Simple modules configuration without complex handlers
     this.modules = {
-      ...baseModules,
-      toolbar: this.toolbarOptions
+      toolbar: [
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'header': [1, 2, 3, false] }],
+        ['link'],
+        ['clean']
+      ]
     };
   }
 
@@ -125,28 +88,19 @@ export class QuillEditorSimpleComponent implements OnInit, OnDestroy {
 
   onEditorCreated(editor: any) {
     // Handle Zone.js issues
-    QuillConfig.handleZoneJSIssues(editor, this.ngZone);
+    if (editor && editor.emit) {
+      const originalEmit = editor.emit;
+      editor.emit = (eventName: string, ...args: any[]) => {
+        this.ngZone.run(() => {
+          originalEmit.call(editor, eventName, ...args);
+        });
+      };
+    }
     this.editorCreated.emit(editor);
-  }
-
-  onContentChanged(delta: any) {
-    this.contentChanged.emit(delta);
-  }
-
-  onSelectionChanged(range: any) {
-    this.selectionChanged.emit(range);
   }
 
   onTextChange(delta: any) {
     this.textChange.emit(delta);
     this.contentChange.emit(this.content);
-  }
-
-  onEditorBlur(editor: any) {
-    this.editorBlur.emit(editor);
-  }
-
-  onEditorFocus(editor: any) {
-    this.editorFocus.emit(editor);
   }
 }

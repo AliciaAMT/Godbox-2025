@@ -55,15 +55,7 @@ export class ProfilePage implements OnInit {
     bio: ''
   };
 
-  // Quill editor configuration for bio
-  bioToolbarOptions = [
-    ['bold', 'italic', 'underline'],
-    ['blockquote', 'code-block'],
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    [{ 'header': [1, 2, 3, false] }],
-    ['link'],
-    ['clean']
-  ];
+
 
   constructor(
     private avatarService: AvatarService,

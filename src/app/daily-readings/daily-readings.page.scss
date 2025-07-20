@@ -1,0 +1,22 @@
+// Styling for superscript verse numbers in scripture passages
+sup {
+  font-size: 0.7em;
+  vertical-align: super;
+  line-height: 0;
+  color: #4CAF50;
+  font-weight: 600;
+  margin-right: 3px;
+  position: relative;
+  top: -0.2em;
+}
+
+// Ensure proper spacing around superscript numbers
+sup + span {
+  margin-left: 2px;
+}
+
+// Additional styling for scripture content to ensure proper text flow
+.scripture-content sup {
+  display: inline-block;
+  font-family: inherit;
+}

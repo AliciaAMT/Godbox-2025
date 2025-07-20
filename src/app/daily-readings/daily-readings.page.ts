@@ -309,13 +309,41 @@ export class DailyReadingsPage implements OnInit {
     `;
 
     const content = document.createElement('div');
-    content.innerHTML = passage.content || passage.text || '';
+    content.className = 'scripture-content';
+
+    // Debug: Log the raw content to see what format the verse numbers are in
+    console.log('Raw passage content:', passage.content);
+    console.log('Raw passage text:', passage.text);
+
+    // Format the content with superscript verse numbers
+    const formattedContent = this.formatVerseNumbers(passage.content || passage.text || '');
+    console.log('Formatted content:', formattedContent);
+
+    content.innerHTML = formattedContent;
     content.style.cssText = `
       line-height: 1.8;
       color: #e0e0e0;
       font-size: 16px;
       text-align: left;
     `;
+
+    // Add CSS styles for superscript verse numbers directly to the modal
+    const style = document.createElement('style');
+    style.textContent = `
+      .scripture-content sup {
+        font-size: 0.7em;
+        vertical-align: super;
+        line-height: 0;
+        color: #4CAF50;
+        font-weight: 600;
+        margin-right: 3px;
+        position: relative;
+        top: -0.2em;
+        display: inline-block;
+        font-family: inherit;
+      }
+    `;
+    modalContent.appendChild(style);
 
     // Assemble the modal
     header.appendChild(title);
@@ -372,6 +400,29 @@ export class DailyReadingsPage implements OnInit {
     setTimeout(() => {
       closeButton.focus();
     }, 100);
+  }
+
+          /**
+   * Format verse numbers as superscript in the scripture text
+   */
+  private formatVerseNumbers(text: string): string {
+    if (!text) return '';
+
+    console.log('Formatting verse numbers in text:', text.substring(0, 200));
+
+    // The Bible API returns verse numbers in <span class="v"> tags
+    // We need to convert these to superscript format
+    let formatted = text;
+
+    // Convert <span class="v">number</span> to <sup>number</sup>
+    formatted = formatted.replace(/<span[^>]*class="v"[^>]*>(\d+)<\/span>/g, '<sup>$1</sup>');
+
+    // Also handle any other span tags with data-number attribute
+    formatted = formatted.replace(/<span[^>]*data-number="[^"]*"[^>]*>(\d+)<\/span>/g, '<sup>$1</sup>');
+
+    console.log('Formatted result:', formatted.substring(0, 200));
+
+    return formatted;
   }
 
   private showErrorMessage(message: string) {

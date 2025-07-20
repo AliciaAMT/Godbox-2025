@@ -75,8 +75,14 @@ export class PostsComponent implements OnInit, OnDestroy {
         console.log('Posts loaded:', posts);
         console.log(`Updating UI with ${posts.length} posts`);
 
-        // Update the posts array
-        this.posts = [...posts];
+        // Sort posts by date (newest first) and update the posts array
+        const sortedPosts = posts.sort((a, b) => {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          return dateB.getTime() - dateA.getTime(); // Newest first
+        });
+
+        this.posts = [...sortedPosts];
         this.loading = false;
 
         // Force change detection

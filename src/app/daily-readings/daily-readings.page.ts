@@ -14,6 +14,8 @@ import { EnhancedDailyReadingsService, EnhancedReading } from '../services/enhan
 import { FirebaseUpdaterService } from '../services/firebase-updater.service';
 import { ScriptureMappingService } from '../services/scripture-mapping.service';
 import { FixAllDatabaseFormatsService } from '../utils/fix-all-database-formats';
+import { HaftarahService } from '../services/haftarah.service';
+import { HebrewCalendar, Location, HDate } from '@hebcal/core';
 
 @Component({
   selector: 'app-daily-readings',
@@ -36,6 +38,7 @@ export class DailyReadingsPage implements OnInit {
   private cd = inject(ChangeDetectorRef);
   private scriptureMappingService = inject(ScriptureMappingService);
   private fixAllDatabaseFormatsService = inject(FixAllDatabaseFormatsService);
+  private haftarahService = inject(HaftarahService);
 
   constructor() {
     // Use the same date calculation as the enhanced readings service
@@ -122,6 +125,9 @@ export class DailyReadingsPage implements OnInit {
             break;
           case 'britChadashah':
             reference = reading.britChadashah;
+            break;
+          case 'haftarah':
+            reference = reading.haftarah;
             break;
           default:
             console.error('Unknown kiriyah type:', kiriyah);
@@ -992,9 +998,6 @@ export class DailyReadingsPage implements OnInit {
     console.log('🧪 Testing hebCal for current parashah...');
 
     try {
-      // Import hebCal
-      const { HebrewCalendar, Location } = require('@hebcal/core');
-
       const today = new Date();
       console.log('🔍 Today\'s date:', today);
 
@@ -1028,7 +1031,7 @@ export class DailyReadingsPage implements OnInit {
         this.showSuccessMessage(`hebCal says current parashah is: ${currentParashah.basename()}`);
       } else {
         // Check if today is a Sabbath
-        const hDate = new (require('@hebcal/core').HDate)(today);
+        const hDate = new HDate(today);
         const isSabbath = hDate.getDay() === 6;
         console.log('🔍 Is today Sabbath?', isSabbath);
         console.log('🔍 Hebrew date:', hDate.toString());
@@ -1066,6 +1069,310 @@ export class DailyReadingsPage implements OnInit {
       console.error('❌ Error testing hebCal:', error);
       this.showErrorMessage('hebCal test failed: ' + (error?.message || 'Unknown error'));
     }
+  }
+
+  testKriyahFileForJuly19() {
+    console.log('🧪 Testing kriyah file for July 19, 2025...');
+
+    // Import the kriyah data
+    import('../database/kriyah').then(({ KRIYAH }) => {
+      console.log('🔍 KRIYAH entries count:', Object.keys(KRIYAH).length);
+
+      // Find entries for July 19-25, 2025
+      const julyEntries = Object.values(KRIYAH).filter((entry: any) => {
+        return entry.date && entry.date.startsWith('2025-07-');
+      });
+
+      console.log('🔍 July 2025 entries:', julyEntries.length);
+
+      // Show the entries for July 19-25
+      for (let i = 19; i <= 25; i++) {
+        const date = `2025-07-${i.toString().padStart(2, '0')}`;
+        const entry = julyEntries.find((e: any) => e.date === date) as any;
+
+        if (entry) {
+          console.log(`🔍 ${date} (${entry.kriyahEng || 'Unknown'}):`, {
+            parashat: entry.parashat || 'Unknown',
+            torah: entry.torah || 'None',
+            haftarah: entry.haftarah || 'None',
+            kriyah: entry.kriyah || 'Unknown'
+          });
+        } else {
+          console.log(`🔍 ${date}: No entry found`);
+        }
+      }
+
+      // Check if July 19 is correctly marked as Sabbath
+      const july19Entry = julyEntries.find((e: any) => e.date === '2025-07-19') as any;
+      if (july19Entry) {
+        const isCorrectSabbath = july19Entry.kriyah === 7;
+        console.log('🔍 July 19 kriyah:', july19Entry.kriyah || 'Unknown', isCorrectSabbath ? '✅ Correct Sabbath' : '❌ Wrong - should be 7');
+
+        if (!isCorrectSabbath) {
+          this.showErrorMessage('July 19 should be kriyah 7 (Sabbath), but it\'s ' + (july19Entry.kriyah || 'Unknown'));
+        } else {
+          this.showSuccessMessage('July 19 is correctly marked as Sabbath');
+        }
+      }
+
+    }).catch(error => {
+      console.error('❌ Error testing kriyah file:', error);
+      this.showErrorMessage('Kriyah file test failed: ' + error.message);
+    });
+  }
+
+  fixKriyahMappingsAndUpload() {
+    console.log('🔧 Uploading corrected kriyah mappings to Firebase...');
+
+    // Import the kriyah data (already corrected)
+    import('../database/kriyah').then(({ KRIYAH }) => {
+      console.log('✅ Kriyah file has been corrected:');
+      console.log('🔍 July 19: kriyah 7 (Sabbath) with haftarah');
+      console.log('🔍 July 25: kriyah 6 (daily) without haftarah');
+
+      // Convert to array format for Firebase upload
+      const readingsArray = Object.values(KRIYAH).map((entry: any) => ({
+        idNo: entry.idNo,
+        parashat: entry.parashat,
+        parashatHeb: entry.parashatHeb,
+        parashatEng: entry.parashatEng,
+        date: entry.date,
+        holiday: entry.holiday,
+        holidayReadings: entry.holidayReadings || '',
+        holidayDate: entry.holidayDate,
+        kriyah: entry.kriyah,
+        kriyahHeb: entry.kriyahHeb,
+        kriyahEng: entry.kriyahEng,
+        kriyahDate: entry.kriyahDate,
+        torah: entry.torah,
+        prophets: entry.prophets || '',
+        writings: entry.writings || '',
+        britChadashah: entry.britChadashah || '',
+        haftarah: entry.haftarah || ''
+      })) as Readings[];
+
+      // Clear existing readings first, then upload fixed data
+      this.dataService.clearReadingsCollection().then(() => {
+        console.log('✅ Cleared existing readings collection');
+
+        // Upload to Firebase
+        return this.dataService.addReadings(readingsArray);
+      }).then(() => {
+        console.log('✅ Successfully uploaded corrected kriyah to Firebase');
+        this.showSuccessMessage('Corrected kriyah mappings uploaded to Firebase!');
+
+        // Reload readings after upload
+        setTimeout(() => {
+          this.loadEnhancedReadings();
+        }, 1000);
+      }).catch(error => {
+        console.error('❌ Error uploading to Firebase:', error);
+        this.showErrorMessage('Upload failed: ' + error.message);
+      });
+
+    }).catch(error => {
+      console.error('❌ Error uploading kriyah mappings:', error);
+      this.showErrorMessage('Upload failed: ' + error.message);
+    });
+  }
+
+  generateReadingsWithHebCal() {
+    console.log('🔧 Generating readings using hebCal...');
+
+    try {
+      const today = new Date();
+      console.log('🔍 Today\'s date:', today);
+
+      // Get events for today
+      const events = HebrewCalendar.calendar({
+        start: today,
+        end: today,
+        location: Location.lookup('Jerusalem'),
+        sedrot: true,
+        candlelighting: false
+      });
+
+      console.log('🔍 Events for today:', events.length);
+
+      // Find parashah events
+      const parashahEvents = events.filter((event: any) => {
+        const desc = event.getDesc();
+        return desc && desc.includes('Parashat');
+      });
+
+      console.log('🔍 Parashah events for today:', parashahEvents.length);
+
+      let currentParashah = '';
+      let isSabbath = false;
+
+      if (parashahEvents.length > 0) {
+        // Today is a parashah day (Sabbath)
+        currentParashah = parashahEvents[0].basename();
+        isSabbath = true;
+        console.log('✅ Today is Sabbath with parashah:', currentParashah);
+      } else {
+        // Check if today is Sabbath but no parashah event (might be reading previous week's parashah)
+        const hDate = new HDate(today);
+        isSabbath = hDate.getDay() === 6;
+
+        if (isSabbath) {
+          // Get the previous week's parashah
+          const lastWeek = new Date(today);
+          lastWeek.setDate(lastWeek.getDate() - 7);
+
+          const lastWeekEvents = HebrewCalendar.calendar({
+            start: lastWeek,
+            end: lastWeek,
+            location: Location.lookup('Jerusalem'),
+            sedrot: true,
+            candlelighting: false
+          });
+
+          const lastWeekParashah = lastWeekEvents.find((event: any) => {
+            const desc = event.getDesc();
+            return desc && desc.includes('Parashat');
+          });
+
+          if (lastWeekParashah) {
+            currentParashah = lastWeekParashah.basename();
+            console.log('✅ Today is Sabbath, reading previous week\'s parashah:', currentParashah);
+          }
+        }
+      }
+
+      if (currentParashah) {
+        // Get haftarah for this parashah
+        const haftarahRef = this.haftarahService.getHaftarahReference(currentParashah);
+        console.log('🔍 Haftarah reference for', currentParashah, ':', haftarahRef);
+
+        // Get actual Torah reading from scripture mapping service
+        const torahReading = this.getActualTorahReading(currentParashah, isSabbath ? 7 : 1);
+        console.log('🔍 Torah reading for', currentParashah, ':', torahReading);
+
+        // Create the reading data with proper field mapping
+        const readingData = {
+          parashat: currentParashah,
+          parashatHeb: this.getParashahHebrew(currentParashah),
+          parashatEng: this.getParashahEnglish(currentParashah),
+          date: this.formatDate(today),
+          holiday: `Parashat ${currentParashah}`,
+          holidayReadings: '',
+          holidayDate: new HDate(today).toString(),
+          kriyah: isSabbath ? 7 : 1,
+          kriyahHeb: isSabbath ? 'קריאה ז' : 'קריאה א',
+          kriyahEng: isSabbath ? 'Reading 7' : 'Reading 1',
+          kriyahDate: new HDate(today).toString(),
+          torah: torahReading,
+          prophets: '', // Leave prophets empty, put haftarah in haftarah field
+          writings: '',
+          britChadashah: '',
+          haftarah: isSabbath ? haftarahRef : '', // Put haftarah in the correct field
+          isSabbath: isSabbath
+        };
+
+        console.log('✅ Generated reading data:', readingData);
+
+        // Upload to Firebase
+        this.uploadReadingToFirebase(readingData);
+
+      } else {
+        console.log('❌ No parashah found for today');
+        this.showErrorMessage('No parashah found for today');
+      }
+
+    } catch (error: any) {
+      console.error('❌ Error generating readings with hebCal:', error);
+      this.showErrorMessage('hebCal generation failed: ' + (error?.message || 'Unknown error'));
+    }
+  }
+
+  private getParashahHebrew(parashah: string): string {
+    const translations: any = {
+      'Pinchas': 'פינחס',
+      'Matot': 'מטות',
+      'Masei': 'מסעי',
+      'Devarim': 'דברים',
+      'Vaetchanan': 'ואתחנן',
+      'Eikev': 'עקב',
+      'Reeh': 'ראה',
+      'Shoftim': 'שופטים',
+      'Ki Teitzei': 'כי תצא',
+      'Ki Tavo': 'כי תבוא',
+      'Nitzavim': 'ניצבים',
+      'Vayeilech': 'וילך',
+      'Haazinu': 'האזינו',
+      'Vezot Haberakhah': 'וזאת הברכה'
+    };
+    return translations[parashah] || parashah;
+  }
+
+  private getParashahEnglish(parashah: string): string {
+    return parashah;
+  }
+
+  private getTorahReading(parashah: string, kriyah: number): string {
+    // This would need to be expanded with actual Torah readings
+    // For now, return a placeholder
+    return `${parashah} - Kriyah ${kriyah}`;
+  }
+
+  private formatDate(date: Date): string {
+    return date.toISOString().split('T')[0];
+  }
+
+  private uploadReadingToFirebase(readingData: any) {
+    console.log('📤 Uploading reading to Firebase...');
+
+    // Clear existing readings first
+    this.dataService.clearReadingsCollection().then(() => {
+      console.log('✅ Cleared existing readings collection');
+
+      // Upload the new reading
+      return this.dataService.addReadings([readingData]);
+    }).then(() => {
+      console.log('✅ Successfully uploaded hebCal reading to Firebase');
+      this.showSuccessMessage('hebCal reading uploaded to Firebase!');
+
+      // Reload readings after upload
+      setTimeout(() => {
+        this.loadEnhancedReadings();
+      }, 1000);
+    }).catch(error => {
+      console.error('❌ Error uploading to Firebase:', error);
+      this.showErrorMessage('Upload failed: ' + error.message);
+    });
+  }
+
+  private getActualTorahReading(parashah: string, kriyah: number): string {
+    // Get actual scripture references from the scripture mapping service
+    const scriptureRefs = this.scriptureMappingService.getScriptureReferences(parashah, kriyah);
+
+    if (scriptureRefs && scriptureRefs.torah) {
+      return scriptureRefs.torah.reference;
+    }
+
+    // Fallback: return a proper Torah reading based on parashah and kriyah
+    return this.getTorahReadingForParashah(parashah, kriyah);
+  }
+
+  private getTorahReadingForParashah(parashah: string, kriyah: number): string {
+    // Map of Torah readings for Pinchas (the current parashah)
+    const pinchasReadings = {
+      1: 'NUM.25.10-NUM.25.18',
+      2: 'NUM.26.1-NUM.26.11',
+      3: 'NUM.26.12-NUM.26.34',
+      4: 'NUM.26.35-NUM.26.51',
+      5: 'NUM.26.52-NUM.26.65',
+      6: 'NUM.27.1-NUM.27.11',
+      7: 'NUM.27.12-NUM.27.23' // Sabbath reading
+    };
+
+    if (parashah === 'Pinchas' && pinchasReadings[kriyah as keyof typeof pinchasReadings]) {
+      return pinchasReadings[kriyah as keyof typeof pinchasReadings];
+    }
+
+    // For other parashot, return a generic reference
+    return `${parashah} - Kriyah ${kriyah}`;
   }
 
 

@@ -91,6 +91,18 @@
 <ion-button expand="block" color="primary" (click)="testHebCalCurrentParashah()">
   TEST HEBCAL CURRENT PARASHAH
 </ion-button>
+
+<ion-button expand="block" color="tertiary" (click)="testKriyahFileForJuly19()">
+  TEST KRIYAH FILE FOR JULY 19
+</ion-button>
+
+<ion-button expand="block" color="success" (click)="fixKriyahMappingsAndUpload()">
+  FIX KRIYAH MAPPINGS & UPLOAD TO FIREBASE
+</ion-button>
+
+<ion-button expand="block" color="danger" (click)="generateReadingsWithHebCal()">
+  GENERATE READINGS WITH HEBCAL
+</ion-button>
 <!-- <script type="text/javascript" charset="utf-8"
 src="../../components/date/heb-date-en.js"></script> -->
 <div *ngIf="readings.length === 0">
@@ -124,11 +136,11 @@ src="../../components/date/heb-date-en.js"></script> -->
     </ion-item>
 
     <!-- Haftarah Reading for Sabbath -->
-    <ion-item button="true" (click)="openGateway(reading.idNo, 'prophets')">
+    <ion-item button="true" (click)="openGateway(reading.idNo, 'haftarah')">
       <ion-label>
         <h4>Haftarah:</h4>
       </ion-label>
-      {{ reading.haftarah || reading.prophets || 'No Haftarah reading available' }}
+      {{ reading.haftarah || 'No Haftarah reading available' }}
     </ion-item>
 
 

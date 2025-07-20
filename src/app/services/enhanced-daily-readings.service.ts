@@ -46,6 +46,27 @@ export class EnhancedDailyReadingsService {
             map(allReadings => {
               console.log('🔍 Enhanced service - All readings count:', allReadings.length);
               console.log('🔍 Enhanced service - Sample reading dates:', allReadings.slice(0, 5).map(r => r.date));
+
+              // Check if today is Sabbath even when no readings found
+              const isSabbath = this.isSabbath(now);
+              console.log('🔍 Enhanced service - Sabbath check in fallback:', isSabbath);
+
+              if (isSabbath) {
+                console.log('🔍 Enhanced service - Creating Sabbath reading from fallback...');
+                // Create a Sabbath reading from the first available reading
+                const fallbackReading = allReadings[0];
+                if (fallbackReading) {
+                  const enhancedReading: EnhancedReading = {
+                    ...fallbackReading,
+                    isSabbath: true,
+                    completeTorahReading: fallbackReading.torah,
+                    haftarah: fallbackReading.prophets || fallbackReading.haftarah || '',
+                    haftarahReference: fallbackReading.prophets || fallbackReading.haftarah || ''
+                  };
+                  return [enhancedReading];
+                }
+              }
+
               return this.enhanceRegularReadings(allReadings.slice(0, 1)); // Return first reading as fallback
             })
           );

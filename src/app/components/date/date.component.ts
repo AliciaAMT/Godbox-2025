@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HebrewCalendar, HDate } from '@hebcal/core';
 
 @Component({
   selector: 'app-date',
@@ -42,11 +43,10 @@ export class DateComponent implements OnInit, OnDestroy {
 
     try {
       // Use hebcal for Hebrew date
-      const hebcal = require('hebcal');
-      const hDate = new hebcal.HDate(now);
+      const hDate = new HDate(now);
 
       // Hebrew date
-      this.hebDate = hDate.toString('h');
+      this.hebDate = hDate.toString();
 
       // Get current parashah and holiday
       this.getCurrentEvents(hDate);
@@ -88,23 +88,29 @@ export class DateComponent implements OnInit, OnDestroy {
     this.days = days[now.getDay()];
   }
 
-  private getCurrentEvents(hDate: any) {
+  private getCurrentEvents(hDate: HDate) {
     try {
-      // Get events for today
-      const hebcal = require('hebcal');
-      const events = hebcal.HebrewCalendar.getEvents(hDate);
+      // Get events for today using the correct hebCal API
+      const events = HebrewCalendar.calendar({
+        start: hDate.greg(),
+        end: hDate.greg(),
+        sedrot: true,
+        candlelighting: false
+      });
 
       // Find parashah
-      const parashahEvent = events.find((event: any) => event.type === 'parasha');
-      this.currentParashah = parashahEvent ? parashahEvent.render() : '';
+      const parashahEvent = events.find((event: any) => {
+        const desc = event.getDesc();
+        return desc && desc.includes('Parashat');
+      });
+      this.currentParashah = parashahEvent ? parashahEvent.basename() : '';
 
       // Find holiday
-      const holidayEvent = events.find((event: any) =>
-        event.type === 'holiday' ||
-        event.type === 'yomtov' ||
-        event.type === 'roshchodesh'
-      );
-      this.currentHoliday = holidayEvent ? holidayEvent.render() : '';
+      const holidayEvent = events.find((event: any) => {
+        const desc = event.getDesc();
+        return desc && (desc.includes('Holiday') || desc.includes('Rosh Chodesh'));
+      });
+      this.currentHoliday = holidayEvent ? holidayEvent.basename() : '';
     } catch (error) {
       console.log('Error getting Hebrew events:', error);
       this.currentParashah = '';

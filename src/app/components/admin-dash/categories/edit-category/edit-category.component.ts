@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonIcon, IonFab, IonFabButton } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, IonInput, IonLabel, IonItem, IonFab, IonFabButton } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { AlertController, ToastController } from '@ionic/angular';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { DataService, Category } from '../../../../services/data.service';
+import { addIcons } from 'ionicons';
+import { save } from 'ionicons/icons';
 
 @Component({
   selector: 'app-edit-category',
@@ -26,11 +27,11 @@ import { DataService, Category } from '../../../../services/data.service';
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonItem,
-    IonLabel,
-    IonInput,
     IonButton,
     IonIcon,
+    IonInput,
+    IonLabel,
+    IonItem,
     IonFab,
     IonFabButton
   ]
@@ -42,10 +43,10 @@ export class EditCategoryComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private route: ActivatedRoute,
-    private router: Router,
-    private alertController: AlertController,
-    private toastController: ToastController
-  ) {}
+    private router: Router
+  ) {
+    addIcons({ save });
+  }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
@@ -56,38 +57,21 @@ export class EditCategoryComponent implements OnInit {
     }
   }
 
-  async deleteCategory() {
-    if (!this.category) return;
-
-    const alert = await this.alertController.create({
-      header: 'Delete Category',
-      message: 'Are you sure you want to delete this category?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Delete',
-          handler: () => {
-            this.dataService.deleteCategory(this.category!);
-            this.router.navigateByUrl('/admin-dash/categories', { replaceUrl: true });
-          }
-        }
-      ]
-    });
-    await alert.present();
+  async saveCategory() {
+    if (this.category && this.category.categoryName) {
+      await this.dataService.updateCategory(this.category);
+      this.router.navigateByUrl('/admin-dash/categories');
+    }
   }
 
   async updateCategory() {
-    if (!this.category) return;
+    await this.saveCategory();
+  }
 
-    await this.dataService.updateCategory(this.category);
-    const toast = await this.toastController.create({
-      message: 'Category updated!',
-      duration: 2000
-    });
-    toast.present();
-    this.router.navigateByUrl('/admin-dash/categories', { replaceUrl: true });
+  async deleteCategory() {
+    if (this.category) {
+      await this.dataService.deleteCategory(this.category);
+      this.router.navigateByUrl('/admin-dash/categories');
+    }
   }
 }

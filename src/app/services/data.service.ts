@@ -120,8 +120,33 @@ export class DataService {
   }
 
   getPosts(): Observable<Post[]> {
+    console.log('🔍 DataService - getPosts() called');
     const postRef = collection(this.firestore, 'posts');
-    return collectionData(postRef, { idField: 'id' }) as Observable<Post[]>;
+    const observable = collectionData(postRef, { idField: 'id' }) as Observable<Post[]>;
+
+    // Add debugging to the observable
+    return new Observable<Post[]>(observer => {
+      console.log('🔍 DataService - getPosts() observable created');
+      const subscription = observable.subscribe({
+        next: (posts) => {
+          console.log(`🔍 DataService - getPosts() received ${posts.length} posts:`, posts);
+          observer.next(posts);
+        },
+        error: (error) => {
+          console.error('🔍 DataService - getPosts() error:', error);
+          observer.error(error);
+        },
+        complete: () => {
+          console.log('🔍 DataService - getPosts() completed');
+          observer.complete();
+        }
+      });
+
+      return () => {
+        console.log('🔍 DataService - getPosts() unsubscribing');
+        subscription.unsubscribe();
+      };
+    });
   }
 
   getUserById(id: string): Observable<User> {

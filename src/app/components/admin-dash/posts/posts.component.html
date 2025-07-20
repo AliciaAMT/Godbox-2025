@@ -4,30 +4,39 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-text-center">
+<ion-content>
   <ion-fab vertical="top" horizontal="start" slot="fixed">
     <ion-fab-button routerLink="/admin-dash">
       <ion-icon name="arrow-back"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-  <h2>Posts</h2>
-  <ion-grid>
-    <ion-row>
-      <ion-col sizeLg="6" offsetLg="3" sizeMd="8" offsetMd="2" sizeSm="10" offsetSm="1">
-        <div class="ion-text-center">
-          <ion-list>
-            <ion-item *ngFor="let post of posts" [routerLink]="['/admin-dash/posts/view-post', post.id]" router-direction="forward">
-              <ion-label>
-                <h2>{{ post.title }}</h2>
-                <p>By: {{ getUserName(post.author) }}</p>
-                <p>Date: {{ post.date | date }}</p>
-              </ion-label>
-            </ion-item>
-          </ion-list>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
+  <div class="ion-padding">
+    <h2>Posts</h2>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="ion-text-center ion-padding">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading posts...</p>
+    </div>
+
+    <!-- Posts List -->
+    <ion-list *ngIf="!loading">
+      <ion-item *ngFor="let post of posts" [routerLink]="['/admin-dash/posts/view-post', post.id]" router-direction="forward">
+        <ion-label>
+          <h2>{{ post.title }}</h2>
+          <p>By: {{ getUserName(post.author) }}</p>
+          <p>Date: {{ post.date | date }}</p>
+        </ion-label>
+      </ion-item>
+
+      <!-- Empty State -->
+      <div *ngIf="posts.length === 0" class="ion-text-center ion-padding">
+        <p>No posts found.</p>
+      </div>
+    </ion-list>
+  </div>
+
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button routerLink="/admin-dash/posts/add-post">
       <ion-icon name="add"></ion-icon>

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonInput, IonSelect, IonSelectOption, IonButton, IonIcon, IonFab, IonFabButton } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, IonInput, IonSelect, IonSelectOption, IonLabel, IonItem, IonFab, IonFabButton } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { AlertController, ToastController } from '@ionic/angular';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { DataService, Serie } from '../../../../services/data.service';
+import { addIcons } from 'ionicons';
+import { save } from 'ionicons/icons';
 
 @Component({
   selector: 'app-edit-collection',
@@ -26,13 +27,13 @@ import { DataService, Serie } from '../../../../services/data.service';
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonItem,
-    IonLabel,
+    IonButton,
+    IonIcon,
     IonInput,
     IonSelect,
     IonSelectOption,
-    IonButton,
-    IonIcon,
+    IonLabel,
+    IonItem,
     IonFab,
     IonFabButton
   ]
@@ -44,10 +45,10 @@ export class EditCollectionComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private route: ActivatedRoute,
-    private router: Router,
-    private alertController: AlertController,
-    private toastController: ToastController
-  ) {}
+    private router: Router
+  ) {
+    addIcons({ save });
+  }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
@@ -58,38 +59,21 @@ export class EditCollectionComponent implements OnInit {
     }
   }
 
-  async deleteSerie() {
-    if (!this.serie) return;
-
-    const alert = await this.alertController.create({
-      header: 'Delete Collection',
-      message: 'Are you sure you want to delete this collection?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Delete',
-          handler: () => {
-            this.dataService.deleteSerie(this.serie!);
-            this.router.navigateByUrl('/admin-dash/collections', { replaceUrl: true });
-          }
-        }
-      ]
-    });
-    await alert.present();
+  async saveSerie() {
+    if (this.serie && this.serie.serieName) {
+      await this.dataService.updateSerie(this.serie);
+      this.router.navigateByUrl('/admin-dash/collections');
+    }
   }
 
   async updateSerie() {
-    if (!this.serie) return;
+    await this.saveSerie();
+  }
 
-    await this.dataService.updateSerie(this.serie);
-    const toast = await this.toastController.create({
-      message: 'Collection updated!',
-      duration: 2000
-    });
-    toast.present();
-    this.router.navigateByUrl('/admin-dash/collections', { replaceUrl: true });
+  async deleteSerie() {
+    if (this.serie) {
+      await this.dataService.deleteSerie(this.serie);
+      this.router.navigateByUrl('/admin-dash/collections');
+    }
   }
 }

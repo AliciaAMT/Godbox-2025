@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonInput, IonTextarea, IonSelect, IonSelectOption, IonButton, IonIcon, IonFab, IonFabButton } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, IonInput, IonTextarea, IonSelect, IonSelectOption, IonLabel, IonItem, IonFab, IonFabButton } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { AlertController, ToastController } from '@ionic/angular';
-import { DataService, Post, Category } from '../../../../services/data.service';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { DataService, Post, Category, Serie } from '../../../../services/data.service';
+import { addIcons } from 'ionicons';
+import { save } from 'ionicons/icons';
 
 @Component({
   selector: 'app-edit-post',
@@ -26,14 +27,14 @@ import { DataService, Post, Category } from '../../../../services/data.service';
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonItem,
-    IonLabel,
+    IonButton,
+    IonIcon,
     IonInput,
     IonTextarea,
     IonSelect,
     IonSelectOption,
-    IonButton,
-    IonIcon,
+    IonLabel,
+    IonItem,
     IonFab,
     IonFabButton
   ]
@@ -41,17 +42,20 @@ import { DataService, Post, Category } from '../../../../services/data.service';
 export class EditPostComponent implements OnInit {
   post: Post | null = null;
   categories: Category[] = [];
+  series: Serie[] = [];
   id: string | null = null;
 
   constructor(
     private dataService: DataService,
     private route: ActivatedRoute,
-    private router: Router,
-    private alertController: AlertController,
-    private toastController: ToastController
+    private router: Router
   ) {
+    addIcons({ save });
     this.dataService.getCategories().subscribe(res => {
       this.categories = res;
+    });
+    this.dataService.getSeries().subscribe(res => {
+      this.series = res;
     });
   }
 
@@ -64,38 +68,21 @@ export class EditPostComponent implements OnInit {
     }
   }
 
-  async deletePost() {
-    if (!this.post) return;
-
-    const alert = await this.alertController.create({
-      header: 'Delete Post',
-      message: 'Are you sure you want to delete this post?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Delete',
-          handler: () => {
-            this.dataService.deletePost(this.post!);
-            this.router.navigateByUrl('/admin-dash/posts', { replaceUrl: true });
-          }
-        }
-      ]
-    });
-    await alert.present();
+  async savePost() {
+    if (this.post && this.post.title && this.post.description) {
+      await this.dataService.updatePost(this.post);
+      this.router.navigateByUrl('/admin-dash/posts');
+    }
   }
 
   async updatePost() {
-    if (!this.post) return;
+    await this.savePost();
+  }
 
-    await this.dataService.updatePost(this.post);
-    const toast = await this.toastController.create({
-      message: 'Post updated!',
-      duration: 2000
-    });
-    toast.present();
-    this.router.navigateByUrl('/admin-dash/posts', { replaceUrl: true });
+  async deletePost() {
+    if (this.post) {
+      await this.dataService.deletePost(this.post);
+      this.router.navigateByUrl('/admin-dash/posts');
+    }
   }
 }

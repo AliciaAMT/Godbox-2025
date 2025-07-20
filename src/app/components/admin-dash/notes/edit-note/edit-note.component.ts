@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonInput, IonTextarea, IonButton, IonIcon, IonFab, IonFabButton } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, IonInput, IonTextarea, IonLabel, IonItem, IonFab, IonFabButton } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { AlertController, ToastController } from '@ionic/angular';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { DataService, Note } from '../../../../services/data.service';
+import { addIcons } from 'ionicons';
+import { save } from 'ionicons/icons';
 
 @Component({
   selector: 'app-edit-note',
@@ -26,12 +27,12 @@ import { DataService, Note } from '../../../../services/data.service';
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonItem,
-    IonLabel,
-    IonInput,
-    IonTextarea,
     IonButton,
     IonIcon,
+    IonInput,
+    IonTextarea,
+    IonLabel,
+    IonItem,
     IonFab,
     IonFabButton
   ]
@@ -43,10 +44,10 @@ export class EditNoteComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private route: ActivatedRoute,
-    private router: Router,
-    private alertController: AlertController,
-    private toastController: ToastController
-  ) {}
+    private router: Router
+  ) {
+    addIcons({ save });
+  }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
@@ -57,38 +58,21 @@ export class EditNoteComponent implements OnInit {
     }
   }
 
-  async deleteNote() {
-    if (!this.note) return;
-
-    const alert = await this.alertController.create({
-      header: 'Delete Note',
-      message: 'Are you sure you want to delete this note?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        },
-        {
-          text: 'Delete',
-          handler: () => {
-            this.dataService.deleteNote(this.note!);
-            this.router.navigateByUrl('/admin-dash/notes', { replaceUrl: true });
-          }
-        }
-      ]
-    });
-    await alert.present();
+  async saveNote() {
+    if (this.note && this.note.title && this.note.text) {
+      await this.dataService.updateNote(this.note);
+      this.router.navigateByUrl('/admin-dash/notes');
+    }
   }
 
   async updateNote() {
-    if (!this.note) return;
+    await this.saveNote();
+  }
 
-    await this.dataService.updateNote(this.note);
-    const toast = await this.toastController.create({
-      message: 'Note updated!',
-      duration: 2000
-    });
-    toast.present();
-    this.router.navigateByUrl('/admin-dash/notes', { replaceUrl: true });
+  async deleteNote() {
+    if (this.note) {
+      await this.dataService.deleteNote(this.note);
+      this.router.navigateByUrl('/admin-dash/notes');
+    }
   }
 }

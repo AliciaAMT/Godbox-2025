@@ -36,6 +36,11 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
 
+/* Active menu item styling from original project */
+.active-item {
+  border-left: 8px solid var(--ion-color-primary);
+}
+
 /* Original project toolbar gradient */
 ion-toolbar {
   --background: rgb(88,88,88);

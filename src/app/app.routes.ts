@@ -40,6 +40,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'breath-meditation',
+    loadComponent: () => import('./breath-meditation/breath-meditation.page').then(m => m.BreathMeditationPage),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'view-collection/:id',
     loadComponent: () => import('./view-collection/view-collection.page').then(m => m.ViewCollectionPage),
     canActivate: [AuthGuard]

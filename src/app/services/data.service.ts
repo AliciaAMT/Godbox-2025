@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import {
   Firestore,
@@ -249,27 +249,42 @@ export class DataService {
 
   updateNote(note: Note) {
     const noteDocRef = doc(this.firestore, `notes/${note.id}`);
-    return updateDoc(noteDocRef, { ...note });
+    return updateDoc(noteDocRef, { title: note.title, text: note.text });
   }
 
   updateUser(user: User) {
     const userDocRef = doc(this.firestore, `users/${user.id}`);
-    return updateDoc(userDocRef, { ...user });
+    return updateDoc(userDocRef, { userName: user.userName, userRole: user.userRole, imageUrl: user.imageUrl, bio: user.bio });
   }
 
   updateCategory(category: Category) {
     const categoryDocRef = doc(this.firestore, `categories/${category.id}`);
-    return updateDoc(categoryDocRef, { ...category });
+    return updateDoc(categoryDocRef, { categoryName: category.categoryName });
   }
 
   updateSerie(serie: Serie) {
     const serieDocRef = doc(this.firestore, `series/${serie.id}`);
-    return updateDoc(serieDocRef, { ...serie });
+    return updateDoc(serieDocRef, { serieName: serie.serieName, privacy: serie.privacy });
   }
 
   updatePost(post: Post) {
     const postDocRef = doc(this.firestore, `posts/${post.id}`);
-    return updateDoc(postDocRef, { ...post });
+    return updateDoc(postDocRef, {
+      title: post.title,
+      description: post.description,
+      imageUrl: post.imageUrl,
+      preview: post.preview,
+      category: post.category,
+      content: post.content,
+      keywords: post.keywords,
+      author: post.author,
+      date: post.date,
+      likes: post.likes,
+      views: post.views,
+      privacy: post.privacy,
+      series: post.series,
+      seqNo: post.seqNo,
+    });
   }
 
   addReading(reading: Readings) {
@@ -278,51 +293,48 @@ export class DataService {
   }
 
   async addReadings(readings: Readings[]) {
+    const readingsRef = collection(this.firestore, 'readings');
+    const batch = [];
+
+    for (const reading of readings) {
+      batch.push(addDoc(readingsRef, reading));
+    }
+
     try {
-      const readingsRef = collection(this.firestore, 'readings');
-      console.log(`Attempting to add ${readings.length} readings to Firebase`);
-
-      const promises = readings.map(async (reading, index) => {
-        console.log(`Adding reading ${index + 1}:`, reading);
-        return addDoc(readingsRef, reading);
-      });
-
-      const results = await Promise.all(promises);
-      console.log(`Successfully added ${results.length} readings to Firebase`);
-      return results;
+      await Promise.all(batch);
+      console.log('✅ All readings added successfully');
+      return true;
     } catch (error) {
-      console.error('Error adding readings to Firebase:', error);
-      throw error;
+      console.error('❌ Error adding readings:', error);
+      return false;
     }
   }
 
   async clearReadingsCollection() {
+    const readingsRef = collection(this.firestore, 'readings');
+    const querySnapshot = await getDocs(readingsRef);
+
+    const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref));
+
     try {
-      // Get all existing readings
-      const readingsRef = collection(this.firestore, 'readings');
-      const readingsSnapshot = await getDocs(readingsRef);
-
-      // Delete each reading
-      const deletePromises = readingsSnapshot.docs.map(doc => deleteDoc(doc.ref));
       await Promise.all(deletePromises);
-
-      console.log(`Cleared ${readingsSnapshot.docs.length} existing readings from Firebase`);
-      return Promise.resolve();
+      console.log('✅ All readings deleted successfully');
+      return true;
     } catch (error) {
-      console.error('Error clearing readings collection:', error);
-      return Promise.reject(error);
+      console.error('❌ Error deleting readings:', error);
+      return false;
     }
   }
 
   async updateExistingReading(readingId: string, updatedReading: Partial<Readings>) {
+    const readingDocRef = doc(this.firestore, `readings/${readingId}`);
     try {
-      const readingDocRef = doc(this.firestore, `readings/${readingId}`);
       await updateDoc(readingDocRef, updatedReading);
-      console.log(`Updated reading ${readingId} with new scripture references`);
-      return Promise.resolve();
+      console.log('✅ Reading updated successfully');
+      return true;
     } catch (error) {
-      console.error('Error updating reading:', error);
-      return Promise.reject(error);
+      console.error('❌ Error updating reading:', error);
+      return false;
     }
   }
 }

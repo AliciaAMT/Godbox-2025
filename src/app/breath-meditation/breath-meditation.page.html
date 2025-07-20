@@ -1,0 +1,23 @@
+<app-menu-header></app-menu-header>
+
+<ion-content class="ion-text-center">
+  <ion-fab vertical="top" horizontal="start" slot="fixed">
+    <ion-fab-button routerLink="/home">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+<h2 class="ion-text-center">
+    Breath Meditation
+</h2>
+<div class="margin">
+<div [class]="container">
+<div class="circle"></div>
+<p id="text" [innerHTML]="text"></p>
+<div class="pointer-container">
+  <div class="pointer">
+  </div>
+</div>
+<div class="gradient-circle"></div>
+</div>
+</div>
+</ion-content>

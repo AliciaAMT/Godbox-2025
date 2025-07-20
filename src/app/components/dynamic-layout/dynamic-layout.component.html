@@ -7,29 +7,11 @@
   <ion-content>
     <ion-list>
       <ion-menu-toggle auto-hide="false" menu="first">
-        <!-- User Profile Section -->
-        <ion-item *ngIf="profile?.id" [routerLink]="['/profile', profile?.id]" routerDirection="root" routerLinkActive="active-item" lines="none">
-          <ion-avatar>
-            <ion-img *ngIf="profile?.imageUrl; else placeholder_avatar;" [src]="profile?.imageUrl"></ion-img>
-            <ng-template #placeholder_avatar>
-              <div class="fallback">
-                <p>Select Avatar</p>
-              </div>
-            </ng-template>
-          </ion-avatar>
-          <ion-label class="ion-padding" *ngIf="profile?.userName">
-            {{profile?.userName}}
-          </ion-label>
-        </ion-item>
-
-        <!-- Navigation Items -->
         <ion-item routerLink="/home" routerDirection="root" routerLinkActive="active-item" lines="none">
           <ion-label>
             Home
           </ion-label>
         </ion-item>
-
-        <!-- Dynamic Series/Collections -->
         <div *ngFor="let serie of series">
           <div *ngIf="serie.privacy !== 'private'">
             <ion-item [routerLink]="['/view-collection', serie.id]" routerDirection="root" routerLinkActive="active-item" lines="none">
@@ -39,20 +21,21 @@
             </ion-item>
           </div>
         </div>
-
         <ion-item routerLink="/daily-readings" routerDirection="root" routerLinkActive="active-item" lines="none">
           <ion-label>
             Daily Readings
           </ion-label>
         </ion-item>
-
         <ion-item routerLink="/growth-blog" routerDirection="root" routerLinkActive="active-item" lines="none">
           <ion-label>
-            Growth Blog
+            Privacy Policy and License
           </ion-label>
         </ion-item>
-
-        <!-- Admin Panel - Only for admin users -->
+        <ion-item routerLink="/breath-meditation" routerDirection="root" routerLinkActive="active-item" lines="none">
+          <ion-label>
+            Breath Meditation
+          </ion-label>
+        </ion-item>
         <div *ngIf="profile?.userRole === 'admin'">
           <ion-item routerLink="/admin-dash" routerDirection="root" routerLinkActive="active-item" lines="none">
             <ion-label>
@@ -62,9 +45,7 @@
         </div>
       </ion-menu-toggle>
     </ion-list>
-
-    <!-- Logout Button -->
-    <ion-button expand="block" (click)="logout()" color="danger">
+    <ion-button expand="block" (click)="logout()">
       <ion-icon slot="icon-only" name="log-out"></ion-icon> Logout
     </ion-button>
   </ion-content>

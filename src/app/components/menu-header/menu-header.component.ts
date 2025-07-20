@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle } from '@ionic/angular/standalone';
 
 @Component({
@@ -6,12 +6,14 @@ import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle } from '@ion
   templateUrl: './menu-header.component.html',
   styleUrls: ['./menu-header.component.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle]
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonMenuButton,
+    IonTitle
+  ]
 })
-export class MenuHeaderComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {}
-
+export class MenuHeaderComponent {
+  constructor() {}
 }

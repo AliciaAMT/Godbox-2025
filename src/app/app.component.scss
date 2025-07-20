@@ -1,6 +1,16 @@
-// Menu styling
+// Menu styling with dark theme
+ion-item {
+  --background: rgb(26, 26, 26);
+  // --background-hover: rgb(21, 21, 21) !important;
+}
 ion-menu {
-  --background: var(--ion-color-light);
+  --background-color: rgb(26, 26, 26) !important;
+}
+ion-menu-toggle {
+  --background: rgb(26, 26, 26) !important;
+}
+ion-list {
+  --background: rgb(26, 26, 26) !important;
 }
 
 .active-item {

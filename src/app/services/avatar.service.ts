@@ -1,28 +1,31 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import { doc, docData, Firestore, setDoc, updateDoc } from '@angular/fire/firestore';
 import { getDownloadURL, ref, Storage, uploadString } from '@angular/fire/storage';
 import { Photo } from '@capacitor/camera';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AvatarService {
-  private auth = inject(Auth);
-  private firestore = inject(Firestore);
-  private storage = inject(Storage);
+  constructor(private auth: Auth, private firestore: Firestore, private storage: Storage) {}
 
-  getUserProfile() {
+  getUserProfile(): Observable<any> {
     const user = this.auth.currentUser;
-    const userDocRef = doc(this.firestore, `users/${user?.uid}`);
+    if (!user) {
+      return of(null);
+    }
+    const userDocRef = doc(this.firestore, `users/${user.uid}`);
     return docData(userDocRef, { idField: 'id' });
   }
 
   async addUser() {
     const user = this.auth.currentUser;
-    const userDocRef = doc(this.firestore, `users/${user?.uid}`);
+    if (!user) return;
+    const userDocRef = doc(this.firestore, `users/${user.uid}`);
     const imageUrl = '';
-    const email = user?.email;
+    const email = user.email;
     const userRole = 'user';
     const userName = 'User Name';
 
@@ -34,7 +37,8 @@ export class AvatarService {
 
   async uploadImage(cameraFile: Photo) {
     const user = this.auth.currentUser;
-    const path = `uploads/${user?.uid}/profile.webp`;
+    if (!user) return;
+    const path = `uploads/${user.uid}/profile.webp`;
     const storageRef = ref(this.storage, path);
 
     try {
@@ -42,7 +46,7 @@ export class AvatarService {
 
       const imageUrl = await getDownloadURL(storageRef);
       // update doc vs set doc - set doc will overwrite the entire document, update will error if no doc exists
-      const userDocRef = doc(this.firestore, `users/${user?.uid}`);
+      const userDocRef = doc(this.firestore, `users/${user.uid}`);
       await updateDoc(userDocRef, {
         imageUrl
       });

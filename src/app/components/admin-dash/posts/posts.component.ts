@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { IonContent, IonHeader, IonToolbar, IonTitle, IonList, IonItem, IonLabel, IonFab, IonFabButton, IonIcon, IonSpinner } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -37,7 +37,8 @@ export class PostsComponent implements OnInit, OnDestroy {
 
   constructor(
     private dataService: DataService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     addIcons({ add });
   }
@@ -47,23 +48,42 @@ export class PostsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.cleanupSubscriptions();
+  }
+
+  private cleanupSubscriptions() {
     if (this.postsSubscription) {
       this.postsSubscription.unsubscribe();
+      this.postsSubscription = undefined;
     }
     if (this.usersSubscription) {
       this.usersSubscription.unsubscribe();
+      this.usersSubscription = undefined;
     }
   }
 
   loadData() {
+    console.log('Loading posts data...');
     this.loading = true;
 
-    // Load posts data
+    // Clean up any existing subscriptions first
+    this.cleanupSubscriptions();
+
+    // Load posts data with immediate UI update
     this.postsSubscription = this.dataService.getPosts().subscribe({
       next: (posts) => {
         console.log('Posts loaded:', posts);
-        this.posts = posts;
+        console.log(`Updating UI with ${posts.length} posts`);
+
+        // Update the posts array
+        this.posts = [...posts];
         this.loading = false;
+
+        // Force change detection
+        this.cdr.detectChanges();
+
+        console.log('Posts array after update:', this.posts);
+        console.log('Posts array length:', this.posts.length);
       },
       error: (error) => {
         console.error('Error loading posts:', error);

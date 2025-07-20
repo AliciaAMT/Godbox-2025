@@ -1,9 +1,23 @@
-<!-- <p>
-  {{ month }}
-  <br /> -->
- <h3>
-{{hebDate}}
- </h3>
- {{month | date:'fullDate'}}
- <br />
-  {{ days }}
+<div class="date-container">
+  <!-- Hebrew Date -->
+  <h3 class="hebrew-date">{{ hebDate }}</h3>
+
+  <!-- Gregorian Date -->
+  <p class="gregorian-date">{{ gregorianDate }}</p>
+
+  <!-- Current Time -->
+  <p class="current-time">{{ hebrewTime }}</p>
+
+  <!-- Current Parashah -->
+  <p *ngIf="currentParashah" class="current-parashah">
+    <strong>Parashah:</strong> {{ currentParashah }}
+  </p>
+
+  <!-- Current Holiday -->
+  <p *ngIf="currentHoliday" class="current-holiday">
+    <strong>Holiday:</strong> {{ currentHoliday }}
+  </p>
+
+  <!-- Day of Week -->
+  <p class="day-of-week">{{ days }}</p>
+</div>

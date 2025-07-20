@@ -5,13 +5,14 @@ import { IonContent, IonFab, IonFabButton, IonIcon, IonGrid, IonRow, IonCol, Ion
 import { RouterModule } from '@angular/router';
 import { DataService, Post } from '../services/data.service';
 import { FooterLandingComponent } from '../components/footer-landing/footer-landing.component';
+import { MenuHeaderComponent } from '../components/menu-header/menu-header.component';
 
 @Component({
   selector: 'app-growth-blog',
   templateUrl: './growth-blog.page.html',
   styleUrls: ['./growth-blog.page.scss'],
   standalone: true,
-  imports: [IonContent, IonFab, IonFabButton, IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, CommonModule, FormsModule, RouterModule, FooterLandingComponent]
+  imports: [IonContent, IonFab, IonFabButton, IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, CommonModule, FormsModule, RouterModule, FooterLandingComponent, MenuHeaderComponent]
 })
 export class GrowthBlogPage implements OnInit {
   posts: Post[] = [];

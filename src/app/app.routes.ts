@@ -45,6 +45,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'admin-dash',
+    loadComponent: () => import('./components/admin-dash/admin-dash.component').then(m => m.AdminDashComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'sabbath-test',
     loadComponent: () => import('./components/sabbath-readings-test/sabbath-readings-test.component').then(m => m.SabbathReadingsTestComponent)
   },

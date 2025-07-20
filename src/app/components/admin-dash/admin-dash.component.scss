@@ -1,0 +1,19 @@
+// Admin dashboard styling
+ion-card {
+  margin: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+ion-card-title {
+  font-weight: bold;
+  color: var(--ion-color-primary);
+}
+
+ion-card-content {
+  color: var(--ion-color-medium);
+}

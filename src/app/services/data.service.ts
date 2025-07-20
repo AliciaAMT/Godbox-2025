@@ -181,6 +181,12 @@ export class DataService {
   getReadingByThisDate(): Observable<Readings[]> {
     const dateS = new Date();
     const d = formatDate(dateS, 'yyyy-MM-dd', 'en');
+
+    console.log('🔍 DataService - getReadingByThisDate called');
+    console.log('🔍 DataService - Current date object:', dateS);
+    console.log('🔍 DataService - Formatted date:', d);
+    console.log('🔍 DataService - Timezone offset:', dateS.getTimezoneOffset());
+
     const readingsRef = collection(this.firestore, 'readings');
     const q = query(readingsRef, where('date', '==', d));
     return collectionData(q, { idField: 'id' }) as Observable<Readings[]>;

@@ -27,27 +27,37 @@ export class EnhancedDailyReadingsService {
    * Get enhanced daily readings that include full Torah readings and haftarah on Sabbath
    */
   getEnhancedDailyReadings(): Observable<EnhancedReading[]> {
+    // Use the same date calculation as the daily readings page
+    const now = new Date();
+    const todayStr = this.formatDate(now);
+
+    console.log('🔍 Enhanced service - Current date:', now);
+    console.log('🔍 Enhanced service - Formatted date:', todayStr);
+    console.log('🔍 Enhanced service - Is Sabbath?', this.isSabbath(now));
+
     return this.dataService.getReadingByThisDate().pipe(
       switchMap(readings => {
+        console.log('🔍 Enhanced service - Readings found for today:', readings.length);
+        console.log('🔍 Enhanced service - Reading dates:', readings.map(r => r.date));
+
         if (readings.length === 0) {
-          return of([]);
+          console.log('⚠️ No readings found for today, trying to get any readings...');
+          return this.dataService.getReadings().pipe(
+            map(allReadings => {
+              console.log('🔍 Enhanced service - All readings count:', allReadings.length);
+              console.log('🔍 Enhanced service - Sample reading dates:', allReadings.slice(0, 5).map(r => r.date));
+              return this.enhanceRegularReadings(allReadings.slice(0, 1)); // Return first reading as fallback
+            })
+          );
         }
 
         // Check if today is Sabbath
-        const today = new Date();
-        console.log('🔍 Current date:', today);
-        console.log('🔍 Is Sabbath?', this.isSabbath(today));
-
-        // Convert to Hebrew date
-        const hDate = new HDate(today);
-        console.log('🔍 Hebrew date:', hDate.toString());
-        console.log('🔍 Hebrew date gregorian:', hDate.greg().toISOString().split('T')[0]);
-
-        const isSabbath = this.isSabbath(today);
+        const isSabbath = this.isSabbath(now);
+        console.log('🔍 Enhanced service - Final Sabbath check:', isSabbath);
 
         if (isSabbath) {
           // For Sabbath, get the week's readings from the database
-          return this.getSabbathReadingsFromDatabase(today);
+          return this.getSabbathReadingsFromDatabase(now);
         }
 
         // Return regular readings for non-Sabbath days
@@ -71,24 +81,26 @@ export class EnhancedDailyReadingsService {
           return of([]);
         }
 
-        // Check if any of the readings is a Sabbath reading (kriyah: 7)
-        const sabbathReading = readings.find(r => r.kriyah === 7);
-
-        if (sabbathReading) {
-          console.log('✅ Found Sabbath reading with kriyah: 7, using database logic');
-          // Use the database Sabbath readings logic
-          return this.getSabbathReadingsFromDatabase(date);
-        }
-
+        // First check if the current date is actually a Sabbath
         const isSabbath = this.isSabbath(date);
+        console.log('🔍 Is current date Sabbath?', isSabbath);
 
         if (isSabbath) {
-          console.log('✅ Date is Sabbath, using Sabbath readings service');
-          // Get Sabbath readings for the specific date
-          const sabbathReadings = this.sabbathReadingsService.getSabbathReadingsForDate(date);
+          // Check if any of the readings is a Sabbath reading (kriyah: 7)
+          const sabbathReading = readings.find(r => r.kriyah === 7);
 
-          if (sabbathReadings.length > 0) {
-            return of(this.createSabbathReadings(sabbathReadings));
+          if (sabbathReading) {
+            console.log('✅ Found Sabbath reading with kriyah: 7, using database logic');
+            // Use the database Sabbath readings logic
+            return this.getSabbathReadingsFromDatabase(date);
+          } else {
+            console.log('✅ Date is Sabbath, using Sabbath readings service');
+            // Get Sabbath readings for the specific date
+            const sabbathReadings = this.sabbathReadingsService.getSabbathReadingsForDate(date);
+
+            if (sabbathReadings.length > 0) {
+              return of(this.createSabbathReadings(sabbathReadings));
+            }
           }
         }
 

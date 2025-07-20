@@ -75,6 +75,22 @@
 <ion-button expand="block" color="primary" (click)="testWithSpecificDate()">
   TEST WITH PINCHAS SABBATH DATE (2025-07-25)
 </ion-button>
+
+<ion-button expand="block" color="success" (click)="testWithSpecificDate()">
+  TEST CURRENT DATE (2025-07-19)
+</ion-button>
+
+<ion-button expand="block" color="warning" (click)="regenerateDatabaseWithCorrectDates()">
+  REGENERATE DATABASE WITH CORRECT DATES
+</ion-button>
+
+<ion-button expand="block" color="secondary" (click)="testHaftarahService()">
+  TEST HAFTARAH SERVICE
+</ion-button>
+
+<ion-button expand="block" color="primary" (click)="testHebCalCurrentParashah()">
+  TEST HEBCAL CURRENT PARASHAH
+</ion-button>
 <!-- <script type="text/javascript" charset="utf-8"
 src="../../components/date/heb-date-en.js"></script> -->
 <div *ngIf="readings.length === 0">

@@ -1,1 +1,63 @@
-// Date component styles
+.date-container {
+  text-align: center;
+  padding: 16px;
+  background: var(--ion-color-light);
+  border-radius: 8px;
+  margin: 16px 0;
+}
+
+.hebrew-date {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--ion-color-primary);
+  margin: 0 0 8px 0;
+  direction: rtl;
+  font-family: 'Times New Roman', serif;
+}
+
+.gregorian-date {
+  font-size: 1.1rem;
+  color: var(--ion-color-dark);
+  margin: 8px 0;
+  font-weight: 500;
+}
+
+.current-time {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--ion-color-secondary);
+  margin: 8px 0;
+}
+
+.current-parashah,
+.current-holiday {
+  font-size: 1rem;
+  color: var(--ion-color-success);
+  margin: 8px 0;
+  padding: 8px;
+  background: var(--ion-color-success-tint);
+  border-radius: 4px;
+}
+
+.day-of-week {
+  font-size: 1rem;
+  color: var(--ion-color-medium);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+// Dark theme adjustments
+@media (prefers-color-scheme: dark) {
+  .date-container {
+    background: var(--ion-color-dark);
+  }
+
+  .gregorian-date {
+    color: var(--ion-color-light);
+  }
+
+  .current-parashah,
+  .current-holiday {
+    background: var(--ion-color-success-shade);
+  }
+}

@@ -25,7 +25,8 @@ import {
   cloudUploadOutline,
   checkmarkOutline,
   alertOutline,
-  informationCircleOutline
+  informationCircleOutline,
+  logOutOutline
 } from 'ionicons/icons';
 
 import { routes } from './app.routes';
@@ -63,7 +64,8 @@ addIcons({
   cloudUploadOutline,
   checkmarkOutline,
   alertOutline,
-  informationCircleOutline
+  informationCircleOutline,
+  logOutOutline
 });
 
 export const appConfig: ApplicationConfig = {

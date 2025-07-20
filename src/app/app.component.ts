@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { IonApp, IonRouterOutlet, IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem } from '@ionic/angular/standalone';
-import { RouterLink } from '@angular/router';
+import { IonApp } from '@ionic/angular/standalone';
+import { DynamicLayoutComponent } from './components/dynamic-layout/dynamic-layout.component';
 
 @Component({
   selector: 'app-root',
@@ -9,15 +9,7 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [
     IonApp,
-    IonRouterOutlet,
-    IonMenu,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonList,
-    IonItem,
-    RouterLink
+    DynamicLayoutComponent
   ],
 })
 export class AppComponent {

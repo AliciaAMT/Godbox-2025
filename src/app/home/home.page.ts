@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DataService, Post, User, Readings } from '../services/data.service';
 import { FooterLandingComponent } from '../components/footer-landing/footer-landing.component';
+import { MenuHeaderComponent } from '../components/menu-header/menu-header.component';
 import { ParashahService } from '../services/parashah.service';
 import { debugHebCalEvents } from '../utils/debug-hebcal';
 import { testGeneratedCode } from '../utils/test-generated-code';
@@ -29,7 +30,8 @@ import { BibleApiService } from '../services/bible-api.service';
     IonImg,
     IonIcon,
     IonButton,
-    FooterLandingComponent
+    FooterLandingComponent,
+    MenuHeaderComponent
   ],
 })
 export class HomePage implements OnInit {

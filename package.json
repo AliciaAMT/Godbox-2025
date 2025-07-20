@@ -30,6 +30,7 @@
     "@capacitor/preferences": "^7.0.0",
     "@capacitor/status-bar": "7.0.1",
     "@hebcal/core": "^3.50.4",
+    "@hebcal/leyning": "^9.2.3",
     "@ionic/angular": "^8.0.0",
     "api.bible-api": "^1.0.5",
     "firebase": "^10.7.0",

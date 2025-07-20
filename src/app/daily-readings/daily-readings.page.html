@@ -10,183 +10,90 @@
     <ion-col class="ion-text-center" sizeLg="4" offsetLg="4" sizeMd="6" offsetMd="3" sizeSm="8" offsetSm="2">
 <h2>Today's Readings</h2>
 <app-date></app-date>
-<ion-button (click)="testApiConnection()" fill="outline" size="small" style="margin: 10px;">
-  Test API Connection
-</ion-button>
-<ion-button (click)="testBasicApiConnectivity()" fill="outline" size="small" style="margin: 10px;" color="secondary">
-  Test Basic Connectivity
-</ion-button>
-<ion-button (click)="testReferenceFormats()" fill="outline" size="small" style="margin: 10px;" color="warning">
-  Test Reference Formats
-</ion-button>
-<ion-button (click)="testDifferentPassage()" fill="outline" size="small" style="margin: 10px;" color="secondary">
-  Test Genesis Passage
-</ion-button>
-<ion-button (click)="testApiConfiguration()" fill="outline" size="small" style="margin: 10px;" color="tertiary">
-  Test API Configuration
-</ion-button>
-<ion-button (click)="testVersesEndpoint()" fill="outline" size="small" style="margin: 10px;" color="success">
-  Test Verses Endpoint
-</ion-button>
-<ion-button (click)="testFormatReference()" fill="outline" size="small" style="margin: 10px;" color="medium">
-  Test Format Reference
-</ion-button>
-<ion-button (click)="testDifferentBibleIds()" fill="outline" size="small" style="margin: 10px;" color="primary">
-  Test Different Bible IDs
-</ion-button>
-<ion-button (click)="findBibleIdsWithNumbers()" fill="outline" size="small" style="margin: 10px;" color="primary">
-  Find Bibles With Numbers Support
-</ion-button>
-<ion-button (click)="testKJVNumbers()" fill="outline" size="small" style="margin: 10px;" color="secondary">
-  Test KJV Numbers
-</ion-button>
-<ion-button (click)="testNumbersAcrossAllBibleIds()" fill="outline" size="small" style="margin: 10px;" color="danger">
-  Test Numbers Across All Bible IDs
-</ion-button>
-<ion-button (click)="testNumbersBook()" fill="outline" size="small" style="margin: 10px;" color="warning">
-  Test Numbers Book
-</ion-button>
-<ion-button (click)="testAvailableBibleIds()" fill="outline" size="small" style="margin: 10px;" color="success">
-  Test Available Bible IDs
-</ion-button>
-<ion-button (click)="regenerateDatabase()" fill="outline" size="small" style="margin: 10px;" color="danger">
-  Regenerate Database
-</ion-button>
-<ion-button (click)="testScriptureMapping()" fill="outline" size="small" style="margin: 10px;" color="success">
-  Test Scripture Mapping
-</ion-button>
-<ion-button (click)="downloadUpdatedDatabase()" fill="outline" size="small" style="margin: 10px;" color="warning">
-  Download Updated Database
-</ion-button>
-<ion-button (click)="showUpdatedDatabaseContent()" fill="outline" size="small" style="margin: 10px;" color="medium">
-  Show Database Content
-</ion-button>
-<ion-button (click)="uploadToFirebase()" fill="outline" size="small" style="margin: 10px;" color="danger">
-  Upload to Firebase
-</ion-button>
-<ion-button expand="block" color="success" (click)="testFixedFormat()">
-  TEST FIXED FORMAT
-</ion-button>
 
-<ion-button expand="block" color="warning" (click)="fixAllDatabaseFormats()">
-  FIX ALL DATABASE FORMATS & UPLOAD TO FIREBASE
-</ion-button>
-
-<ion-button expand="block" color="primary" (click)="testWithSpecificDate()">
-  TEST WITH PINCHAS SABBATH DATE (2025-07-25)
-</ion-button>
-
-<ion-button expand="block" color="success" (click)="testWithSpecificDate()">
-  TEST CURRENT DATE (2025-07-19)
-</ion-button>
-
-<ion-button expand="block" color="warning" (click)="regenerateDatabaseWithCorrectDates()">
-  REGENERATE DATABASE WITH CORRECT DATES
-</ion-button>
-
-<ion-button expand="block" color="secondary" (click)="testHaftarahService()">
-  TEST HAFTARAH SERVICE
-</ion-button>
-
-<ion-button expand="block" color="primary" (click)="testHebCalCurrentParashah()">
-  TEST HEBCAL CURRENT PARASHAH
-</ion-button>
-
-<ion-button expand="block" color="tertiary" (click)="testKriyahFileForJuly19()">
-  TEST KRIYAH FILE FOR JULY 19
-</ion-button>
-
-<ion-button expand="block" color="success" (click)="fixKriyahMappingsAndUpload()">
-  FIX KRIYAH MAPPINGS & UPLOAD TO FIREBASE
-</ion-button>
-
-<ion-button expand="block" color="danger" (click)="generateReadingsWithHebCal()">
-  GENERATE READINGS WITH HEBCAL
-</ion-button>
-
-<ion-button expand="block" color="warning" (click)="testModalCreation()">
-  TEST MODAL CREATION
-</ion-button>
-<!-- <script type="text/javascript" charset="utf-8"
-src="../../components/date/heb-date-en.js"></script> -->
-<div *ngIf="readings.length === 0">
-  <p>No readings found for today ({{today}}). Click "Regenerate Database" to upload enhanced readings with haftarah.</p>
+<!-- Loading State -->
+<div *ngIf="isLoading" class="ion-text-center">
+  <ion-spinner name="crescent"></ion-spinner>
+  <p>Loading today's readings...</p>
 </div>
 
-<!-- Sabbath Reading Display -->
+<!-- Error State -->
+<div *ngIf="error" class="ion-text-center" style="color: #ff4444; padding: 20px;">
+  <p>{{ error }}</p>
+  <ion-button (click)="loadDailyReadings()" fill="outline" size="small">
+    Try Again
+  </ion-button>
+</div>
+
+<!-- No Readings State -->
+<div *ngIf="!isLoading && !error && readings.length === 0">
+  <p>No readings found for today ({{today}}).</p>
+</div>
+
+<!-- Readings Display -->
 <div *ngFor="let reading of readings; trackBy: trackByReading">
   <!-- Debug info -->
   <div style="background: #1a1a1a; color: #ccc; padding: 5px; margin: 5px; font-size: 12px; border: 1px solid #333;">
-    Debug: Reading ID: {{reading.idNo}}, isSabbath: {{reading.isSabbath}}, Parashat: {{reading.parashat}}
+    Debug: Date: {{reading.date}}, isSabbath: {{isSabbath(reading)}}, Parashah: {{reading.parashah}}
   </div>
 
-  <div *ngIf="reading.isSabbath">
-    <h3>Parshah: {{reading.parashat}}</h3>
-    <span class="heb">{{reading.parashatHeb}}</span><br />
-    {{reading.parashatEng}}
+  <div *ngIf="isSabbath(reading)">
+    <h3>Parshah: {{reading.parashah}}</h3>
+    <p>{{getDayName(reading)}} - Sabbath Reading</p>
 
     <!-- Complete Torah Reading for Sabbath -->
-    <div *ngIf="reading.weekReadings && reading.weekReadings.length > 0">
-      <h4>Complete Torah Reading:</h4>
-      <ion-item *ngFor="let weekReading of reading.weekReadings" button="true" (click)="openGateway(reading.idNo, 'torah', weekReading.torahReading)">
-        <ion-label>
-          <h5>{{weekReading.dayName}} ({{weekReading.day}}):</h5>
-          <p>{{weekReading.torahReading}}</p>
-        </ion-label>
-      </ion-item>
-    </div>
-
-    <!-- Fallback if no weekReadings -->
-    <ion-item *ngIf="!reading.weekReadings || reading.weekReadings.length === 0" button="true" (click)="handleReadingClick($event, reading.idNo, 'torah')" style="cursor: pointer; pointer-events: auto;">
+    <ion-item button="true" (click)="handleReadingClick($event, reading.date, 'torah')" style="cursor: pointer; pointer-events: auto;">
       <ion-label>
         <h4>Complete Torah Reading:</h4>
+        <p>{{formatTorahReading(reading)}}</p>
       </ion-label>
-      {{ reading.completeTorahReading || reading.torah || 'No Torah reading available' }}
     </ion-item>
 
     <!-- Haftarah Reading for Sabbath -->
-    <ion-item button="true" (click)="handleReadingClick($event, reading.idNo, 'haftarah')" style="cursor: pointer; pointer-events: auto;">
+    <ion-item *ngIf="reading.haftarah" button="true" (click)="handleReadingClick($event, reading.date, 'haftarah')" style="cursor: pointer; pointer-events: auto;">
       <ion-label>
         <h4>Haftarah:</h4>
+        <p>{{reading.haftarah}}</p>
       </ion-label>
-      {{ reading.haftarah || 'No Haftarah reading available' }}
     </ion-item>
-
 
   </div>
 
   <!-- Regular Daily Reading Display -->
-  <div *ngIf="!reading.isSabbath">
-    <h3>Parshah: {{reading.parashat}}</h3>
-    <span class="heb">{{reading.parashatHeb}}</span><br />
-    {{reading.parashatEng}}
+  <div *ngIf="!isSabbath(reading)">
+    <h3>Parshah: {{reading.parashah}}</h3>
+    <p>{{getDayName(reading)}} - Daily Reading</p>
 
-    <ion-item button="true" (click)="handleReadingClick($event, reading.idNo, 'torah')" style="cursor: pointer; pointer-events: auto;">
+    <!-- Torah Reading -->
+    <ion-item *ngIf="reading.torah" button="true" (click)="handleReadingClick($event, reading.date, 'torah')" style="cursor: pointer; pointer-events: auto;">
       <ion-label>
         <h4>Torah:</h4>
+        <p>{{formatTorahReading(reading)}}</p>
       </ion-label>
-      {{ reading.torah || 'No Torah reading available' }}
     </ion-item>
 
-    <ion-item button="true" (click)="handleReadingClick($event, reading.idNo, 'writings')" style="cursor: pointer; pointer-events: auto;">
+    <!-- Writings Reading -->
+    <ion-item *ngIf="reading.writings" button="true" (click)="handleReadingClick($event, reading.date, 'writings')" style="cursor: pointer; pointer-events: auto;">
       <ion-label>
         <h4>Ketuvium:</h4>
+        <p>{{reading.writings}}</p>
       </ion-label>
-      {{ reading.writings || 'No Writings reading available' }}
     </ion-item>
 
-    <ion-item button="true" (click)="handleReadingClick($event, reading.idNo, 'prophets')" style="cursor: pointer; pointer-events: auto;">
+    <!-- Prophets Reading -->
+    <ion-item *ngIf="reading.prophets" button="true" (click)="handleReadingClick($event, reading.date, 'prophets')" style="cursor: pointer; pointer-events: auto;">
       <ion-label>
         <h4>Nevi'im:</h4>
+        <p>{{reading.prophets}}</p>
       </ion-label>
-      {{ reading.prophets || 'No Prophets reading available' }}
     </ion-item>
 
-    <ion-item button="true" (click)="handleReadingClick($event, reading.idNo, 'britChadashah')" style="cursor: pointer; pointer-events: auto;">
+    <!-- Brit Chadashah Reading -->
+    <ion-item *ngIf="reading.britChadashah" button="true" (click)="handleReadingClick($event, reading.date, 'britChadashah')" style="cursor: pointer; pointer-events: auto;">
       <ion-label>
         <h4>Brit Chadashah:</h4>
+        <p>{{reading.britChadashah}}</p>
       </ion-label>
-      {{ reading.britChadashah || 'No Brit Chadashah reading available' }}
     </ion-item>
   </div>
 </div>

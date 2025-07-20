@@ -63,7 +63,36 @@ ion-input, ion-textarea {
   --placeholder-color: var(--ion-color-medium);
 }
 
-// Simple textarea styling - no editor dependencies
+// Quill editor styling for profile page
+.quill-container {
+  margin: 16px 0;
+
+  ::ng-deep .ql-editor {
+    background: var(--ion-color-dark);
+    color: var(--ion-color-light);
+    min-height: 150px;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid var(--ion-color-medium);
+  }
+
+  ::ng-deep .ql-toolbar {
+    background: var(--ion-color-dark-shade);
+    border: 1px solid var(--ion-color-medium);
+    border-radius: 8px 8px 0 0;
+  }
+
+  ::ng-deep .ql-container {
+    border: 1px solid var(--ion-color-medium);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+  }
+
+  ::ng-deep .ql-editor.ql-blank::before {
+    color: var(--ion-color-medium);
+    font-style: italic;
+  }
+}
 
 
 

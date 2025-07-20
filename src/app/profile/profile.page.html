@@ -61,13 +61,17 @@
 
           <ion-item>
             <ion-label position="stacked">Bio</ion-label>
-            <ion-textarea
-              [(ngModel)]="user.bio"
-              placeholder="Tell us about yourself..."
-              rows="6"
-              autoGrow="true"
-            ></ion-textarea>
           </ion-item>
+
+          <div class="quill-container">
+            <app-quill-editor-simple
+              [content]="user.bio || ''"
+              [placeholder]="'Tell us about yourself...'"
+              [theme]="'snow'"
+              [toolbarOptions]="bioToolbarOptions"
+              (contentChange)="onBioChange($event)">
+            </app-quill-editor-simple>
+          </div>
 
           <ion-button expand="block" color="success" (click)="updateUser()">
             <ion-icon name="save" slot="start"></ion-icon>

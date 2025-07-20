@@ -3,10 +3,10 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { LoadingController, AlertController, ToastController } from '@ionic/angular/standalone';
-import { IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonAvatar, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonIcon, IonTextarea } from '@ionic/angular/standalone';
-// No editor imports needed
+import { IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonAvatar, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { QuillEditorSimpleComponent } from '../components/quill-editor-simple/quill-editor-simple.component';
 import { AvatarService } from '../services/avatar.service';
 import { DataService, User } from '../services/data.service';
 import { Auth, onAuthStateChanged } from '@angular/fire/auth';
@@ -21,6 +21,7 @@ import { save } from 'ionicons/icons';
   imports: [
     CommonModule,
     FormsModule,
+    QuillEditorSimpleComponent,
     IonHeader,
     IonToolbar,
     IonButtons,
@@ -38,10 +39,8 @@ import { save } from 'ionicons/icons';
     IonItem,
     IonLabel,
     IonInput,
-
     IonButton,
-    IonIcon,
-    IonTextarea
+    IonIcon
   ]
 })
 export class ProfilePage implements OnInit {
@@ -56,7 +55,15 @@ export class ProfilePage implements OnInit {
     bio: ''
   };
 
-  // No editor configuration needed
+  // Quill editor configuration for bio
+  bioToolbarOptions = [
+    ['bold', 'italic', 'underline'],
+    ['blockquote', 'code-block'],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'header': [1, 2, 3, false] }],
+    ['link'],
+    ['clean']
+  ];
 
   constructor(
     private avatarService: AvatarService,
@@ -128,5 +135,9 @@ export class ProfilePage implements OnInit {
 
   getSafeHtml(html: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+
+  onBioChange(content: string) {
+    this.user.bio = content;
   }
 }

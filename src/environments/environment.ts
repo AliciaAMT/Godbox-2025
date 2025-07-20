@@ -16,6 +16,9 @@ export const environment = {
   apiBible: {
     apiKey: 'd48547befffed9092098d65ef059d036'
   },
+  esvBible: {
+    apiKey: '0bfba9f85e3cbc483356b81975f9fb90e0779df9'
+  },
   production: false
 };
 

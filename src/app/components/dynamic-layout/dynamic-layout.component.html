@@ -5,6 +5,18 @@
     </ion-toolbar>
   </ion-header>
   <ion-content>
+    <!-- User Profile Section -->
+    <div class="user-profile" *ngIf="profile" (click)="navigateToProfile()">
+      <ion-avatar class="profile-avatar">
+        <img *ngIf="profile.imageUrl" [src]="profile.imageUrl" [alt]="profile.userName || 'Profile Picture'">
+        <ion-icon *ngIf="!profile.imageUrl" name="person" class="default-avatar"></ion-icon>
+      </ion-avatar>
+      <div class="user-info">
+        <h3 class="user-name">{{ profile.userName || 'User' }}</h3>
+        <p class="user-email">{{ profile.email }}</p>
+      </div>
+    </div>
+
     <ion-list>
       <ion-menu-toggle auto-hide="false" menu="first">
         <ion-item routerLink="/home" routerDirection="root" routerLinkActive="active-item" lines="none">

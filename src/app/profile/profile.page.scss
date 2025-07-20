@@ -1,0 +1,69 @@
+ion-avatar {
+  width: 128px;
+  height: 128px;
+}
+
+.preview {
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+}
+
+.fallback {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  background: #bfbfbf;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+}
+
+img.ng-lazyloaded {
+  animation: fadein 1.5s;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+ion-item {
+  --border-color: #38fcff !important;
+  --background: rgb(26, 26, 26);
+  --background-hover: rgb(26, 26, 26) !important;
+  font-size: 25px !important;
+}
+
+ion-card-header {
+  --border-color: #38fcff !important;
+  --border: 1px solid #38fcff !important;
+}
+
+ion-label {
+  font-size: 21px !important;
+}
+
+ion-card {
+  --background: rgb(26, 26, 26);
+  --color: var(--ion-color-light);
+}
+
+ion-card-content {
+  --color: var(--ion-color-light);
+}
+
+ion-input, ion-textarea {
+  --color: var(--ion-color-light);
+  --placeholder-color: var(--ion-color-medium);
+}
+
+// Simple textarea styling - no editor dependencies
+
+
+

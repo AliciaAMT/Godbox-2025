@@ -30,6 +30,25 @@
   <p>No readings found for today ({{today}}).</p>
 </div>
 
+<!-- ESV Test Buttons -->
+<div class="ion-text-center" style="margin: 20px 0;">
+  <ion-button expand="block" (click)="testESVBible()" color="success">
+    TEST ESV API CONNECTION
+  </ion-button>
+
+  <ion-button expand="block" (click)="checkBibleTranslations()" color="success">
+    CHECK BIBLE API
+  </ion-button>
+
+  <ion-button expand="block" (click)="findESVBible()" color="success">
+    TEST ESV PASSAGE
+  </ion-button>
+
+  <ion-button expand="block" (click)="testMinimalESV()" color="warning">
+    TEST MINIMAL ESV
+  </ion-button>
+</div>
+
 <!-- Readings Display -->
 <div *ngFor="let reading of readings; trackBy: trackByReading">
   <!-- Debug info -->

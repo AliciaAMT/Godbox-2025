@@ -41,15 +41,15 @@ export interface ApiBibleResponse {
 })
 export class BibleApiService {
   private readonly baseUrl = 'https://api.scripture.api.bible/v1';
-  private readonly bibleId = '65eec8e0b60e656b-01'; // KJV Bible ID
+  private readonly bibleId = 'de4e12af7f28f599-02'; // KJV Bible ID (working)
 
   // Alternative Bible IDs to try if the main one fails
   // Updated based on test results - only working Bible IDs
   private readonly alternativeBibleIds = [
-    'de4e12af7f28f599-02', // ESV
-    '65eec8e0b60e656b-01', // KJV
-    '9879dbb7cfe39e4d-01', // NASB
-    '179568874c45066f-01', // NKJV
+    'de4e12af7f28f599-02', // KJV (primary - working)
+    '65eec8e0b60e656b-01', // Free Bible Version
+    '9879dbb7cfe39e4d-01', // World English Bible
+    '179568874c45066f-01', // Douay-Rheims
   ];
 
   constructor(private http: HttpClient) { }
@@ -98,7 +98,7 @@ export class BibleApiService {
   /**
    * Get a passage of scripture by reference
    */
-  getPassage(reference: string): Observable<BiblePassage | null> {
+    getPassage(reference: string): Observable<BiblePassage | null> {
     const apiKey = environment.apiBible?.apiKey;
 
     if (!apiKey) {
@@ -1469,5 +1469,179 @@ export class BibleApiService {
     };
 
     return from(testBibleIds());
+  }
+
+  /**
+   * Get Bible information to identify the correct ESV ID
+   */
+  getBibleInfo(bibleId: string): Observable<any> {
+    const apiKey = environment.apiBible?.apiKey;
+    if (!apiKey) {
+      return from(Promise.resolve(null));
+    }
+
+    const headers = new HttpHeaders({
+      'api-key': apiKey,
+      'Content-Type': 'application/json'
+    });
+
+    const url = `${this.baseUrl}/bibles/${bibleId}`;
+    console.log(`Getting Bible info for ID: ${bibleId}`);
+
+    return this.http.get<any>(url, { headers }).pipe(
+      map(response => {
+        console.log(`Bible info for ${bibleId}:`, response);
+        return response;
+      }),
+      catchError(error => {
+        console.error(`Error getting Bible info for ${bibleId}:`, error);
+        return from(Promise.resolve(null));
+      })
+    );
+  }
+
+  /**
+   * Find ESV Bible ID by searching all available Bibles
+   */
+  findESVBible(): Observable<any> {
+    const apiKey = environment.apiBible?.apiKey;
+    if (!apiKey) {
+      return from(Promise.resolve(null));
+    }
+
+    const headers = new HttpHeaders({
+      'api-key': apiKey,
+      'Content-Type': 'application/json'
+    });
+
+    const url = `${this.baseUrl}/bibles`;
+    console.log('Searching for ESV Bible...');
+
+    return this.http.get<any>(url, { headers }).pipe(
+      map(response => {
+        if (response && response.data) {
+          const bibles = response.data;
+          console.log(`Found ${bibles.length} available Bibles`);
+
+                              // Look for ESV in the Bible names - be more specific
+          const esvBibles = bibles.filter((bible: any) =>
+            bible.name?.toLowerCase().includes('esv') ||
+            bible.name?.toLowerCase().includes('english standard version') ||
+            bible.name?.toLowerCase().includes('english standard') ||
+            bible.name?.toLowerCase().includes('crossway') ||
+            bible.name?.toLowerCase().includes('standard version') && bible.language?.name?.toLowerCase().includes('english')
+          );
+
+          // Also look for English Bibles that might be ESV
+          const englishBibles = bibles.filter((bible: any) =>
+            bible.language?.name?.toLowerCase().includes('english') &&
+            (bible.name?.toLowerCase().includes('standard') ||
+             bible.name?.toLowerCase().includes('modern') ||
+             bible.name?.toLowerCase().includes('contemporary'))
+          );
+
+          console.log('ESV Bibles found:', esvBibles.map((b: any) => `${b.name} (${b.id})`));
+
+          console.log('English Bibles found:', englishBibles.map((b: any) => `${b.name} (${b.id})`));
+
+          return {
+            totalBibles: bibles.length,
+            esvBibles: esvBibles,
+            englishBibles: englishBibles,
+            allBibles: bibles.slice(0, 20) // First 20 for reference
+          };
+        }
+        return null;
+      }),
+      catchError(error => {
+        console.error('Error searching for ESV Bible:', error);
+        return from(Promise.resolve(null));
+      })
+    );
+  }
+
+  /**
+   * Test ESV Bible ID and API key specifically
+   */
+  testESVBible(): Observable<any> {
+    const esvApiKey = environment.esvBible?.apiKey;
+    const regularApiKey = environment.apiBible?.apiKey;
+
+    if (!esvApiKey) {
+      console.warn('ESV Bible API key not configured');
+      return from(Promise.resolve(null));
+    }
+
+    console.log('Testing ESV Bible with API key:', esvApiKey.substring(0, 10) + '...');
+    console.log('Testing with regular API key:', regularApiKey.substring(0, 10) + '...');
+
+    // Test different possible ESV Bible IDs
+    const possibleESVBibleIds = [
+      'de4e12af7f28f599-02', // Current ESV ID
+      'f421fe261da7624f-01', // Alternative ESV ID
+      '9879dbb7cfe39e4d-01', // NASB (similar to ESV)
+      '65eec8e0b60e656b-01', // KJV (control)
+      'f421fe261da7624f-02', // Another ESV variant
+      '9879dbb7cfe39e4d-02', // Another NASB variant
+      'f421fe261da7624f-03', // ESV 2016
+      '9879dbb7cfe39e4d-03', // ESV 2011
+    ];
+
+    // Test both authentication methods with both API keys
+    const testAuthMethods = [
+      { name: 'ESV api-key header', headers: new HttpHeaders({ 'api-key': esvApiKey, 'Content-Type': 'application/json' }) },
+      { name: 'ESV Authorization header', headers: new HttpHeaders({ 'Authorization': `Token ${esvApiKey}`, 'Content-Type': 'application/json' }) },
+      { name: 'Regular api-key header', headers: new HttpHeaders({ 'api-key': regularApiKey, 'Content-Type': 'application/json' }) },
+      { name: 'Regular Authorization header', headers: new HttpHeaders({ 'Authorization': `Token ${regularApiKey}`, 'Content-Type': 'application/json' }) }
+    ];
+
+    const testVerse = 'Gen.1.1';
+
+        // Test each Bible ID with each authentication method
+    const tests: Observable<any>[] = [];
+
+    testAuthMethods.forEach(authMethod => {
+      possibleESVBibleIds.forEach(bibleId => {
+        const url = `${this.baseUrl}/bibles/${bibleId}/passages/${encodeURIComponent(testVerse)}`;
+        console.log(`Testing ESV Bible ID: ${bibleId} with ${authMethod.name} -> ${url}`);
+
+        const test = this.http.get<any>(url, { headers: authMethod.headers }).pipe(
+          map(response => ({
+            bibleId,
+            authMethod: authMethod.name,
+            success: true,
+            response
+          })),
+          catchError(error => {
+            console.log(`ESV Bible ID ${bibleId} with ${authMethod.name} failed: ${error.status} ${error.statusText}`);
+            return from(Promise.resolve({
+              bibleId,
+              authMethod: authMethod.name,
+              success: false,
+              error
+            }));
+          })
+        );
+
+        tests.push(test);
+      });
+    });
+
+    return from(tests).pipe(
+      mergeMap(test => test),
+      toArray(),
+      map((results: any[]) => {
+        const successful = results.filter((r: any) => r.success);
+        const failed = results.filter((r: any) => !r.success);
+        console.log(`ESV Bible test results: ${successful.length} successful, ${failed.length} failed`);
+        console.log('Successful combinations:', successful.map((r: any) => `${r.bibleId} with ${r.authMethod}`));
+        console.log('Failed combinations:', failed.map((r: any) => `${r.bibleId} with ${r.authMethod}`));
+        return { successful, failed, results };
+      }),
+      catchError(error => {
+        console.error('Error testing ESV Bible:', error);
+        return from(Promise.resolve(null));
+      })
+    );
   }
 }

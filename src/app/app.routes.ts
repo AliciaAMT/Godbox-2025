@@ -133,6 +133,11 @@ export const routes: Routes = [
     loadComponent: () => import('./components/database-updater/database-updater.component').then(m => m.DatabaseUpdaterComponent)
   },
   {
+    path: 'profile/:id',
+    loadComponent: () => import('./profile/profile.page').then(m => m.ProfilePage),
+    canActivate: [AuthGuard]
+  },
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full'

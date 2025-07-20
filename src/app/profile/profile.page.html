@@ -1,0 +1,80 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <h2 class="ion-text-center">Profile</h2>
+
+  <div class="preview" *ngIf="profile?.id === user?.id">
+    <ion-avatar (click)="changeImage()">
+      <img *ngIf="profile?.imageUrl; else placeholder_avatar;" [src]="profile?.imageUrl" [alt]="profile?.userName || 'Profile Picture'">
+      <ng-template #placeholder_avatar>
+        <div class="fallback">
+          <p>Select avatar</p>
+        </div>
+      </ng-template>
+    </ion-avatar>
+  </div>
+
+  <div class="preview" *ngIf="profile?.id !== user?.id">
+    <ion-avatar>
+      <img *ngIf="user?.imageUrl; else placeholder_avatar;" [src]="user?.imageUrl" [alt]="user?.userName || 'Profile Picture'">
+      <ng-template #placeholder_avatar>
+        <div class="fallback">
+          <p>Select avatar</p>
+        </div>
+      </ng-template>
+    </ion-avatar>
+  </div>
+
+  <h3 class="ion-text-center" *ngIf="user?.userName">{{ user?.userName }}</h3>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeSm="8" offsetSm="2">
+        <ion-card *ngIf="user?.userRole">
+          <ion-card-header>
+            <ion-card-title>
+              <h4 class="ion-text-center">Bio</h4>
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div *ngIf="user.bio" [innerHTML]="getSafeHtml(user.bio)"></div>
+            <p *ngIf="!user.bio" class="ion-text-center">No bio available</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="profile?.id === id">
+      <ion-col sizeSm="8" offsetSm="2">
+        <div class="ion-padding">
+          <ion-item>
+            <ion-label position="stacked">User Name</ion-label>
+            <ion-input [(ngModel)]="user.userName"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Bio</ion-label>
+            <ion-textarea
+              [(ngModel)]="user.bio"
+              placeholder="Tell us about yourself..."
+              rows="6"
+              autoGrow="true"
+            ></ion-textarea>
+          </ion-item>
+
+          <ion-button expand="block" color="success" (click)="updateUser()">
+            <ion-icon name="save" slot="start"></ion-icon>
+            Update
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

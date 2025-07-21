@@ -8,86 +8,133 @@
  */
 
 import {setGlobalOptions} from "firebase-functions";
-import * as functions from 'firebase-functions';
+import { onRequest } from "firebase-functions/v2/https";
 import * as admin from 'firebase-admin';
+import sharp from 'sharp';
+import { Request, Response } from 'express';
+import Busboy from 'busboy';
 
 admin.initializeApp();
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+// Set global options for all functions
+setGlobalOptions({
+  maxInstances: 10,
+});
 
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
-
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
-export const uploadImage = functions.https.onRequest(async (req, res) => {
-  // Enable CORS
+export const uploadImage = onRequest({
+  memory: '1GiB',
+  timeoutSeconds: 60
+}, async (req: Request, res: Response) => {
+  // Set CORS headers FIRST, before any other processing
   res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type');
+  res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.set('Access-Control-Max-Age', '86400');
 
+  // Handle preflight requests
   if (req.method === 'OPTIONS') {
     res.status(200).send('');
     return;
   }
 
   if (req.method !== 'POST') {
-    res.status(405).send('Method not allowed');
+    res.status(405).json({ error: 'Method not allowed' });
     return;
   }
 
   try {
-    // Get the image data from the request
-    const imageData = req.body;
+    console.log('=== UPLOAD REQUEST START ===');
+    const busboy = Busboy({ headers: req.headers });
+    let fileBuffer: Buffer[] = [];
+    let fileSize = 0;
+    let userId = 'anonymous';
 
-    if (!imageData || !imageData.data) {
-      res.status(400).json({ error: 'No image data provided' });
-      return;
+    // Auth
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.substring(7);
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        userId = decodedToken.uid;
+        console.log('Authenticated user:', userId);
+      } catch (error) {
+        console.log('Auth error:', error);
+      }
     }
 
-    // Decode base64 image data
-    const base64Data = imageData.data.replace(/^data:image\/\w+;base64,/, '');
-    const buffer = Buffer.from(base64Data, 'base64');
-
-    // Generate a unique filename
-    const filename = `froala-images/${Date.now()}-${Math.random().toString(36).substring(2)}.jpg`;
-
-    // Upload to Firebase Storage
-    const bucket = admin.storage().bucket();
-    const file = bucket.file(filename);
-
-    await file.save(buffer, {
-      metadata: {
-        contentType: 'image/jpeg',
-      },
+    busboy.on('file', (fieldname: string, file: NodeJS.ReadableStream, filename: string, encoding: string, mimetype: string) => {
+      console.log('File received:', filename, mimetype);
+      file.on('data', (data: Buffer) => {
+        fileBuffer.push(data);
+        fileSize += data.length;
+      });
+      file.on('limit', () => {
+        console.log('File size limit reached');
+      });
     });
 
-    // Make the file publicly accessible
-    await file.makePublic();
-
-    // Get the public URL
-    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
-
-    // Return the URL in the format Froala expects
-    res.status(200).json({
-      link: publicUrl
+    busboy.on('finish', async () => {
+      try {
+        const buffer = Buffer.concat(fileBuffer);
+        console.log('File size:', buffer.length);
+        if (buffer.length === 0) {
+          res.status(400).json({ error: 'No file uploaded' });
+          return;
+        }
+        if (buffer.length > 25 * 1024 * 1024) {
+          res.status(400).json({ error: 'File size exceeds 25MB limit' });
+          return;
+        }
+        // Optimize image
+        let optimizedBuffer: Buffer;
+        try {
+          const image = sharp(buffer);
+          const metadata = await image.metadata();
+          if (metadata.width && metadata.height && (metadata.width > 1920 || metadata.height > 1080)) {
+            image.resize(1920, 1080, { fit: 'inside', withoutEnlargement: true });
+          }
+          optimizedBuffer = await image.jpeg({ quality: 80 }).toBuffer();
+        } catch (err) {
+          console.log('Sharp error, using original buffer:', err);
+          optimizedBuffer = buffer;
+        }
+        // Upload
+        const timestamp = Date.now();
+        const randomString = Math.random().toString(36).substring(2, 15);
+        const outFile = `${timestamp}_${randomString}.jpg`;
+        const filePath = `public/uploads/${userId}/${outFile}`;
+        const bucket = admin.storage().bucket();
+        const fileRef = bucket.file(filePath);
+        await fileRef.save(optimizedBuffer, {
+          metadata: {
+            contentType: 'image/jpeg',
+            cacheControl: 'public, max-age=31536000'
+          }
+        });
+        await fileRef.makePublic();
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filePath}`;
+        console.log('File uploaded successfully:', publicUrl);
+        res.status(200).json({ link: publicUrl });
+      } catch (err) {
+        console.error('Processing error:', err);
+        res.status(500).json({ error: 'Upload failed', details: err instanceof Error ? err.message : 'Unknown error' });
+      }
     });
 
+    busboy.on('error', (err: Error) => {
+      console.error('Busboy error:', err);
+      res.status(500).json({ error: 'Busboy error', details: err instanceof Error ? err.message : 'Unknown error' });
+    });
+
+    if ((req as any).rawBody) {
+      console.log('Using req.rawBody for busboy');
+      busboy.end((req as any).rawBody);
+    } else {
+      console.log('Using req.pipe for busboy');
+      req.pipe(busboy);
+    }
   } catch (error) {
-    console.error('Error uploading image:', error);
-    res.status(500).json({ error: 'Failed to upload image' });
+    console.error('Function error:', error);
+    res.status(500).json({ error: 'Function execution failed', details: error instanceof Error ? error.message : 'Unknown error' });
   }
 });

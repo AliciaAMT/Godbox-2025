@@ -111,6 +111,19 @@ export class AuthService {
     return !!this.currentUser;
   }
 
+  async getIdToken(): Promise<string | null> {
+    try {
+      const user = this.currentUser;
+      if (user) {
+        return await user.getIdToken();
+      }
+      return null;
+    } catch (error) {
+      console.error('Error getting ID token:', error);
+      return null;
+    }
+  }
+
   private getErrorMessage(errorCode: string): string {
     switch (errorCode) {
       case 'auth/user-not-found':

@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, NgZone, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 declare var FroalaEditor: any;
 
@@ -17,7 +18,7 @@ export class FroalaEditorComponent implements AfterViewInit, OnDestroy {
 
   private editorInstance: any;
 
-  constructor(private zone: NgZone) {}
+  constructor(private zone: NgZone, private authService: AuthService) {}
 
   ngAfterViewInit() {
     // Wait for FroalaEditor to be available
@@ -34,8 +35,11 @@ export class FroalaEditorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private initializeEditor() {
-    this.zone.runOutsideAngular(() => {
+  private async initializeEditor() {
+    this.zone.runOutsideAngular(async () => {
+      // Get auth token
+      const authToken = await this.authService.getIdToken();
+
       this.editorInstance = new FroalaEditor(this.froalaContainer.nativeElement, {
         events: {
           'contentChanged': () => {
@@ -43,14 +47,41 @@ export class FroalaEditorComponent implements AfterViewInit, OnDestroy {
               this.content = this.editorInstance.html.get();
               this.contentChange.emit(this.content);
             });
+          },
+          'image.beforeUpload': (images: any) => {
+            console.log('Image upload starting:', images);
+          },
+          'image.uploaded': (response: any) => {
+            console.log('Image upload successful:', response);
+          },
+          'image.error': (error: any, response: any) => {
+            console.error('Image upload error:', error, response);
           }
         },
-        imageUpload: false, // Disabled for now - can be enabled when backend is ready
-        // imageUploadURL: 'https://us-central1-the-way-417.cloudfunctions.net/uploadImage', // Firebase Cloud Function
+        imageUpload: true,
+        imageUploadURL: 'https://us-central1-the-way-417.cloudfunctions.net/uploadImage',
+        imageUploadToS3: false,
+        imageUploadMethod: 'POST',
+        imageUploadParam: 'file',
         toolbarButtons: [
           'bold', 'italic', 'underline', '|',
           'insertImage', 'insertLink', 'undo', 'redo'
         ],
+        // Image upload configuration with auth
+        imageUploadParams: authToken ? {
+          authToken: authToken
+        } : {},
+        imageMaxSize: 25 * 1024 * 1024, // 25MB max for larger files
+        imageAllowedTypes: ['jpeg', 'jpg', 'png', 'gif', 'webp'],
+        // Image display options
+        imageDisplay: 'inline',
+        imageDefaultWidth: 300,
+        imageDefaultHeight: 200,
+        // Image editing options
+        imageEditButtons: ['imageReplace', 'imageAlign', 'imageCaption', 'imageRemove'],
+        // Sample images for users to choose from
+        imagePaste: true,
+        imageInsertButtons: ['imageBack', '|', 'imageUpload', 'imageByURL'],
         theme: 'gray',
         // Dark theme configuration
         colorsBackground: ['#000000', '#1a1a1a', '#333333'],

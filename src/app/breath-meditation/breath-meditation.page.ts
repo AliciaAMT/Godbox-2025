@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonFab, IonFabButton, IonIcon, IonGrid, IonRow, IonCol, IonItem } from '@ionic/angular/standalone';
 import { MenuHeaderComponent } from '../components/menu-header/menu-header.component';
 import { DataService } from '../services/data.service';
 import { Post } from '../services/data.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-breath-meditation',
@@ -14,7 +16,13 @@ import { Post } from '../services/data.service';
     IonFab,
     IonFabButton,
     IonIcon,
-    MenuHeaderComponent
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonItem,
+    MenuHeaderComponent,
+    CommonModule,
+    RouterModule
   ]
 })
 export class BreathMeditationPage implements OnInit {
@@ -26,16 +34,13 @@ export class BreathMeditationPage implements OnInit {
   holdTime = this.totalTime / 5;
 
   posts: Post[] = [];
+  collectionOverview: Post | null = null;
 
   constructor(private dataService: DataService) {
-    this.dataService.getPublicPosts().subscribe(res => {
-      this.posts = res.filter(post => {
-        if (!post.category) return false;
-        if (Array.isArray(post.category)) {
-          return post.category.some(cat => typeof cat === 'string' && cat.toLowerCase().includes('meditation for christians'));
-        }
-        return typeof post.category === 'string' && post.category.toLowerCase().includes('meditation for christians');
-      });
+    // Get posts from "Meditation for Christians" collection
+    this.dataService.getPostsBySerieId('Meditation for Christians').subscribe(res => {
+      this.posts = res.filter(post => post.seqNo >= 1 && post.privacy !== 'private');
+      this.collectionOverview = res.find(post => post.seqNo === 1) || null;
     });
   }
 

@@ -1,23 +1,47 @@
 <app-menu-header></app-menu-header>
-
 <ion-content class="ion-text-center">
   <ion-fab vertical="top" horizontal="start" slot="fixed">
     <ion-fab-button routerLink="/home">
       <ion-icon name="arrow-back"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-<h2 class="ion-text-center">
-    Breath Meditation
-</h2>
-<div class="margin">
-<div [class]="container">
-<div class="circle"></div>
-<p id="text" [innerHTML]="text"></p>
-<div class="pointer-container">
-  <div class="pointer">
+
+  <!-- Breathing Animation -->
+  <div class="container {{ container }}">
+    <div class="circle"></div>
+    <p id="text">{{ text }}</p>
   </div>
-</div>
-<div class="gradient-circle"></div>
-</div>
-</div>
+
+  <!-- Collection Overview and Table of Contents -->
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeXl="4" offsetXl="4" sizeLg="6" offsetLg="3" sizeMd="8" offsetMd="2" sizeSm="10" offsetSm="1">
+        <div class="ion-padding">
+          <h2>Meditation Contents</h2>
+          <div *ngFor="let post of posts">
+            <ion-item [routerLink]="['/admin-dash/posts/view-post', post.id]" class="" lines="none">
+              {{ post.title }}
+            </ion-item>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col sizeXl="6" offsetXl="3" sizeLg="8" offsetLg="2" sizeMd="10" offsetMd="1">
+        <div *ngIf="collectionOverview">
+          <h2 class="title">{{ collectionOverview?.title }}</h2>
+          <div class="preview">
+            <div *ngIf="!collectionOverview?.imageUrl; else placeholder;">
+              <div class="fallback">
+              </div>
+            </div>
+            <ng-template #placeholder>
+              <img class="ion-padding" [src]="collectionOverview?.imageUrl" />
+            </ng-template>
+          </div>
+          <p [innerHTML]="collectionOverview?.content"></p>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

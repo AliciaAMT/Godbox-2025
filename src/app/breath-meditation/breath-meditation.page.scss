@@ -105,3 +105,109 @@ ion-content {
 .margin {
   padding-top: 8rem;
 }
+
+@media(min-width: 1080px) {
+  ion-img {
+    width: 50%;
+    height: auto;
+  }
+}
+@media(max-width: 1080px) {
+  ion-img {
+    width: 100%;
+    height: auto;
+    padding: 0px !important;
+  }
+  ion-card-header {
+    padding: 0px !important;
+  }
+}
+
+.preview {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.fallback {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  background: #bfbfbf;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+}
+
+ion-item {
+  --background: rgb(0, 0, 0);
+  font-size: 25px !important;
+  color: #38fcff !important;
+  width: 100%;
+}
+
+ion-label {
+  font-size: 21px !important;
+}
+
+h2 {
+  font-size: 40px !important;
+  font-weight: 500 !important;
+}
+
+ion-content {
+  --background: rgb(0, 0, 0);
+}
+
+// Original breathing animation styles
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  margin: 0;
+}
+
+.circle {
+  background: #010f1c;
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  -webkit-box-shadow: 0 0 0 0 #010f1c;
+  box-shadow: 0 0 0 0 #010f1c;
+  margin: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.container.grow {
+  animation: grow 3s linear forwards;
+}
+
+.container.shrink {
+  animation: shrink 3s linear forwards;
+}
+
+@keyframes grow {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes shrink {
+  from {
+    transform: scale(1.2);
+  }
+  to {
+    transform: scale(1);
+  }
+}

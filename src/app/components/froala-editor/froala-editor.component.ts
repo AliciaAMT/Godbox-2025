@@ -64,8 +64,19 @@ export class FroalaEditorComponent implements AfterViewInit, OnDestroy {
         imageUploadMethod: 'POST',
         imageUploadParam: 'file',
         toolbarButtons: [
-          'bold', 'italic', 'underline', '|',
-          'insertImage', 'insertLink', 'undo', 'redo'
+          'undo', 'redo', '|',
+          'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'clearFormatting', '|',
+          'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineStyle', '|',
+          'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'paragraphFormat', 'paragraphStyle', 'lineHeight', 'quote', '|',
+          'insertImage', 'insertVideo', 'insertTable', 'insertLink', 'emoticons', 'specialCharacters', 'insertHR', 'insertFile', 'embedly', 'insertCode', '|',
+          'fullscreen', 'print', 'selectAll', 'html', 'help'
+        ],
+        toolbarButtonsXS: [
+          'undo', 'redo', '|',
+          'bold', 'italic', 'underline', 'strikeThrough', '|',
+          'fontFamily', 'fontSize', 'textColor', 'backgroundColor', '|',
+          'align', 'formatOL', 'formatUL', '|',
+          'insertImage', 'insertLink', 'fullscreen', 'html'
         ],
         // Image upload configuration with auth
         imageUploadParams: authToken ? {

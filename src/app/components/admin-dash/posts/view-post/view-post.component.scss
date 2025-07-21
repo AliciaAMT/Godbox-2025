@@ -1,1 +1,89 @@
 // View post component styles
+
+.post-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #ffffff;
+}
+
+.post-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.post-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.post-image-container {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.post-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.post-content {
+  line-height: 1.8;
+  font-size: 1.1rem;
+  color: #e0e0e0;
+}
+
+.content-html {
+  text-align: left;
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #ffffff;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+
+  p {
+    margin-bottom: 1em;
+    text-align: left;
+  }
+
+  blockquote {
+    border-left: 4px solid var(--ion-color-primary);
+    padding-left: 1em;
+    margin: 1.5em 0;
+    font-style: italic;
+    color: #cccccc;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 1em 0;
+  }
+}
+
+.loading-container {
+  text-align: center;
+  padding: 50px 20px;
+  color: #ffffff;
+
+  p {
+    margin-top: 20px;
+    font-size: 1.1rem;
+  }
+}
+
+ion-content {
+  --background: #000000;
+}
+
+ion-fab-button {
+  --background: var(--ion-color-primary);
+}

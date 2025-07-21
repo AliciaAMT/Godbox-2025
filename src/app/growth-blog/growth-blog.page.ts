@@ -21,7 +21,14 @@ export class GrowthBlogPage implements OnInit {
 
   constructor() {
     this.dataService.getPublicPosts().subscribe(res => {
-      this.posts = res;
+      this.posts = res.filter(post => {
+        const allowedCategories = ['general', 'inspirations', 'meditations'];
+        const cat = post.category;
+        if (Array.isArray(cat)) {
+          return cat.some(c => typeof c === 'string' && allowedCategories.includes(c.trim().toLowerCase()));
+        }
+        return typeof cat === 'string' && allowedCategories.includes(cat.trim().toLowerCase());
+      });
     });
   }
 

@@ -84,7 +84,19 @@ export class AddPostComponent implements OnInit {
 
   async savePost() {
     if (this.postForm.valid) {
-      const post: Post = this.postForm.value;
+      const userId = this.auth.currentUser?.uid || 'anonymous';
+      let post: Post = this.postForm.value;
+      post.author = userId;
+      post.date = new Date().toISOString();
+      // Auto-generate description if blank
+      if (!post.description || post.description.trim() === '') {
+        // Prefer preview, fallback to content
+        const html = post.preview || post.content || '';
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        const text = tmp.textContent || tmp.innerText || '';
+        post.description = text.substring(0, 150) + (text.length > 150 ? '...' : '');
+      }
       await this.dataService.addPost(post);
       this.router.navigateByUrl('/admin-dash/posts');
     } else {

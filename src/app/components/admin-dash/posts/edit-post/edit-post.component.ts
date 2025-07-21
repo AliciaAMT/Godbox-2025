@@ -8,6 +8,7 @@ import { addIcons } from 'ionicons';
 import { save, arrowBack, trash, create } from 'ionicons/icons';
 import { FroalaEditorComponent } from '../../../froala-editor/froala-editor.component';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { Auth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-edit-post',
@@ -52,7 +53,8 @@ export class EditPostComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private auth: Auth
   ) {
     addIcons({arrowBack,save,trash,create});
     this.dataService.getCategories().subscribe(res => {
@@ -93,7 +95,22 @@ export class EditPostComponent implements OnInit {
 
   async savePost() {
     if (this.postForm.valid) {
-      const post: Post = { ...this.postForm.value, id: this.id };
+      let post: Post = { ...this.postForm.value, id: this.id };
+      // Preserve author and date if not changed
+      if (!post.author) {
+        post.author = this.auth.currentUser?.uid || 'anonymous';
+      }
+      if (!post.date) {
+        post.date = new Date().toISOString();
+      }
+      // Auto-generate description if blank
+      if (!post.description || post.description.trim() === '') {
+        const html = post.preview || post.content || '';
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        const text = tmp.textContent || tmp.innerText || '';
+        post.description = text.substring(0, 150) + (text.length > 150 ? '...' : '');
+      }
       await this.dataService.updatePost(post);
       this.router.navigateByUrl('/admin-dash/posts');
     } else {

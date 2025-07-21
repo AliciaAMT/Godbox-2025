@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, IonFab, IonFabButton } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, IonFab, IonFabButton, IonSpinner } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Location } from '@angular/common';
 import { DataService, Post, User } from '../../../../services/data.service';
+import { MenuHeaderComponent } from '../../../menu-header/menu-header.component';
 
 @Component({
   selector: 'app-view-post',
@@ -26,7 +28,9 @@ import { DataService, Post, User } from '../../../../services/data.service';
     IonButton,
     IonIcon,
     IonFab,
-    IonFabButton
+    IonFabButton,
+    IonSpinner,
+    MenuHeaderComponent
   ]
 })
 export class ViewPostComponent implements OnInit {
@@ -37,7 +41,8 @@ export class ViewPostComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {
     this.dataService.getUsers().subscribe(res => {
       this.users = res;
@@ -50,6 +55,16 @@ export class ViewPostComponent implements OnInit {
       this.dataService.getPostById(this.id).subscribe(res => {
         this.post = res;
       });
+    }
+  }
+
+  goBack() {
+    // Check if there's a previous page in history
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      // Default to growth blog if no previous page
+      this.router.navigate(['/growth-blog']);
     }
   }
 

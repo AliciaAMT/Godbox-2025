@@ -21,7 +21,7 @@
             </ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <form [formGroup]="postForm">
+            <form [formGroup]="postForm" (ngSubmit)="addPost()">
               <div class="preview" (click)="onImageSelectedClick()">
                 <div *ngIf="!postForm.get('imageUrl')?.value; else placeholder">
                   <div class="fallback">
@@ -69,7 +69,7 @@
                   <app-froala-editor formControlName="content"></app-froala-editor>
                 </ion-item>
               </div>
-              <ion-button expand="block" color="success" (click)="addPost()">
+              <ion-button expand="block" color="success" type="submit">
                 <ion-icon name="create" slot="start"></ion-icon>
                 Post
               </ion-button>

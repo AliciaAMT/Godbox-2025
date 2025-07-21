@@ -14,9 +14,9 @@
       </ion-row>
       <ion-row>
         <ng-container *ngFor="let post of posts">
-          <ion-col *ngIf="post.seqNo !== 1 && post.seqNo !== 0" class="ion-text-center" sizeXl="4" offsetXl="0" sizeLg="4" offsetLg="0" sizeMd="6" offsetMd="0" sizeSm="8" offsetSm="2" sizeXs="10" offsetXs="1">
+          <ion-col class="ion-text-center" sizeXl="4" offsetXl="0" sizeLg="4" offsetLg="0" sizeMd="6" offsetMd="0" sizeSm="8" offsetSm="2" sizeXs="10" offsetXs="1">
             <div *ngIf="post.privacy !== 'private'" style="height: 100%;">
-              <ion-card style="height: 100%;" [routerLink]="['/growth-posts', post.id]" routerDirection="root">
+              <ion-card style="height: 100%;" [routerLink]="['/admin-dash/posts/view-post', post.id]" routerDirection="root">
                 <ion-card-header>
                   <ion-img [src]="post.imageUrl"></ion-img>
                   <ion-card-title><h2>

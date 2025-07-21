@@ -7,6 +7,7 @@ import { Firestore, doc } from '@angular/fire/firestore';
 import { DataService, Serie, User } from '../../services/data.service';
 import { addIcons } from 'ionicons';
 import { logOut, person } from 'ionicons/icons';
+import { Post } from '../../services/data.service';
 
 @Component({
   selector: 'app-dynamic-layout',
@@ -34,6 +35,7 @@ import { logOut, person } from 'ionicons/icons';
 export class DynamicLayoutComponent implements OnInit {
   profile: User | null = null;
   series: Serie[] = [];
+  specialPages: Post[] = [];
 
   constructor(
     private router: Router,
@@ -65,7 +67,16 @@ export class DynamicLayoutComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Load special pages (e.g., privacy policy, license, meditation, etc.)
+    this.dataService.getPosts().subscribe(posts => {
+      // Assume special pages have a 'slug' in keywords or a type field
+      this.specialPages = posts.filter(p => {
+        const slugs = ['privacy-policy', 'license', 'meditation-for-christians'];
+        return p.keywords && slugs.some(slug => p.keywords.toLowerCase().includes(slug));
+      });
+    });
+  }
 
   async logout() {
     await this.auth.signOut();
@@ -76,5 +87,13 @@ export class DynamicLayoutComponent implements OnInit {
     if (this.profile?.id) {
       this.router.navigateByUrl(`/profile/${this.profile.id}`);
     }
+  }
+
+  getPageSlug(page: Post): string {
+    if (page.keywords) {
+      const slug = page.keywords.split(',')[0].trim();
+      if (slug) return slug.toLowerCase();
+    }
+    return page.title ? page.title.toLowerCase().replace(/\s+/g, '-') : '';
   }
 }

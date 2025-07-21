@@ -1,1 +1,41 @@
 // Add post component styles
+.preview {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.fallback {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  background: #bfbfbf;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+}
+
+ion-label {
+  font-size: 24px !important;
+  padding-bottom: 8px !important;
+  color: #e0e0e0 !important;
+  margin-bottom: 16px !important;
+  display: block;
+}
+
+textarea, input, app-froala-editor {
+  font-size: 20px !important;
+  padding: 10px !important;
+  background: #222 !important;
+  color: #fff !important;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+ion-item {
+  --background: rgb(26, 26, 26);
+  --background-hover: rgb(26, 26, 26) !important;
+  font-size: 25px !important;
+  margin-bottom: 12px;
+}

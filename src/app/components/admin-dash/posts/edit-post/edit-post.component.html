@@ -14,58 +14,73 @@
   <ion-grid>
     <ion-row>
       <ion-col sizeLg="6" offsetLg="3" sizeMd="8" offsetMd="2" sizeSm="10" offsetSm="1">
-        <ion-card *ngIf="post">
+        <ion-card>
           <ion-card-header>
             <ion-card-title class="ion-text-center">
               Edit Post
             </ion-card-title>
           </ion-card-header>
-          <ion-card-content *ngIf="post">
-            <ion-item class="ion-padding">
-              <ion-label position="stacked">Title</ion-label>
-              <ion-input [(ngModel)]="post.title"></ion-input>
-            </ion-item>
-            <ion-item class="ion-padding">
-              <ion-label position="stacked">Description</ion-label>
-              <ion-textarea [(ngModel)]="post.description"></ion-textarea>
-            </ion-item>
-            <ion-item class="ion-padding">
-              <ion-label position="stacked">Category</ion-label>
-              <ion-select [(ngModel)]="post.category" [multiple]="true">
-                <ion-select-option *ngFor="let category of categories" value="{{ category.categoryName }}">{{ category.categoryName }}</ion-select-option>
-              </ion-select>
-            </ion-item>
-            <ion-item class="ion-padding">
-              <ion-label position="stacked">Privacy</ion-label>
-              <ion-select [(ngModel)]="post.privacy">
-                <ion-select-option value="public">Public</ion-select-option>
-                <ion-select-option value="private">Private</ion-select-option>
-                <ion-select-option value="anonymous">Anonymous</ion-select-option>
-              </ion-select>
-            </ion-item>
-            <ion-item class="ion-padding">
-              <ion-label position="stacked">Keywords</ion-label>
-              <ion-textarea [(ngModel)]="post.keywords"></ion-textarea>
-            </ion-item>
-            <ion-item class="ion-padding">
-              <ion-label position="stacked">Preview</ion-label>
-              <ion-textarea [(ngModel)]="post.preview" rows="4"></ion-textarea>
-            </ion-item>
-            <ion-item class="ion-padding">
-              <ion-label position="stacked">Content</ion-label>
-              <ion-textarea [(ngModel)]="post.content" rows="8"></ion-textarea>
-            </ion-item>
-            <ion-button expand="block" color="success" (click)="updatePost()">
-              <ion-icon name="save" slot="start"></ion-icon>
-              Update
-            </ion-button>
-            <ion-button expand="block" color="danger" (click)="deletePost()">
-              <ion-icon name="trash" slot="start"></ion-icon>
-              Delete
-            </ion-button>
+          <ion-card-content>
+            <form [formGroup]="postForm">
+              <div class="preview" (click)="onImageSelectedClick()">
+                <div *ngIf="!postForm.get('imageUrl')?.value; else placeholder">
+                  <div class="fallback">
+                    <p>Select Image</p>
+                  </div>
+                </div>
+                <ng-template #placeholder>
+                  <img [src]="postForm.get('imageUrl')?.value" style="max-width: 100%; max-height: 300px; border-radius: 8px;" />
+                </ng-template>
+              </div>
+              <div class="input-group">
+                <ion-item class="ion-padding">
+                  <ion-label position="stacked">Title</ion-label>
+                  <ion-input formControlName="title"></ion-input>
+                </ion-item>
+                <ion-item class="ion-padding">
+                  <ion-label position="stacked">Description</ion-label>
+                  <textarea formControlName="description" rows="3" style="width: 100%"></textarea>
+                </ion-item>
+                <ion-item class="ion-padding">
+                  <ion-label position="stacked">Category</ion-label>
+                  <ion-select formControlName="category" [multiple]="true">
+                    <ion-select-option *ngFor="let category of categories" [value]="category.categoryName">{{ category.categoryName }}</ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item class="ion-padding">
+                  <ion-label position="stacked">Privacy</ion-label>
+                  <ion-select formControlName="privacy">
+                    <ion-select-option value="public">Public</ion-select-option>
+                    <ion-select-option value="private">Private</ion-select-option>
+                    <ion-select-option value="anonymous">Anonymous</ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item class="ion-padding">
+                  <ion-label position="stacked">Keywords</ion-label>
+                  <textarea formControlName="keywords" rows="3" style="width: 100%"></textarea>
+                </ion-item>
+                <ion-item class="ion-padding">
+                  <ion-label position="stacked">Preview</ion-label>
+                  <app-froala-editor formControlName="preview"></app-froala-editor>
+                </ion-item>
+                <ion-item class="ion-padding">
+                  <ion-label position="stacked">Content</ion-label>
+                  <app-froala-editor formControlName="content"></app-froala-editor>
+                </ion-item>
+              </div>
+              <ion-button expand="block" color="success" (click)="updatePost()">
+                <ion-icon name="save" slot="start"></ion-icon>
+                Update
+              </ion-button>
+              <ion-button expand="block" color="danger" (click)="deletePost()">
+                <ion-icon name="trash" slot="start"></ion-icon>
+                Delete
+              </ion-button>
+            </form>
           </ion-card-content>
         </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>
+  <input id="hiddenImageInput" type="file" accept="image/*" style="display:none" (change)="onImageSelected($event)" />
 </ion-content>

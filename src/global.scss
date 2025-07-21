@@ -70,3 +70,8 @@ html, body, ion-app, ion-content, .selectable, * {
   -ms-user-select: text !important;
   user-select: text !important;
 }
+
+/* Froala Editor Styles */
+@import "froala-editor/css/froala_editor.pkgd.min.css";
+@import "froala-editor/css/froala_style.min.css";
+@import "froala-editor/css/themes/gray.min.css";

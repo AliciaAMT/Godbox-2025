@@ -36,7 +36,9 @@
               }
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
-            "scripts": [],
+            "scripts": [
+              "node_modules/froala-editor/js/froala_editor.pkgd.min.js"
+            ],
             "browser": "src/main.ts"
           },
           "configurations": {

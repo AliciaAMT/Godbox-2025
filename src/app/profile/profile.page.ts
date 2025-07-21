@@ -3,8 +3,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { LoadingController, AlertController, ToastController } from '@ionic/angular/standalone';
-import { IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonAvatar, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonIcon, IonTextarea } from '@ionic/angular/standalone';
-// No editor imports needed
+import { IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonAvatar, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AvatarService } from '../services/avatar.service';
@@ -12,6 +11,7 @@ import { DataService, User } from '../services/data.service';
 import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { addIcons } from 'ionicons';
 import { save } from 'ionicons/icons';
+import { FroalaEditorComponent } from '../components/froala-editor/froala-editor.component';
 
 @Component({
   selector: 'app-profile',
@@ -38,10 +38,9 @@ import { save } from 'ionicons/icons';
     IonItem,
     IonLabel,
     IonInput,
-
     IonButton,
     IonIcon,
-    IonTextarea
+    FroalaEditorComponent
   ]
 })
 export class ProfilePage implements OnInit {

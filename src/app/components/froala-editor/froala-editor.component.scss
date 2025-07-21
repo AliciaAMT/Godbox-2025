@@ -1,0 +1,176 @@
+// Froala Editor Component Styles
+:host {
+  display: block;
+  width: 100%;
+}
+
+// Ensure the editor container takes full width
+div {
+  width: 100%;
+}
+
+// Dark theme adjustments for Froala
+:host ::ng-deep {
+  .fr-box {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #333333;
+  }
+
+  .fr-toolbar {
+    background-color: #1a1a1a;
+    border-color: #333333;
+
+        // Make toolbar buttons more visible
+    .fr-btn {
+      color: #ffffff !important;
+      background-color: transparent !important;
+
+      // Force all icons to be white
+      svg, i, img {
+        color: #ffffff !important;
+        fill: #ffffff !important;
+        stroke: #ffffff !important;
+      }
+
+      &:hover {
+        background-color: #333333 !important;
+        color: #ffffff !important;
+
+        svg, i, img {
+          color: #ffffff !important;
+          fill: #ffffff !important;
+          stroke: #ffffff !important;
+        }
+      }
+
+      &.fr-active {
+        background-color: #444444 !important;
+        color: #ffffff !important;
+
+        svg, i, img {
+          color: #ffffff !important;
+          fill: #ffffff !important;
+          stroke: #ffffff !important;
+        }
+      }
+    }
+
+    // Make toolbar text white
+    .fr-toolbar-separator {
+      background-color: #444444;
+    }
+  }
+
+  .fr-wrapper {
+    background-color: #000000;
+  }
+
+  .fr-element {
+    background-color: #000000;
+    color: #ffffff;
+
+    // Ensure text is white
+    p, div, span, h1, h2, h3, h4, h5, h6 {
+      color: #ffffff !important;
+    }
+  }
+
+  // Make placeholder text visible
+  .fr-placeholder {
+    color: #888888 !important;
+  }
+
+  // Style the editor content area
+  .fr-second-toolbar {
+    background-color: #1a1a1a;
+    border-color: #333333;
+  }
+
+  // Make any dropdowns or popups dark
+  .fr-dropdown {
+    background-color: #1a1a1a;
+    border-color: #333333;
+
+    .fr-dropdown-item {
+      color: #ffffff;
+
+      &:hover {
+        background-color: #333333;
+      }
+    }
+  }
+
+  // Style the word/character counter
+  .fr-counter {
+    color: #888888;
+  }
+
+  // Ensure the editor content area has proper contrast
+  .fr-element.fr-view {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+
+    // Make sure all text elements are white
+    * {
+      color: #ffffff !important;
+    }
+
+    // Style links
+    a {
+      color: #4a9eff !important;
+    }
+  }
+
+  // Make sure the editor is properly styled in dark mode
+  .fr-editor {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+  }
+
+    // Additional styling for toolbar icons
+  .fr-toolbar {
+    // Force all toolbar icons to be white
+    .fr-btn svg {
+      fill: #ffffff !important;
+      color: #ffffff !important;
+    }
+
+    .fr-btn i {
+      color: #ffffff !important;
+    }
+
+    .fr-btn img {
+      filter: brightness(0) invert(1) !important; // Make icons white
+    }
+
+    // Specific styling for different button types
+    .fr-command {
+      color: #ffffff !important;
+
+      svg, i, img {
+        color: #ffffff !important;
+        fill: #ffffff !important;
+        stroke: #ffffff !important;
+      }
+    }
+
+    // Target all possible icon elements
+    *[class*="icon"], *[class*="btn"] {
+      color: #ffffff !important;
+
+      svg, i, img, path, rect, circle, polygon {
+        color: #ffffff !important;
+        fill: #ffffff !important;
+        stroke: #ffffff !important;
+      }
+    }
+
+    // Override any default Froala styling
+    .fr-btn {
+      &::before, &::after {
+        color: #ffffff !important;
+      }
+    }
+  }
+}

@@ -61,15 +61,18 @@
 
           <ion-item>
             <ion-label position="stacked">Bio</ion-label>
-            <ion-textarea
-              [(ngModel)]="user.bio"
-              placeholder="Tell us about yourself..."
-              rows="6"
-              autoGrow="true"
-            ></ion-textarea>
           </ion-item>
 
-          <ion-button expand="block" color="success" (click)="updateUser()">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Rich Text Bio Editor</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <app-froala-editor [content]="user.bio || ''" (contentChange)="user.bio = $event"></app-froala-editor>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-button expand="block" color="warning" (click)="updateUser()">
             <ion-icon name="save" slot="start"></ion-icon>
             Update
           </ion-button>

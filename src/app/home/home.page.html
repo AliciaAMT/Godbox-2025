@@ -64,6 +64,7 @@
           </ion-card-content>
         </ion-card>
       </ion-col>
+
       <ion-col *ngFor="let post of posts" class="ion-text-center" sizeXl="4" offsetXl="0" sizeLg="4" offsetLg="0" sizeMd="6" offsetMd="0" sizeSm="8" offsetSm="2" sizeXs="10" offsetXs="1">
         <div *ngIf="post.privacy !== 'private'" style="height: 100%;">
           <ion-card style="height: 100%;" [routerLink]="['/view-collection', post.series]" routerDirection="forward">

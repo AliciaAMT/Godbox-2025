@@ -1,8 +1,4 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Posts</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-menu-header></app-menu-header>
 
 <ion-content>
   <ion-fab vertical="top" horizontal="start" slot="fixed">
@@ -11,31 +7,60 @@
     </ion-fab-button>
   </ion-fab>
 
-  <div class="ion-padding">
-    <h2>Posts</h2>
+  <ion-grid style="margin-top: 30px;">
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <h2 class="title">Posts Management</h2>
+      </ion-col>
+    </ion-row>
 
     <!-- Loading State -->
-    <div *ngIf="loading" class="ion-text-center ion-padding">
-      <ion-spinner name="crescent"></ion-spinner>
-      <p>Loading posts...</p>
-    </div>
+    <ion-row *ngIf="loading">
+      <ion-col class="ion-text-center ion-padding">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading posts...</p>
+      </ion-col>
+    </ion-row>
 
-    <!-- Posts List -->
-    <ion-list *ngIf="!loading">
-      <ion-item *ngFor="let post of posts" [routerLink]="['/admin-dash/posts/view-post', post.id]" router-direction="forward">
-        <ion-label>
-          <h2>{{ post.title }}</h2>
-          <p>By: {{ getUserName(post.author) }}</p>
-          <p>Date: {{ post.date | date }}</p>
-        </ion-label>
-      </ion-item>
+    <!-- Posts Grid -->
+    <ion-row *ngIf="!loading">
+      <ion-col *ngFor="let post of posts" class="ion-text-center" sizeXl="4" offsetXl="0" sizeLg="4" offsetLg="0" sizeMd="6" offsetMd="0" sizeSm="8" offsetSm="2" sizeXs="10" offsetXs="1">
+        <ion-card style="height: 100%;">
+          <ion-card-header>
+            <ion-img *ngIf="post.imageUrl" [src]="post.imageUrl"></ion-img>
+            <ion-card-title>
+              <h2>{{ post.title }}</h2>
+              <sub>{{ post.date | date }}</sub>
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p>{{ post.description }}</p>
+            <p><strong>By:</strong> {{ getUserName(post.author) }}</p>
+            <p><strong>Category:</strong> {{ post.category }}</p>
+            <p><strong>Privacy:</strong> {{ post.privacy }}</p>
 
-      <!-- Empty State -->
-      <div *ngIf="posts.length === 0" class="ion-text-center ion-padding">
+            <div class="card-actions">
+              <ion-button fill="outline" size="small" [routerLink]="['/admin-dash/posts/view-post', post.id]" routerDirection="forward">
+                <ion-icon name="eye" slot="start"></ion-icon>
+                View
+              </ion-button>
+              <ion-button fill="outline" size="small" [routerLink]="['/admin-dash/posts/edit-post', post.id]" routerDirection="forward">
+                <ion-icon name="create" slot="start"></ion-icon>
+                Edit
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <!-- Empty State -->
+    <ion-row *ngIf="!loading && posts.length === 0">
+      <ion-col class="ion-text-center ion-padding">
         <p>No posts found.</p>
-      </div>
-    </ion-list>
-  </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button routerLink="/admin-dash/posts/add-post">

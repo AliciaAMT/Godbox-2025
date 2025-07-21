@@ -1,1 +1,48 @@
-// Posts component styles
+.card-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+
+  ion-button {
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --padding-top: 8px;
+    --padding-bottom: 8px;
+    font-size: 14px;
+  }
+}
+
+ion-card {
+  background-color: #101010 !important;
+  margin-bottom: 20px;
+}
+
+ion-card-header {
+  padding: 10px;
+}
+
+ion-img {
+  width: 100%;
+  height: auto;
+  padding: 0px !important;
+}
+
+h2 {
+  font-size: 35px;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+p {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  font-size: 20px;
+  text-align: left;
+  color: #ececec;
+}
+
+ion-content {
+  --background: #000000;
+}

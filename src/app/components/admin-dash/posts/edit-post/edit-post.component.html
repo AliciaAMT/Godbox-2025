@@ -56,6 +56,17 @@
                   </ion-select>
                 </ion-item>
                 <ion-item class="ion-padding">
+                  <ion-label position="stacked">Series/Collection</ion-label>
+                  <ion-select formControlName="series">
+                    <ion-select-option value="">No Series</ion-select-option>
+                    <ion-select-option *ngFor="let serie of series" [value]="serie.serieName">{{ serie.serieName }}</ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item class="ion-padding">
+                  <ion-label position="stacked">Sequence Number (0 = Collection Page, 1+ = Content)</ion-label>
+                  <ion-input type="number" formControlName="seqNo" min="0"></ion-input>
+                </ion-item>
+                <ion-item class="ion-padding">
                   <ion-label position="stacked">Keywords</ion-label>
                   <textarea formControlName="keywords" rows="3" style="width: 100%"></textarea>
                 </ion-item>

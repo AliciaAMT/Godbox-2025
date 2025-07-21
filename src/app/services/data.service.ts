@@ -115,7 +115,7 @@ export class DataService {
 
   getPostsBySerieId(id: string): Observable<Post[]> {
     const postsRef = collection(this.firestore, 'posts');
-    const q = query(postsRef, where('serie', '==', id), orderBy('seqNo', 'asc'));
+    const q = query(postsRef, where('series', '==', id), orderBy('seqNo', 'asc'));
     return collectionData(q, { idField: 'id' }) as Observable<Post[]>;
   }
 
@@ -163,13 +163,13 @@ export class DataService {
 
   getPostBySeriesAndSeqNo(series: string, seqNo: number) {
     const postsRef = collection(this.firestore, 'posts');
-    const q = query(postsRef, where('serie', '==', series), where('seqNo', '==', seqNo));
+    const q = query(postsRef, where('series', '==', series), where('seqNo', '==', seqNo));
     return collectionData(q, { idField: 'id' }) as Observable<Post[]>;
   }
 
   getNextPostById(serie: string, seqNo: number): Observable<Post[]> {
     const postsRef = collection(this.firestore, 'posts');
-    const q = query(postsRef, where('seqNo', '==', seqNo + 1), where('serie', '==', serie));
+    const q = query(postsRef, where('seqNo', '==', seqNo + 1), where('series', '==', serie));
     return collectionData(q, { idField: 'id' }) as Observable<Post[]>;
   }
 

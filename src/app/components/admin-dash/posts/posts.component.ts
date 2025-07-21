@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonList, IonItem, IonLabel, IonFab, IonFabButton, IonIcon, IonSpinner } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonList, IonItem, IonLabel, IonFab, IonFabButton, IonIcon, IonSpinner, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonButton } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { DataService, Post, User } from '../../../services/data.service';
+import { MenuHeaderComponent } from '../../menu-header/menu-header.component';
 import { addIcons } from 'ionicons';
-import { add } from 'ionicons/icons';
+import { add, arrowBack, eye, create } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -25,7 +26,17 @@ import { Subscription } from 'rxjs';
     IonFab,
     IonFabButton,
     IonIcon,
-    IonSpinner
+    IonSpinner,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonImg,
+    IonButton,
+    MenuHeaderComponent
   ]
 })
 export class PostsComponent implements OnInit, OnDestroy {
@@ -40,7 +51,7 @@ export class PostsComponent implements OnInit, OnDestroy {
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {
-    addIcons({ add });
+    addIcons({arrowBack, add, eye, create});
   }
 
   ngOnInit() {

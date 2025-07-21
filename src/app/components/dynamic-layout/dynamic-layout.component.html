@@ -26,7 +26,7 @@
         </ion-item>
         <div *ngFor="let serie of series">
           <div *ngIf="serie.privacy !== 'private'">
-            <ion-item [routerLink]="['/view-collection', serie.id]" routerDirection="root" routerLinkActive="active-item" lines="none">
+            <ion-item [routerLink]="['/view-collection', serie.serieName]" routerDirection="root" routerLinkActive="active-item" lines="none">
               <ion-label>
                 {{serie.serieName}}
               </ion-label>

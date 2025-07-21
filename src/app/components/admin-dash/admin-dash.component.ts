@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
 import { Firestore, doc } from '@angular/fire/firestore';
 import { DataService } from '../../services/data.service';
+import { MenuHeaderComponent } from '../menu-header/menu-header.component';
 
 @Component({
   selector: 'app-admin-dash',
@@ -25,7 +26,8 @@ import { DataService } from '../../services/data.service';
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonButton
+    IonButton,
+    MenuHeaderComponent
   ]
 })
 export class AdminDashComponent implements OnInit {

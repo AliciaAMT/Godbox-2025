@@ -62,8 +62,14 @@ export class DynamicLayoutComponent implements OnInit {
     });
 
     // Load series/collections
-    this.dataService.getSeries().subscribe(res => {
-      this.series = res;
+    this.dataService.getSeries().subscribe({
+      next: (res) => {
+        console.log('🔍 DynamicLayout - Series loaded:', res);
+        this.series = res;
+      },
+      error: (error) => {
+        console.error('🔍 DynamicLayout - Error loading series:', error);
+      }
     });
   }
 

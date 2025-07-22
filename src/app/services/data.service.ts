@@ -114,8 +114,10 @@ export class DataService {
   }
 
   getPostsBySerieId(id: string): Observable<Post[]> {
+    console.log('🔍 DataService - getPostsBySerieId called with id:', id);
     const postsRef = collection(this.firestore, 'posts');
     const q = query(postsRef, where('series', '==', id), orderBy('seqNo', 'asc'));
+    console.log('🔍 DataService - Query created for series:', id);
     return collectionData(q, { idField: 'id' }) as Observable<Post[]>;
   }
 

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonFab, IonFabButton, IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg } from '@ionic/angular/standalone';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { DataService, Post } from '../services/data.service';
+import { DataService, Post, Serie } from '../services/data.service';
 import { FooterLandingComponent } from '../components/footer-landing/footer-landing.component';
 import { MenuHeaderComponent } from '../components/menu-header/menu-header.component';
 
@@ -17,6 +17,7 @@ import { MenuHeaderComponent } from '../components/menu-header/menu-header.compo
 export class ViewCollectionPage implements OnInit {
   collectionId: string = '';
   posts: Post[] = [];
+  serie: Serie | null = null;
 
   private dataService = inject(DataService);
   private route = inject(ActivatedRoute);
@@ -24,9 +25,29 @@ export class ViewCollectionPage implements OnInit {
   constructor() {
     this.route.params.subscribe(params => {
       this.collectionId = params['id'];
+      console.log('🔍 ViewCollectionPage - Collection ID:', this.collectionId);
+
       if (this.collectionId) {
-        this.dataService.getPostsBySerieId(this.collectionId).subscribe(res => {
-          this.posts = res;
+        // First get the series object (like the old project)
+        this.dataService.getSerieById(this.collectionId).subscribe({
+          next: (res) => {
+            console.log('🔍 ViewCollectionPage - Series found:', res);
+            this.serie = res;
+          },
+          error: (error) => {
+            console.error('🔍 ViewCollectionPage - Error fetching series:', error);
+          }
+        });
+
+        // Then get the posts for this series
+        this.dataService.getPostsBySerieId(this.collectionId).subscribe({
+          next: (res) => {
+            console.log('🔍 ViewCollectionPage - Posts found for collection:', res);
+            this.posts = res;
+          },
+          error: (error) => {
+            console.error('🔍 ViewCollectionPage - Error fetching posts:', error);
+          }
         });
       }
     });

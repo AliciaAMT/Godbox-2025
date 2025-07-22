@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonMenu, IonList, IonItem, IonMenuToggle, IonLabel, IonButton, IonIcon, IonRouterOutlet, IonAvatar } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonMenu, IonList, IonItem, IonMenuToggle, IonLabel, IonIcon, IonRouterOutlet, IonAvatar } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { Auth, onAuthStateChanged } from '@angular/fire/auth';
@@ -26,7 +26,7 @@ import { Post } from '../../services/data.service';
     IonItem,
     IonMenuToggle,
     IonLabel,
-    IonButton,
+
     IonIcon,
     IonRouterOutlet,
     IonAvatar

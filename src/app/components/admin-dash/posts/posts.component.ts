@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonList, IonItem, IonLabel, IonFab, IonFabButton, IonIcon, IonSpinner, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonButton } from '@ionic/angular/standalone';
+import { IonContent, IonFab, IonFabButton, IonIcon, IonSpinner, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonButton } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { DataService, Post, User } from '../../../services/data.service';
@@ -17,12 +17,6 @@ import { Subscription } from 'rxjs';
     CommonModule,
     RouterModule,
     IonContent,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonList,
-    IonItem,
-    IonLabel,
     IonFab,
     IonFabButton,
     IonIcon,

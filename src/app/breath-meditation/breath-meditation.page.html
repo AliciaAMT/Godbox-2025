@@ -29,17 +29,17 @@
     <ion-row>
       <ion-col sizeXl="6" offsetXl="3" sizeLg="8" offsetLg="2" sizeMd="10" offsetMd="1">
         <div *ngIf="collectionOverview">
-          <h2 class="title">{{ collectionOverview?.title }}</h2>
+          <h2 class="title">{{ collectionOverview.title }}</h2>
           <div class="preview">
             <div *ngIf="!collectionOverview?.imageUrl; else placeholder;">
               <div class="fallback">
               </div>
             </div>
             <ng-template #placeholder>
-              <img class="ion-padding" [src]="collectionOverview?.imageUrl" />
+              <img class="ion-padding" [src]="collectionOverview.imageUrl" />
             </ng-template>
           </div>
-          <p [innerHTML]="collectionOverview?.content"></p>
+          <p [innerHTML]="collectionOverview.content"></p>
         </div>
       </ion-col>
     </ion-row>

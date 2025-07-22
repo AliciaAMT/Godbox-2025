@@ -1,26 +1,31 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
+import { LandingGuard } from './guards/landing.guard';
 
 export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./landing/landing.page').then(m => m.LandingPage),
-    pathMatch: 'full'
+    pathMatch: 'full',
+    canActivate: [LandingGuard]
   },
   {
     path: 'landing',
-    loadComponent: () => import('./landing/landing.page').then(m => m.LandingPage)
+    loadComponent: () => import('./landing/landing.page').then(m => m.LandingPage),
+    canActivate: [LandingGuard]
   },
   {
     path: 'auth',
     children: [
       {
         path: 'login',
-        loadComponent: () => import('./auth/login/login.page').then(m => m.LoginPage)
+        loadComponent: () => import('./auth/login/login.page').then(m => m.LoginPage),
+        canActivate: [LandingGuard]
       },
       {
         path: 'verify-email',
-        loadComponent: () => import('./auth/verify-email/verify-email.page').then(m => m.VerifyEmailPage)
+        loadComponent: () => import('./auth/verify-email/verify-email.page').then(m => m.VerifyEmailPage),
+        canActivate: [LandingGuard]
       }
     ]
   },

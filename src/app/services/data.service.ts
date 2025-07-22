@@ -14,7 +14,9 @@ import {
   orderBy,
   query,
   where,
-  documentId
+  documentId,
+  limit,
+  startAfter
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
@@ -340,5 +342,27 @@ export class DataService {
       console.error('❌ Error updating reading:', error);
       return false;
     }
+  }
+
+  /**
+   * Paginated posts query for infinite scroll, with optional privacy filter
+   */
+  getPostsPaginated(limitCount: number, startAfterDate?: string, privacyFilter?: string[]): Observable<Post[]> {
+    const postsRef = collection(this.firestore, 'posts');
+    let q;
+    if (privacyFilter && privacyFilter.length > 0) {
+      if (startAfterDate) {
+        q = query(postsRef, orderBy('date', 'desc'), where('privacy', 'in', privacyFilter), startAfter(startAfterDate), limit(limitCount));
+      } else {
+        q = query(postsRef, orderBy('date', 'desc'), where('privacy', 'in', privacyFilter), limit(limitCount));
+      }
+    } else {
+      if (startAfterDate) {
+        q = query(postsRef, orderBy('date', 'desc'), startAfter(startAfterDate), limit(limitCount));
+      } else {
+        q = query(postsRef, orderBy('date', 'desc'), limit(limitCount));
+      }
+    }
+    return collectionData(q, { idField: 'id' }) as Observable<Post[]>;
   }
 }

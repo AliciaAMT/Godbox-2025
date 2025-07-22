@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonMenu, IonList, IonItem, IonMenuToggle, IonLabel, IonIcon, IonRouterOutlet, IonAvatar } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonMenu, IonList, IonItem, IonMenuToggle, IonLabel, IonIcon, IonRouterOutlet, IonAvatar, MenuController, IonButton, IonButtons } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { Firestore, doc } from '@angular/fire/firestore';
 import { DataService, Serie, User } from '../../services/data.service';
 import { addIcons } from 'ionicons';
-import { logOut, person } from 'ionicons/icons';
+import { logOut, person, close } from 'ionicons/icons';
 import { Post } from '../../services/data.service';
 
 @Component({
@@ -29,7 +29,9 @@ import { Post } from '../../services/data.service';
 
     IonIcon,
     IonRouterOutlet,
-    IonAvatar
+    IonAvatar,
+    IonButton,
+    IonButtons
   ]
 })
 export class DynamicLayoutComponent implements OnInit {
@@ -42,8 +44,9 @@ export class DynamicLayoutComponent implements OnInit {
     private dataService: DataService,
     private auth: Auth,
     private firestore: Firestore,
+    private menu: MenuController,
   ) {
-    addIcons({person,logOut});
+    addIcons({close,person,logOut});
 
     // Listen for authentication state changes
     onAuthStateChanged(this.auth, (user) => {
@@ -87,6 +90,10 @@ export class DynamicLayoutComponent implements OnInit {
   async logout() {
     await this.auth.signOut();
     this.router.navigateByUrl('/landing', { replaceUrl: true });
+  }
+
+  async closeMenu() {
+    await this.menu.close('first');
   }
 
   navigateToProfile() {

@@ -13,6 +13,15 @@
         <h2 class="title">Posts Management</h2>
       </ion-col>
     </ion-row>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-button size="small" [color]="filterMode === 'recent' ? 'primary' : 'medium'" (click)="setFilterMode('recent')">Most Recent</ion-button>
+        <ion-button size="small" [color]="filterMode === 'private' ? 'primary' : 'medium'" (click)="setFilterMode('private')">Private</ion-button>
+        <ion-button size="small" [color]="filterMode === 'public' ? 'primary' : 'medium'" (click)="setFilterMode('public')">Public</ion-button>
+        <ion-button size="small" [color]="filterMode === 'anonymous' ? 'primary' : 'medium'" (click)="setFilterMode('anonymous')">Anonymous</ion-button>
+        <ion-button size="small" [color]="filterMode === 'all' ? 'primary' : 'medium'" (click)="setFilterMode('all')">All</ion-button>
+      </ion-col>
+    </ion-row>
 
     <!-- Loading State -->
     <ion-row *ngIf="loading">
@@ -61,6 +70,11 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMorePosts()" [disabled]="allLoaded || loadingMore" *ngIf="!loading && posts.length > 0">
+    <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Loading more posts...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button routerLink="/admin-dash/posts/add-post">

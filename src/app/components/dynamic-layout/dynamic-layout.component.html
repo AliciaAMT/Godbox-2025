@@ -2,11 +2,16 @@
   <ion-header>
     <ion-toolbar color="primary">
       <ion-title>Menu</ion-title>
+      <ion-buttons slot="end">
+        <ion-button aria-label="Close menu" role="button" tabindex="0" (click)="closeMenu()" (keydown.enter)="closeMenu()" (keydown.space)="closeMenu()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
+      </ion-buttons>
     </ion-toolbar>
   </ion-header>
   <ion-content>
     <!-- User Profile Section -->
-    <div class="user-profile" *ngIf="profile" (click)="navigateToProfile()">
+    <ion-item *ngIf="profile" lines="none" tabindex="0" role="button" aria-label="View profile" (click)="navigateToProfile(); closeMenu()" (keydown.enter)="navigateToProfile(); closeMenu()" (keydown.space)="navigateToProfile(); closeMenu()" class="user-profile">
       <ion-avatar class="profile-avatar">
         <img *ngIf="profile.imageUrl" [src]="profile.imageUrl" [alt]="profile.userName || 'Profile Picture'">
         <ion-icon *ngIf="!profile.imageUrl" name="person" class="default-avatar"></ion-icon>
@@ -15,57 +20,52 @@
         <h3 class="user-name">{{ profile.userName || 'User' }}</h3>
         <p class="user-email">{{ profile.email }}</p>
       </div>
-    </div>
+    </ion-item>
 
     <ion-list>
       <ion-menu-toggle auto-hide="false" menu="first">
-        <ion-item routerLink="/home" routerDirection="root" routerLinkActive="active-item" lines="none">
+        <ion-item routerLink="/home" routerDirection="root" routerLinkActive="active-item" lines="none" (click)="closeMenu()">
           <ion-label>
             Home
           </ion-label>
         </ion-item>
         <div *ngFor="let serie of series">
           <div *ngIf="serie.privacy !== 'private'">
-            <ion-item [routerLink]="['/view-collection', serie.id]" routerDirection="root" routerLinkActive="active-item" lines="none">
+            <ion-item [routerLink]="['/view-collection', serie.id]" routerDirection="root" routerLinkActive="active-item" lines="none" (click)="closeMenu()">
               <ion-label>
                 {{serie.serieName}}
               </ion-label>
             </ion-item>
           </div>
         </div>
-        <ion-item routerLink="/breath-meditation" routerDirection="root" routerLinkActive="active-item" lines="none">
-          <ion-label>
-            Breath Meditation
-          </ion-label>
-        </ion-item>
-        <ion-item routerLink="/daily-readings" routerDirection="root" routerLinkActive="active-item" lines="none">
+        <ion-item routerLink="/daily-readings" routerDirection="root" routerLinkActive="active-item" lines="none" (click)="closeMenu()">
           <ion-label>
             Daily Readings
           </ion-label>
         </ion-item>
         <ng-container *ngFor="let page of specialPages">
-          <ion-item [routerLink]="['/page', getPageSlug(page)]" routerDirection="root" routerLinkActive="active-item" lines="none">
+          <ion-item [routerLink]="['/page', getPageSlug(page)]" routerDirection="root" routerLinkActive="active-item" lines="none" (click)="closeMenu()">
             <ion-label>
               {{ page.title }}
             </ion-label>
           </ion-item>
         </ng-container>
-        <ion-item routerLink="/growth-blog" routerDirection="root" routerLinkActive="active-item" lines="none">
+        <ion-item routerLink="/growth-blog" routerDirection="root" routerLinkActive="active-item" lines="none" (click)="closeMenu()">
           <ion-label>
             Growth Blog
           </ion-label>
         </ion-item>
-        <ion-item routerLink="/profile" routerDirection="root" routerLinkActive="active-item" lines="none">
+        <ion-item routerLink="/profile" routerDirection="root" routerLinkActive="active-item" lines="none" (click)="closeMenu()">
           <ion-label>
             Profile
           </ion-label>
         </ion-item>
-        <ion-item routerLink="/admin-dash" routerDirection="root" routerLinkActive="active-item" lines="none" *ngIf="profile?.userRole === 'admin'">
+        <ion-item routerLink="/admin-dash" routerDirection="root" routerLinkActive="active-item" lines="none" *ngIf="profile?.userRole === 'admin'" (click)="closeMenu()">
           <ion-label>
             Admin Dashboard
           </ion-label>
         </ion-item>
-        <ion-item (click)="logout()" lines="none">
+        <ion-item (click)="logout(); closeMenu()" lines="none" aria-label="Logout" tabindex="0" role="button" (keydown.enter)="logout(); closeMenu()" (keydown.space)="logout(); closeMenu()">
           <ion-label>
             Logout
           </ion-label>

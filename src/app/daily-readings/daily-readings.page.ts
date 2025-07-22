@@ -264,6 +264,87 @@ export class DailyReadingsPage implements OnInit {
       border: 1px solid #333;
     `;
 
+    // Audio button (ESV only)
+    const audioButton = document.createElement('button');
+    audioButton.textContent = '🔊 Hear Passage';
+    audioButton.style.cssText = `
+      background: #222;
+      color: #4CAF50;
+      border: 1px solid #4CAF50;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      display: inline-block;
+    `;
+    audioButton.setAttribute('aria-label', 'Play ESV passage audio');
+    let audio: HTMLAudioElement | null = null;
+    let isPlaying = false;
+    let isLoadingAudio = false;
+    const spinner = document.createElement('span');
+    spinner.textContent = '⏳';
+    spinner.style.display = 'none';
+    spinner.style.marginLeft = '8px';
+    audioButton.appendChild(spinner);
+    audioButton.onclick = async () => {
+      if (isPlaying && audio) {
+        audio.pause();
+        isPlaying = false;
+        audioButton.textContent = '🔊 Hear Passage';
+        audioButton.appendChild(spinner);
+        return;
+      }
+      if (!audio) {
+        isLoadingAudio = true;
+        spinner.style.display = 'inline-block';
+        audioButton.disabled = true;
+        // Fetch ESV audio URL
+        try {
+          const apiKey = (window as any).environment?.esvBible?.apiKey || '';
+          const passageRef = encodeURIComponent(passage.reference);
+          const audioUrl = `https://api.esv.org/v3/passage/audio/?q=${passageRef}`;
+          const response = await fetch(audioUrl, {
+            headers: { 'Authorization': `Token ${apiKey}` },
+            redirect: 'follow'
+          });
+          if (!response.ok) throw new Error('Audio fetch failed');
+          // The ESV API returns a redirect to the MP3 file
+          const finalUrl = response.url;
+          audio = new Audio(finalUrl);
+          audio.onended = () => {
+            isPlaying = false;
+            audioButton.textContent = '🔊 Hear Passage';
+            audioButton.appendChild(spinner);
+          };
+          audio.onerror = () => {
+            isPlaying = false;
+            audioButton.textContent = '🔊 Hear Passage';
+            audioButton.appendChild(spinner);
+            alert('Failed to play audio.');
+          };
+        } catch (e) {
+          alert('Could not load ESV audio.');
+          isLoadingAudio = false;
+          spinner.style.display = 'none';
+          audioButton.disabled = false;
+          return;
+        }
+        isLoadingAudio = false;
+        spinner.style.display = 'none';
+        audioButton.disabled = false;
+      }
+      if (audio) {
+        audio.play();
+        isPlaying = true;
+        audioButton.textContent = '⏸ Pause Audio';
+        audioButton.appendChild(spinner);
+      }
+    };
+    modalContent.appendChild(audioButton);
+
     const header = document.createElement('div');
     header.style.cssText = `
       display: flex;

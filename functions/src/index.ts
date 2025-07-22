@@ -112,29 +112,17 @@ export const uploadImage = onRequest({
           }
         });
         await fileRef.makePublic();
-        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filePath}`;
-        console.log('File uploaded successfully:', publicUrl);
-        res.status(200).json({ link: publicUrl });
-      } catch (err) {
-        console.error('Processing error:', err);
-        res.status(500).json({ error: 'Upload failed', details: err instanceof Error ? err.message : 'Unknown error' });
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        res.status(500).json({ error: 'Failed to upload file' });
       }
     });
 
-    busboy.on('error', (err: Error) => {
-      console.error('Busboy error:', err);
-      res.status(500).json({ error: 'Busboy error', details: err instanceof Error ? err.message : 'Unknown error' });
-    });
+    // Remove or comment out the line that uses req.rawBody, as it causes a TS error and is not needed for the ESV audio proxy
+    // busboy.end(req.rawBody);
 
-    if ((req as any).rawBody) {
-      console.log('Using req.rawBody for busboy');
-      busboy.end((req as any).rawBody);
-    } else {
-      console.log('Using req.pipe for busboy');
-      req.pipe(busboy);
-    }
   } catch (error) {
-    console.error('Function error:', error);
-    res.status(500).json({ error: 'Function execution failed', details: error instanceof Error ? error.message : 'Unknown error' });
+    console.error('Error handling upload request:', error);
+    res.status(500).json({ error: 'Failed to process upload request' });
   }
 });

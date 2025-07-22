@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { IonContent, IonFab, IonFabButton, IonIcon, IonSpinner, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonButton } from '@ionic/angular/standalone';
+import { IonContent, IonFab, IonFabButton, IonIcon, IonSpinner, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonButton, IonInfiniteScroll, IonInfiniteScrollContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { DataService, Post, User } from '../../../services/data.service';
@@ -30,15 +30,21 @@ import { Subscription } from 'rxjs';
     IonCardContent,
     IonImg,
     IonButton,
-    MenuHeaderComponent
+    MenuHeaderComponent,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent
   ]
 })
 export class PostsComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
   users: User[] = [];
   loading = true;
+  loadingMore = false;
+  allLoaded = false;
+  filterMode: 'recent' | 'private' | 'public' | 'anonymous' | 'all' = 'recent';
   private postsSubscription?: Subscription;
   private usersSubscription?: Subscription;
+  private readonly PAGE_SIZE = 20;
 
   constructor(
     private dataService: DataService,
@@ -49,11 +55,16 @@ export class PostsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.loadData();
+    this.setFilterMode('recent');
   }
 
   ngOnDestroy() {
     this.cleanupSubscriptions();
+  }
+
+  setFilterMode(mode: 'recent' | 'private' | 'public' | 'anonymous' | 'all') {
+    this.filterMode = mode;
+    this.loadFirstPage();
   }
 
   private cleanupSubscriptions() {
@@ -67,49 +78,74 @@ export class PostsComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadData() {
-    console.log('Loading posts data...');
+  loadFirstPage() {
     this.loading = true;
-
-    // Clean up any existing subscriptions first
+    this.allLoaded = false;
+    this.posts = [];
     this.cleanupSubscriptions();
-
-    // Load posts data with immediate UI update
-    this.postsSubscription = this.dataService.getPosts().subscribe({
+    let pageSize = this.PAGE_SIZE;
+    let privacyFilter: string[] | undefined;
+    if (this.filterMode === 'recent') {
+      pageSize = 5;
+    } else if (this.filterMode === 'private') {
+      privacyFilter = ['private'];
+    } else if (this.filterMode === 'public') {
+      privacyFilter = ['public'];
+    } else if (this.filterMode === 'anonymous') {
+      privacyFilter = ['anonymous'];
+    }
+    this.postsSubscription = this.dataService.getPostsPaginated(pageSize, undefined, privacyFilter).subscribe({
       next: (posts) => {
-        console.log('Posts loaded:', posts);
-        console.log(`Updating UI with ${posts.length} posts`);
-
-        // Sort posts by date (newest first) and update the posts array
-        const sortedPosts = posts.sort((a, b) => {
-          const dateA = new Date(a.date);
-          const dateB = new Date(b.date);
-          return dateB.getTime() - dateA.getTime(); // Newest first
-        });
-
-        this.posts = [...sortedPosts];
+        this.posts = posts;
         this.loading = false;
-
-        // Force change detection
+        this.allLoaded = posts.length < pageSize;
         this.cdr.detectChanges();
-
-        console.log('Posts array after update:', this.posts);
-        console.log('Posts array length:', this.posts.length);
       },
       error: (error) => {
         console.error('Error loading posts:', error);
         this.loading = false;
       }
     });
-
-    // Load users data
     this.usersSubscription = this.dataService.getUsers().subscribe({
       next: (users) => {
-        console.log('Users loaded:', users);
         this.users = users;
       },
       error: (error) => {
         console.error('Error loading users:', error);
+      }
+    });
+  }
+
+  loadMorePosts() {
+    if (this.loadingMore || this.allLoaded || this.posts.length === 0) return;
+    this.loadingMore = true;
+    const lastPost = this.posts[this.posts.length - 1];
+    const lastDate = lastPost?.date;
+    let pageSize = this.PAGE_SIZE;
+    let privacyFilter: string[] | undefined;
+    if (this.filterMode === 'recent') {
+      pageSize = 5;
+    } else if (this.filterMode === 'private') {
+      privacyFilter = ['private'];
+    } else if (this.filterMode === 'public') {
+      privacyFilter = ['public'];
+    } else if (this.filterMode === 'anonymous') {
+      privacyFilter = ['anonymous'];
+    }
+    this.dataService.getPostsPaginated(pageSize, lastDate, privacyFilter).subscribe({
+      next: (newPosts) => {
+        if (newPosts.length < pageSize) {
+          this.allLoaded = true;
+        }
+        // Avoid duplicates
+        const uniquePosts = newPosts.filter(p => !this.posts.some(existing => existing.id === p.id));
+        this.posts = [...this.posts, ...uniquePosts];
+        this.loadingMore = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading more posts:', error);
+        this.loadingMore = false;
       }
     });
   }

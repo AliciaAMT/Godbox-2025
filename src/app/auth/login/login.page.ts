@@ -13,8 +13,6 @@ import {
   IonInput,
   IonButton,
   IonIcon,
-  IonFab,
-  IonFabButton,
   IonGrid,
   IonRow,
   IonCol,
@@ -43,11 +41,9 @@ import { AuthService } from '../../services/auth.service';
     IonInput,
     IonButton,
     IonIcon,
-    IonFab,
-    IonFabButton,
     IonGrid,
     IonRow,
-    IonCol
+    IonCol,
   ]
 })
 export class LoginPage {

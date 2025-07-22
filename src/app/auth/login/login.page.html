@@ -1,72 +1,137 @@
 <ion-header>
   <ion-toolbar>
+    <ion-button
+      slot="start"
+      routerLink="/landing"
+      routerDirection="back"
+      aria-label="Go Back"
+      tabindex="0"
+      fill="clear">
+      <ion-icon name="arrow-back" slot="icon-only" aria-hidden="true"></ion-icon>
+    </ion-button>
     <ion-title>Login</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-fab vertical="top" horizontal="start" slot="fixed">
-    <ion-fab-button routerLink="/landing" routerDirection="back">
-      <ion-icon name="arrow-back"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <div class="ion-text-center">
-          <img src="../../assets/images/bible.webp" alt="logo">
-        </div>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size-lg="4" offset-lg="4" size-md="6" offset-md="3" size-sm="8" offset-sm="2">
-        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-          <div class="input-group">
-            <ion-item [class.item-has-error]="(loginForm.get('email')?.dirty || loginForm.get('email')?.touched) && loginForm.get('email')?.errors" [class.item-has-value]="loginForm.get('email')?.valid && loginForm.get('email')?.value">
-              <ion-label position="stacked"><ion-icon name="mail-outline"></ion-icon> Email</ion-label>
-              <ion-input type="email" placeholder="Email" formControlName="email"></ion-input>
-            </ion-item>
-            <div *ngIf="(loginForm.get('email')?.dirty || loginForm.get('email')?.touched) && loginForm.get('email')?.errors" class="errors">
-              <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</span>
-              <span *ngIf="loginForm.get('email')?.errors?.['email']">Email is invalid</span>
-            </div>
-
-            <ion-item [class.item-has-error]="(loginForm.get('password')?.dirty || loginForm.get('password')?.touched) && loginForm.get('password')?.errors" [class.item-has-value]="loginForm.get('password')?.valid && loginForm.get('password')?.value">
-              <ion-label position="stacked">
-                <ion-icon name="lock-closed-outline"></ion-icon>
-                Password
-              </ion-label>
-              <ion-input
-                [type]="showPassword ? 'text' : 'password'"
-                formControlName="password"
-                placeholder="Password">
-              </ion-input>
-              <ion-icon
-                slot="end"
-                [name]="showPassword ? 'eye-off' : 'eye'"
-                (click)="togglePassword()">
-              </ion-icon>
-            </ion-item>
-
-            <div *ngIf="(loginForm.get('password')?.dirty || loginForm.get('password')?.touched) && loginForm.get('password')?.errors" class="errors">
-              <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</span>
-              <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Password needs to be 6 characters</span>
-            </div>
+  <!-- Removed FAB back button for accessibility -->
+  <main>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <div class="ion-text-center">
+            <img src="../../assets/images/bible.webp" alt="The Way Bible Fellowship logo">
           </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-lg="4" offset-lg="4" size-md="6" offset-md="3" size-sm="8" offset-sm="2">
+          <form [formGroup]="loginForm" (ngSubmit)="onLogin()" aria-labelledby="login-form-heading">
+            <h2 id="login-form-heading" class="sr-only">Login Form</h2>
 
-          <ion-button type="submit" expand="block" [disabled]="!loginForm.valid || isLoading">Log in</ion-button>
-          <ion-button type="button" expand="block" [disabled]="!loginForm.valid" (click)="onRegister()">Create Account</ion-button>
-          <ion-button type="button" expand="block" (click)="onResetPassword()">Recover Password</ion-button>
-          <ion-button type="button" expand="block" color="tertiary" (click)="onGoogleLogin()">
-            <ion-icon name="logo-google" slot="start"></ion-icon>
-            Sign in with Google
-          </ion-button>
-        </form>
-        <div class="ion-padding">
-          By registering you agree to our <a routerLink="/license">Terms of Service and Privacy Policy</a>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+            <div class="input-group">
+              <ion-item [class.item-has-error]="(loginForm.get('email')?.dirty || loginForm.get('email')?.touched) && loginForm.get('email')?.errors" [class.item-has-value]="loginForm.get('email')?.valid && loginForm.get('email')?.value">
+                <ion-label position="stacked">
+                  <ion-icon name="mail-outline" aria-hidden="true"></ion-icon>
+                  Email
+                </ion-label>
+                <ion-input
+                  type="email"
+                  placeholder="Enter your email address"
+                  formControlName="email"
+                  aria-describedby="email-error"
+                  aria-required="true">
+                </ion-input>
+              </ion-item>
+              <div
+                *ngIf="(loginForm.get('email')?.dirty || loginForm.get('email')?.touched) && loginForm.get('email')?.errors"
+                class="errors"
+                id="email-error"
+                role="alert">
+                <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</span>
+                <span *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email address</span>
+              </div>
+
+              <ion-item [class.item-has-error]="(loginForm.get('password')?.dirty || loginForm.get('password')?.touched) && loginForm.get('password')?.errors" [class.item-has-value]="loginForm.get('password')?.valid && loginForm.get('password')?.value">
+                <ion-label position="stacked">
+                  <ion-icon name="lock-closed-outline" aria-hidden="true"></ion-icon>
+                  Password
+                </ion-label>
+                <ion-input
+                  [type]="showPassword ? 'text' : 'password'"
+                  formControlName="password"
+                  placeholder="Enter your password"
+                  aria-describedby="password-error password-toggle"
+                  aria-required="true">
+                </ion-input>
+                <ion-button
+                  slot="end"
+                  fill="clear"
+                  (click)="togglePassword()"
+                  [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+                  id="password-toggle"
+                  type="button">
+                  <ion-icon
+                    [name]="showPassword ? 'eye-off' : 'eye'"
+                    aria-hidden="true">
+                  </ion-icon>
+                </ion-button>
+              </ion-item>
+
+              <div
+                *ngIf="(loginForm.get('password')?.dirty || loginForm.get('password')?.touched) && loginForm.get('password')?.errors"
+                class="errors"
+                id="password-error"
+                role="alert">
+                <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</span>
+                <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters long</span>
+              </div>
+            </div>
+
+            <ion-button
+              type="submit"
+              expand="block"
+              [disabled]="!loginForm.valid || isLoading"
+              aria-describedby="login-status">
+              <span *ngIf="isLoading">Logging in...</span>
+              <span *ngIf="!isLoading">Log in</span>
+            </ion-button>
+
+            <ion-button
+              type="button"
+              expand="block"
+              [disabled]="!loginForm.valid"
+              (click)="onRegister()"
+              aria-label="Create a new account">
+              Create Account
+            </ion-button>
+
+            <ion-button
+              type="button"
+              expand="block"
+              (click)="onResetPassword()"
+              aria-label="Reset your password">
+              Recover Password
+            </ion-button>
+
+            <ion-button
+              type="button"
+              expand="block"
+              color="tertiary"
+              (click)="onGoogleLogin()"
+              aria-label="Sign in with Google account">
+              <ion-icon name="logo-google" slot="start" aria-hidden="true"></ion-icon>
+              Sign in with Google
+            </ion-button>
+          </form>
+
+          <div class="ion-padding" role="contentinfo">
+            <p>By registering you agree to our <a routerLink="/license" aria-label="View Terms of Service and Privacy Policy">Terms of Service and Privacy Policy</a></p>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </main>
+
+  <div id="login-status" class="sr-only" aria-live="polite"></div>
 </ion-content>

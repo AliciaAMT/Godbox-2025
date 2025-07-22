@@ -71,9 +71,11 @@ export class DateComponent implements OnInit, OnDestroy {
     });
 
     // Hebrew time
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    this.hebrewTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    this.hebrewTime = now.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
 
     // Day of week
     const days = [

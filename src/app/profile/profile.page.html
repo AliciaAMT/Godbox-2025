@@ -19,6 +19,16 @@
         </div>
       </ng-template>
     </ion-avatar>
+    <!-- Bible Version Dropdown -->
+    <ion-item style="margin-top: 1em;">
+      <ion-label position="stacked">Bible Version</ion-label>
+      <ion-select [(ngModel)]="user.bibleVersion" interface="popover" placeholder="Select Version">
+        <ion-select-option value="ESV">ESV (English Standard Version)</ion-select-option>
+        <ion-select-option value="KJV">KJV (King James Version)</ion-select-option>
+        <ion-select-option value="HBSS">Holy Bible in Simple Spanish</ion-select-option>
+        <ion-select-option value="RVR09">RVR09 (Reina-Valera 1909, Spanish)</ion-select-option>
+      </ion-select>
+    </ion-item>
   </div>
 
   <div class="preview" *ngIf="profile?.id !== user?.id">

@@ -42,6 +42,7 @@ export interface User {
   userRole?: string;
   email?: string;
   bio?: string;
+  bibleVersion?: string;
 }
 
 export interface Readings {
@@ -257,7 +258,7 @@ export class DataService {
 
   updateUser(user: User) {
     const userDocRef = doc(this.firestore, `users/${user.id}`);
-    return updateDoc(userDocRef, { userName: user.userName, userRole: user.userRole, imageUrl: user.imageUrl, bio: user.bio });
+    return updateDoc(userDocRef, { userName: user.userName, userRole: user.userRole, imageUrl: user.imageUrl, bio: user.bio, bibleVersion: user.bibleVersion });
   }
 
   updateCategory(category: Category) {

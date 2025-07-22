@@ -10,6 +10,8 @@ import { FooterLandingComponent } from '../components/footer-landing/footer-land
 import { MenuHeaderComponent } from '../components/menu-header/menu-header.component';
 import { DateComponent } from '../components/date/date.component';
 import { ReadingsService, DailyReadings } from '../services/readings.service';
+import { Auth } from '@angular/fire/auth';
+import { DataService, User } from '../services/data.service';
 
 @Component({
   selector: 'app-daily-readings',
@@ -24,11 +26,15 @@ export class DailyReadingsPage implements OnInit {
   readings: DailyReadings[] = [];
   isLoading = false;
   error: string | null = null;
+  bibleVersion: string = 'ESV';
+  user: User | null = null;
 
   private bibleApiService = inject(BibleApiService);
   private esvApiService = inject(ESVApiService);
   private readingsService = inject(ReadingsService);
   private cd = inject(ChangeDetectorRef);
+  private auth = inject(Auth);
+  private dataService = inject(DataService);
 
   constructor() {
     const now = new Date();
@@ -57,6 +63,20 @@ export class DailyReadingsPage implements OnInit {
 
   ngOnInit() {
     this.loadDailyReadings();
+    // Fetch current user and their bibleVersion
+    const currentUser = this.auth.currentUser;
+    if (currentUser) {
+      this.dataService.getUserById(currentUser.uid).subscribe(user => {
+        this.user = user;
+        if (user && user.bibleVersion) {
+          this.bibleVersion = user.bibleVersion;
+        } else {
+          this.bibleVersion = 'ESV'; // Default to ESV if not set
+        }
+      });
+    } else {
+      this.bibleVersion = 'ESV'; // Default to ESV if not logged in
+    }
   }
 
   trackByReading(index: number, reading: DailyReadings): string {
@@ -131,23 +151,60 @@ export class DailyReadingsPage implements OnInit {
         return;
       }
 
-      if (this.esvApiService.isApiKeyConfigured()) {
-        this.esvApiService.getPassage(reference).subscribe({
+      // Use bibleVersion to select API
+      if (this.bibleVersion === 'ESV') {
+        if (this.esvApiService.isApiKeyConfigured()) {
+          this.esvApiService.getPassage(reference).subscribe({
+            next: (passage) => {
+              if (passage) {
+                this.displayESVScripturePassage(passage, kiriyah);
+              } else {
+                this.showErrorMessage(`ESV API could not find passage for: ${reference}. Trying Bible API...`);
+                this.fetchWithBibleAPI(reference, kiriyah);
+              }
+            },
+            error: (error) => {
+              this.showErrorMessage(`ESV API error: ${error.message}. Trying Bible API as fallback...`);
+              this.fetchWithBibleAPI(reference, kiriyah);
+            }
+          });
+        } else {
+          this.showErrorMessage('ESV API key not configured. Using Bible API instead.');
+          this.fetchWithBibleAPI(reference, kiriyah);
+        }
+      } else if (this.bibleVersion === 'HBSS') {
+        // Use The Holy Bible in Simple Spanish for Spanish
+        this.bibleApiService.getPassage(reference, 'b32b9d1b64b4ef29-01').subscribe({
           next: (passage) => {
             if (passage) {
-              this.displayESVScripturePassage(passage, kiriyah);
+              this.displayScripturePassage(passage, kiriyah);
             } else {
-              this.showErrorMessage(`ESV API could not find passage for: ${reference}. Trying Bible API...`);
-              this.fetchWithBibleAPI(reference, kiriyah);
+              this.showErrorMessage(`No passage found for ${kiriyah} reading using Spanish Bible`);
             }
           },
           error: (error) => {
-            this.showErrorMessage(`ESV API error: ${error.message}. Trying Bible API as fallback...`);
-            this.fetchWithBibleAPI(reference, kiriyah);
+            this.showErrorMessage(`Spanish Bible API error: ${error.message}`);
+          }
+        });
+      } else if (this.bibleVersion === 'KJV') {
+        // Use default (KJV) Bible ID
+        this.fetchWithBibleAPI(reference, kiriyah);
+      } else if (this.bibleVersion === 'RVR09') {
+        // Use Reina-Valera 1909 for Spanish
+        this.bibleApiService.getPassage(reference, '592420522e16049f-01').subscribe({
+          next: (passage) => {
+            if (passage) {
+              this.displayScripturePassage(passage, kiriyah);
+            } else {
+              this.showErrorMessage(`No passage found for ${kiriyah} reading using RVR09 Bible`);
+            }
+          },
+          error: (error) => {
+            this.showErrorMessage(`RVR09 Bible API error: ${error.message}`);
           }
         });
       } else {
-        this.showErrorMessage('ESV API key not configured. Using Bible API instead.');
+        // Default fallback
         this.fetchWithBibleAPI(reference, kiriyah);
       }
     }
@@ -175,6 +232,8 @@ export class DailyReadingsPage implements OnInit {
   }
 
   private displayESVScripturePassage(passage: ESVPassage, kiriyah: string) {
+    // Log the raw HTML for inspection
+    console.log('ESV raw passage HTML:', passage.content || passage.text || '');
     const modalOverlay = document.createElement('div');
     modalOverlay.style.cssText = `
       position: fixed;
@@ -296,6 +355,10 @@ export class DailyReadingsPage implements OnInit {
         top: -0.2em;
         display: inline-block;
         font-family: inherit;
+      }
+      .scripture-content .woc {
+        color: #ff5252;
+        font-weight: 600;
       }
     `;
     modalContent.appendChild(style);
@@ -424,7 +487,12 @@ export class DailyReadingsPage implements OnInit {
     } else if (type === 'writings') {
       displayTitle = 'Ketuvim';
     }
-    title.textContent = `${displayTitle} Reading (Bible API Fallback)`;
+    // Only show (Bible API Fallback) if not KJV or Spanish
+    let suffix = '';
+    if (this.bibleVersion !== 'KJV' && this.bibleVersion !== 'HBSS' && this.bibleVersion !== 'RVR09') {
+      suffix = ' (Bible API Fallback)';
+    }
+    title.textContent = `${displayTitle} Reading${suffix}`;
     title.style.cssText = `
       color: #ffffff;
       margin: 0;
@@ -571,7 +639,13 @@ export class DailyReadingsPage implements OnInit {
   private formatVerseNumbers(text: string): string {
     if (!text) return '';
 
-    let formatted = text;
+    // Remove ESV API's book/chapter title (e.g., <h2 class="extra_text">Matthew 11</h2>)
+    let formatted = text.replace(/<h2[^>]*class="extra_text"[^>]*>.*?<\/h2>/gi, '');
+
+    // Replace ESV verse numbers: <b class="verse-num" ...> or <b class="verse-num woc" ...>
+    formatted = formatted.replace(/<b[^>]*class="verse-num(?: woc)?"[^>]*>(\d+)&nbsp;<\/b>/g, '<sup>$1</sup>');
+
+    // Also handle any <span class="v">...</span> (for compatibility)
     formatted = formatted.replace(/<span[^>]*class="v"[^>]*>(\d+)<\/span>/g, '<sup>$1</sup>');
     formatted = formatted.replace(/<span[^>]*data-number="[^"]*"[^>]*>(\d+)<\/span>/g, '<sup>$1</sup>');
 

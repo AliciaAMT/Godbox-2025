@@ -97,8 +97,9 @@ export class BibleApiService {
 
   /**
    * Get a passage of scripture by reference
+   * Optionally specify a bibleId (for RVR1960, etc)
    */
-    getPassage(reference: string): Observable<BiblePassage | null> {
+  getPassage(reference: string, bibleIdOverride?: string): Observable<BiblePassage | null> {
     const apiKey = environment.apiBible?.apiKey;
 
     if (!apiKey) {
@@ -118,19 +119,19 @@ export class BibleApiService {
       'Content-Type': 'application/json'
     });
 
-    // Try with a simpler approach first
-    const url = `${this.baseUrl}/bibles/${this.bibleId}/passages/${encodeURIComponent(formattedReference)}`;
+    const bibleId = bibleIdOverride || this.bibleId;
+    const url = `${this.baseUrl}/bibles/${bibleId}/passages/${encodeURIComponent(formattedReference)}`;
     console.log('Fetching passage from:', url);
 
     return this.http.get<ApiBibleResponse>(url, { headers }).pipe(
-              map(response => {
-                      console.log('Raw response from main Bible ID:', response);
-            console.log('Response data structure:', JSON.stringify(response.data, null, 2));
-            console.log('Passage object keys:', Object.keys(response.data));
-            console.log('Passage text property:', response.data.text);
-          if (response && response.data) {
-            console.log('✅ Main Bible ID succeeded');
-            const passage = response.data;
+      map(response => {
+        console.log('Raw response from main Bible ID:', response);
+        console.log('Response data structure:', JSON.stringify(response.data, null, 2));
+        console.log('Passage object keys:', Object.keys(response.data));
+        console.log('Passage text property:', response.data.text);
+        if (response && response.data) {
+          console.log('✅ Main Bible ID succeeded');
+          const passage = response.data;
 
           // Check if verses array exists, if not, create a single verse from the passage
           let verses: BibleVerse[];
@@ -142,24 +143,24 @@ export class BibleApiService {
               chapter: parseInt(verse.chapterId),
               verse: parseInt(verse.verseId)
             }));
-                      } else {
-              // If no verses array, create a single verse from the passage data
-              console.log('No verses array found, creating single verse from passage data');
+          } else {
+            // If no verses array, create a single verse from the passage data
+            console.log('No verses array found, creating single verse from passage data');
 
-              // Parse the reference to extract book, chapter, and verse
-              const parsedRef = this.parseReference(passage.reference);
-              verses = [{
-                reference: passage.reference || 'Unknown',
-                text: passage.text || '',
-                book: parsedRef?.book || 'Unknown',
-                chapter: parsedRef?.chapter || 1,
-                verse: parsedRef?.verseStart || 1
-              }];
-            }
+            // Parse the reference to extract book, chapter, and verse
+            const parsedRef = this.parseReference(passage.reference);
+            verses = [{
+              reference: passage.reference || 'Unknown',
+              text: passage.text || '',
+              book: parsedRef?.book || 'Unknown',
+              chapter: parsedRef?.chapter || 1,
+              verse: parsedRef?.verseStart || 1
+            }];
+          }
 
-            // Use helper method to create BiblePassage with proper text extraction
-            console.log('First verse object:', verses[0]);
-            return this.createBiblePassage(passage, verses);
+          // Use helper method to create BiblePassage with proper text extraction
+          console.log('First verse object:', verses[0]);
+          return this.createBiblePassage(passage, verses);
         } else {
           console.log('❌ No data in main Bible ID response:', response);
           return null;
@@ -331,8 +332,9 @@ export class BibleApiService {
 
   /**
    * Get a single verse by reference
+   * Optionally specify a bibleId (for RVR1960, etc)
    */
-    getVerse(reference: string): Observable<BibleVerse | null> {
+  getVerse(reference: string, bibleIdOverride?: string): Observable<BibleVerse | null> {
     const apiKey = environment.apiBible?.apiKey;
 
     if (!apiKey) {
@@ -343,7 +345,8 @@ export class BibleApiService {
       'api-key': apiKey
     });
 
-    const url = `${this.baseUrl}/bibles/${this.bibleId}/verses/${encodeURIComponent(reference)}`;
+    const bibleId = bibleIdOverride || this.bibleId;
+    const url = `${this.baseUrl}/bibles/${bibleId}/verses/${encodeURIComponent(reference)}`;
 
     return this.http.get<any>(url, { headers }).pipe(
       map(response => {

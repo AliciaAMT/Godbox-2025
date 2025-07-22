@@ -79,15 +79,15 @@
                   <app-froala-editor formControlName="content"></app-froala-editor>
                 </ion-item>
               </div>
-              <ion-button expand="block" color="success" (click)="updatePost()">
-                <ion-icon name="save" slot="start"></ion-icon>
-                Update
-              </ion-button>
-              <ion-button expand="block" color="danger" (click)="deletePost()">
-                <ion-icon name="trash" slot="start"></ion-icon>
-                Delete
-              </ion-button>
             </form>
+            <ion-button expand="block" color="success" (click)="onUpdateButtonClick()">
+              <ion-icon name="save" slot="start"></ion-icon>
+              Update
+            </ion-button>
+            <ion-button expand="block" color="danger" (click)="deletePost()">
+              <ion-icon name="trash" slot="start"></ion-icon>
+              Delete
+            </ion-button>
           </ion-card-content>
         </ion-card>
       </ion-col>

@@ -70,7 +70,7 @@ export class AddPostComponent implements OnInit {
       imageUrl: [''],
       preview: ['', [Validators.required, Validators.maxLength(1000)]],
       category: ['', Validators.required],
-      content: ['', [Validators.required, Validators.maxLength(10000)]],
+      content: ['', [Validators.required, Validators.maxLength(200000)]],
       keywords: [''],
       author: [userId],
       date: [new Date().toISOString()],

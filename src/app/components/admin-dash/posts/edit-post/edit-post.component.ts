@@ -73,7 +73,7 @@ export class EditPostComponent implements OnInit {
       imageUrl: [''],
       preview: ['', [Validators.required, Validators.maxLength(1000)]],
       category: ['', Validators.required],
-      content: ['', [Validators.required, Validators.maxLength(10000)]],
+      content: ['', [Validators.required, Validators.maxLength(200000)]],
       keywords: [''],
       author: [''],
       date: [''],
@@ -96,6 +96,7 @@ export class EditPostComponent implements OnInit {
   async savePost() {
     if (this.postForm.valid) {
       let post: Post = { ...this.postForm.value, id: this.id };
+
       // Preserve author and date if not changed
       if (!post.author) {
         post.author = this.auth.currentUser?.uid || 'anonymous';
@@ -111,8 +112,14 @@ export class EditPostComponent implements OnInit {
         const text = tmp.textContent || tmp.innerText || '';
         post.description = text.substring(0, 150) + (text.length > 150 ? '...' : '');
       }
-      await this.dataService.updatePost(post);
-      this.router.navigateByUrl('/admin-dash/posts');
+
+      try {
+        await this.dataService.updatePost(post);
+        this.router.navigateByUrl('/admin-dash/posts');
+      } catch (error) {
+        console.error('Error updating post:', error);
+        alert('Error updating post: ' + error);
+      }
     } else {
       this.postForm.markAllAsTouched();
     }
@@ -120,6 +127,10 @@ export class EditPostComponent implements OnInit {
 
   async updatePost() {
     await this.savePost();
+  }
+
+  onUpdateButtonClick() {
+    this.updatePost();
   }
 
   async deletePost() {

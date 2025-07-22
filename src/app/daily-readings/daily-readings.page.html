@@ -1,10 +1,19 @@
 <app-menu-header></app-menu-header>
+<ion-header>
+  <ion-toolbar>
+    <ion-button
+      slot="start"
+      routerLink="/home"
+      routerDirection="back"
+      aria-label="Go Back"
+      tabindex="0"
+      fill="clear">
+      <ion-icon name="arrow-back" slot="icon-only" aria-hidden="true"></ion-icon>
+    </ion-button>
+    <ion-title>Daily Readings</ion-title>
+  </ion-toolbar>
+</ion-header>
 <ion-content>
-  <ion-fab vertical="top" horizontal="start" slot="fixed">
-    <ion-fab-button routerLink="/home" routerDirection="back">
-      <ion-icon name="arrow-back"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
 <ion-grid>
   <ion-row>
     <ion-col class="ion-text-center" sizeLg="4" offsetLg="4" sizeMd="6" offsetMd="3" sizeSm="8" offsetSm="2">

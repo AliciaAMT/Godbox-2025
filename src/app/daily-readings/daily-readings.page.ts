@@ -2,7 +2,7 @@ import { formatDate } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonFab, IonFabButton, IonIcon, IonGrid, IonRow, IonCol, IonItem, IonLabel, IonButton, IonSpinner } from '@ionic/angular/standalone';
+import { IonContent, IonFab, IonFabButton, IonIcon, IonGrid, IonRow, IonCol, IonItem, IonLabel, IonButton, IonSpinner, IonHeader, IonToolbar, IonTitle } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
 import { BibleApiService, BiblePassage } from '../services/bible-api.service';
 import { ESVApiService, ESVPassage } from '../services/esv-api.service';
@@ -18,7 +18,13 @@ import { DataService, User } from '../services/data.service';
   templateUrl: './daily-readings.page.html',
   styleUrls: ['./daily-readings.page.scss'],
   standalone: true,
-  imports: [IonContent, IonFab, IonFabButton, IonIcon, IonGrid, IonRow, IonCol, IonItem, IonLabel, IonButton, IonSpinner, CommonModule, FormsModule, RouterModule, FooterLandingComponent, MenuHeaderComponent, DateComponent]
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonButton,
+    IonIcon,
+    IonTitle,
+    IonContent, IonFab, IonFabButton, IonIcon, IonGrid, IonRow, IonCol, IonItem, IonLabel, IonButton, IonSpinner, CommonModule, FormsModule, RouterModule, FooterLandingComponent, MenuHeaderComponent, DateComponent]
 })
 export class DailyReadingsPage implements OnInit {
   dateS = new Date();

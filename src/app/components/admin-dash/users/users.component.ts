@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonGrid, IonRow, IonCol, IonList, IonItem, IonLabel, IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonRow, IonCol, IonList, IonItem, IonLabel, IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { DataService, User } from '../../../services/data.service';
+import { BackButtonComponent } from '../../back-button/back-button.component';
 
 @Component({
   selector: 'app-users',
@@ -13,9 +14,6 @@ import { DataService, User } from '../../../services/data.service';
     CommonModule,
     RouterModule,
     IonContent,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonGrid,
     IonRow,
     IonCol,
@@ -24,7 +22,8 @@ import { DataService, User } from '../../../services/data.service';
     IonLabel,
     IonFab,
     IonFabButton,
-    IonIcon
+    IonIcon,
+    BackButtonComponent
   ]
 })
 export class UsersComponent implements OnInit {

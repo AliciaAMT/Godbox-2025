@@ -1,18 +1,18 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonFab, IonFabButton, IonIcon, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DataService, Post, Serie } from '../services/data.service';
 import { FooterLandingComponent } from '../components/footer-landing/footer-landing.component';
-import { MenuHeaderComponent } from '../components/menu-header/menu-header.component';
+import { BackButtonComponent } from '../components/back-button/back-button.component';
 
 @Component({
   selector: 'app-view-collection',
   templateUrl: './view-collection.page.html',
   styleUrls: ['./view-collection.page.scss'],
   standalone: true,
-  imports: [IonContent, IonFab, IonFabButton, IonIcon, IonGrid, IonRow, IonCol, CommonModule, FormsModule, RouterModule, FooterLandingComponent, MenuHeaderComponent]
+  imports: [IonContent, IonGrid, IonRow, IonCol, CommonModule, FormsModule, RouterModule, FooterLandingComponent, BackButtonComponent]
 })
 export class ViewCollectionPage implements OnInit {
   collectionId: string = '';

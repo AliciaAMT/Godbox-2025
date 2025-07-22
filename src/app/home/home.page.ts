@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { DataService, Post, User } from '../services/data.service';
 import { FooterLandingComponent } from '../components/footer-landing/footer-landing.component';
 import { MenuHeaderComponent } from '../components/menu-header/menu-header.component';
+import { SkipToTopComponent } from '../components/skip-to-top/skip-to-top.component';
 
 @Component({
   selector: 'app-home',
@@ -24,7 +25,8 @@ import { MenuHeaderComponent } from '../components/menu-header/menu-header.compo
     IonCardContent,
     IonImg,
     FooterLandingComponent,
-    MenuHeaderComponent
+    MenuHeaderComponent,
+    SkipToTopComponent
   ],
 })
 export class HomePage implements OnInit {

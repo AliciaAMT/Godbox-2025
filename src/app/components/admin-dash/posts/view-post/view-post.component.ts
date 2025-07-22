@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
 import { DataService, Post, User } from '../../../../services/data.service';
-import { MenuHeaderComponent } from '../../../menu-header/menu-header.component';
+import { BackButtonComponent } from '../../../back-button/back-button.component';
 
 @Component({
   selector: 'app-view-post',
@@ -19,7 +19,7 @@ import { MenuHeaderComponent } from '../../../menu-header/menu-header.component'
     IonFab,
     IonFabButton,
     IonSpinner,
-    MenuHeaderComponent
+    BackButtonComponent
   ]
 })
 export class ViewPostComponent implements OnInit {

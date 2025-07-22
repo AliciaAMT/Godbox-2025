@@ -55,17 +55,12 @@
             Growth Blog
           </ion-label>
         </ion-item>
-        <ion-item routerLink="/profile" routerDirection="root" routerLinkActive="active-item" lines="none" (click)="closeMenu()">
-          <ion-label>
-            Profile
-          </ion-label>
-        </ion-item>
         <ion-item routerLink="/admin-dash" routerDirection="root" routerLinkActive="active-item" lines="none" *ngIf="profile?.userRole === 'admin'" (click)="closeMenu()">
           <ion-label>
             Admin Dashboard
           </ion-label>
         </ion-item>
-        <ion-item (click)="logout(); closeMenu()" lines="none" aria-label="Logout" tabindex="0" role="button" (keydown.enter)="logout(); closeMenu()" (keydown.space)="logout(); closeMenu()">
+        <ion-item routerLink="/logout" routerDirection="root" routerLinkActive="active-item" lines="none" (click)="logout(); closeMenu()" aria-label="Logout" tabindex="0" role="button" (keydown.enter)="logout(); closeMenu()" (keydown.space)="logout(); closeMenu()">
           <ion-label>
             Logout
           </ion-label>

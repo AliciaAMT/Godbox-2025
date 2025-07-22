@@ -3,7 +3,7 @@ import { IonContent, IonFab, IonFabButton, IonIcon, IonSpinner, IonGrid, IonRow,
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { DataService, Post, User } from '../../../services/data.service';
-import { MenuHeaderComponent } from '../../menu-header/menu-header.component';
+import { BackButtonComponent } from '../../back-button/back-button.component';
 import { addIcons } from 'ionicons';
 import { add, arrowBack, eye, create } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
@@ -30,7 +30,7 @@ import { Subscription } from 'rxjs';
     IonCardContent,
     IonImg,
     IonButton,
-    MenuHeaderComponent,
+    BackButtonComponent,
     IonInfiniteScroll,
     IonInfiniteScrollContent
   ]

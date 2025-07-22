@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, IonInput, IonSelect, IonSelectOption, IonLabel, IonItem, IonFab, IonFabButton } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, IonInput, IonSelect, IonSelectOption, IonLabel, IonItem } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -7,6 +7,7 @@ import { DataService, Post, Category, Serie } from '../../../../services/data.se
 import { addIcons } from 'ionicons';
 import { save, arrowBack, trash, create } from 'ionicons/icons';
 import { FroalaEditorComponent } from '../../../froala-editor/froala-editor.component';
+import { BackButtonComponent } from '../../../back-button/back-button.component';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Auth } from '@angular/fire/auth';
 
@@ -20,9 +21,6 @@ import { Auth } from '@angular/fire/auth';
     ReactiveFormsModule,
     RouterModule,
     IonContent,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonGrid,
     IonRow,
     IonCol,
@@ -37,9 +35,8 @@ import { Auth } from '@angular/fire/auth';
     IonSelectOption,
     IonLabel,
     IonItem,
-    IonFab,
-    IonFabButton,
-    FroalaEditorComponent
+    FroalaEditorComponent,
+    BackButtonComponent
   ]
 })
 export class EditPostComponent implements OnInit {

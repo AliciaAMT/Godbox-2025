@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonGrid, IonRow, IonCol, IonList, IonItem, IonLabel, IonFab, IonFabButton, IonIcon, AlertController } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonRow, IonCol, IonList, IonItem, IonLabel, IonFab, IonFabButton, IonIcon, AlertController } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { DataService, Serie, User } from '../../../services/data.service';
+import { BackButtonComponent } from '../../back-button/back-button.component';
 import { addIcons } from 'ionicons';
 import { add } from 'ionicons/icons';
 
@@ -15,9 +16,6 @@ import { add } from 'ionicons/icons';
     CommonModule,
     RouterModule,
     IonContent,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonGrid,
     IonRow,
     IonCol,
@@ -26,7 +24,8 @@ import { add } from 'ionicons/icons';
     IonLabel,
     IonFab,
     IonFabButton,
-    IonIcon
+    IonIcon,
+    BackButtonComponent
   ]
 })
 export class CollectionsComponent implements OnInit {

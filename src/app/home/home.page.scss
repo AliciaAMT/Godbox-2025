@@ -10,6 +10,21 @@ ion-card-header {
 
 ion-card {
   background-color: #101010 !important;
+  transition: all 0.2s ease;
+}
+
+/* Focus styling for cards */
+ion-card:focus {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+ion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 h2 {

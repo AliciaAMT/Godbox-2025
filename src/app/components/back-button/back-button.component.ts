@@ -1,24 +1,24 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonBackButton } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonButtons, IonButton, IonIcon, IonTitle } from '@ionic/angular/standalone';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-menu-header',
-  templateUrl: './menu-header.component.html',
-  styleUrls: ['./menu-header.component.scss'],
+  selector: 'app-back-button',
+  templateUrl: './back-button.component.html',
+  styleUrls: ['./back-button.component.scss'],
   standalone: true,
   imports: [
     IonHeader,
     IonToolbar,
     IonButtons,
-    IonMenuButton,
+    IonButton,
+    IonIcon,
     IonTitle,
-    IonBackButton,
     CommonModule
   ]
 })
-export class MenuHeaderComponent {
+export class BackButtonComponent {
   constructor(public location: Location) {}
 
   goBack() {

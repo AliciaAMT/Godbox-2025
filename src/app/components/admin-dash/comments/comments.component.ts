@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { BackButtonComponent } from '../../back-button/back-button.component';
 
 @Component({
   selector: 'app-comments',
@@ -12,12 +13,10 @@ import { RouterModule } from '@angular/router';
     CommonModule,
     RouterModule,
     IonContent,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonFab,
     IonFabButton,
-    IonIcon
+    IonIcon,
+    BackButtonComponent
   ]
 })
 export class CommentsComponent implements OnInit {

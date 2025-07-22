@@ -1,0 +1,14 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button
+        (click)="goBack()"
+        *ngIf="canGoBack()"
+        aria-label="Go back"
+        fill="clear">
+        <ion-icon name="arrow-back" slot="icon-only" aria-hidden="true" style="color: var(--ion-color-primary);"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>The Way</ion-title>
+  </ion-toolbar>
+</ion-header>

@@ -1,8 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button menu="first" alt="menu"></ion-menu-button>
+      <ion-back-button (click)="goBack()" *ngIf="canGoBack()" aria-label="Go back"></ion-back-button>
+      <ion-menu-button menu="first" aria-label="menu"></ion-menu-button>
     </ion-buttons>
-    <ion-title>The Way</ion-title>
+    <ion-title aria-label="The Way - Main Navigation">The Way</ion-title>
   </ion-toolbar>
 </ion-header>

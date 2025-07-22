@@ -301,18 +301,16 @@ export class DailyReadingsPage implements OnInit {
         isLoadingAudio = true;
         spinner.style.display = 'inline-block';
         audioButton.disabled = true;
-        // Fetch ESV audio URL
+        // Fetch ESV audio URL from Firebase proxy
         try {
-          const apiKey = (window as any).environment?.esvBible?.apiKey || '';
           const passageRef = encodeURIComponent(passage.reference);
-          const audioUrl = `https://api.esv.org/v3/passage/audio/?q=${passageRef}`;
+          const audioUrl = `https://us-central1-the-way-417.cloudfunctions.net/esvAudio?q=${passageRef}`;
           const response = await fetch(audioUrl, {
-            headers: { 'Authorization': `Token ${apiKey}` },
             redirect: 'follow'
           });
           if (!response.ok) throw new Error('Audio fetch failed');
-          // The ESV API returns a redirect to the MP3 file
-          const finalUrl = response.url;
+          const blob = await response.blob();
+          const finalUrl = URL.createObjectURL(blob);
           audio = new Audio(finalUrl);
           audio.onended = () => {
             isPlaying = false;

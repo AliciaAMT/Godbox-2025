@@ -8,11 +8,12 @@
  */
 
 import {setGlobalOptions} from "firebase-functions";
-import { onRequest } from "firebase-functions/v2/https";
 import * as admin from 'firebase-admin';
 import sharp from 'sharp';
 import { Request, Response } from 'express';
 import Busboy from 'busboy';
+import * as functions from 'firebase-functions';
+import { Readable } from 'stream';
 
 admin.initializeApp();
 
@@ -21,10 +22,8 @@ setGlobalOptions({
   maxInstances: 10,
 });
 
-export const uploadImage = onRequest({
-  memory: '1GiB',
-  timeoutSeconds: 60
-}, async (req: Request, res: Response) => {
+// uploadImage as 1st Gen function
+export const uploadImage = functions.https.onRequest(async (req: Request, res: Response) => {
   // Set CORS headers FIRST, before any other processing
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -124,5 +123,48 @@ export const uploadImage = onRequest({
   } catch (error) {
     console.error('Error handling upload request:', error);
     res.status(500).json({ error: 'Failed to process upload request' });
+  }
+});
+
+// ESV Audio Proxy as 1st Gen function
+export const esvAudio = functions.https.onRequest(async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+  const q = req.query.q as string;
+  if (!q) {
+    res.status(400).json({ error: 'Missing q parameter' });
+    return;
+  }
+  const apiKey = process.env.ESV_API_KEY;
+  if (!apiKey) {
+    res.status(500).json({ error: 'ESV API key not configured in environment variable ESV_API_KEY' });
+    return;
+  }
+  try {
+    // Fetch the ESV audio endpoint
+    const apiUrl = `https://api.esv.org/v3/passage/audio/?q=${encodeURIComponent(q)}`;
+    const response = await fetch(apiUrl, {
+      headers: { 'Authorization': `Token ${apiKey}` },
+      redirect: 'follow',
+    });
+    if (!response.ok) {
+      res.status(response.status).json({ error: 'Failed to fetch ESV audio' });
+      return;
+    }
+    // Set content type to audio/mpeg
+    res.set('Content-Type', 'audio/mpeg');
+    // Stream the audio
+    if (response.body) {
+      Readable.fromWeb(response.body as any).pipe(res);
+    } else {
+      res.status(500).json({ error: 'No audio stream returned from ESV API' });
+    }
+  } catch (e) {
+    res.status(500).json({ error: 'Proxy error', details: (e as Error).message });
   }
 });

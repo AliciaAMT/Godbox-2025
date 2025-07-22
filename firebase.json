@@ -10,6 +10,7 @@
     {
       "source": "functions",
       "codebase": "default",
+      "runtime": "nodejs20",
       "ignore": [
         "node_modules",
         ".git",
@@ -19,7 +20,11 @@
       ],
       "predeploy": [
         "npm --prefix \"$RESOURCE_DIR\" run build"
-      ]
+      ],
+      "gen": {
+        "esvAudio": { "platform": "gcfv1" },
+        "uploadImage": { "platform": "gcfv1" }
+      }
     }
   ]
 }

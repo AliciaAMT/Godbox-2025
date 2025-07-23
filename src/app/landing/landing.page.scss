@@ -249,3 +249,98 @@ a:focus {
   text-decoration: underline;
   font-size: 0.95em;
 }
+
+.dev-message-btn-container {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0 1rem 0;
+}
+.dev-message-btn {
+  background: #00ffea;
+  color: #222;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 32px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: background 0.2s, color 0.2s;
+}
+.dev-message-btn:hover, .dev-message-btn:focus {
+  background: #00bfae;
+  color: #fff;
+  outline: 2px solid #00ffea;
+}
+.dev-modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.7);
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+.dev-modal.show {
+  display: flex;
+}
+.dev-modal-content {
+  background: #181818;
+  color: #fff;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90vw;
+  margin: 2rem auto;
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  position: relative;
+  outline: none;
+}
+.dev-modal-content h3 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #00ffea;
+}
+.dev-modal-content time {
+  display: block;
+  margin-bottom: 1rem;
+  color: #aaa;
+}
+.dev-modal-body {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+.dev-modal-body blockquote {
+  margin: 1.2em 0;
+  padding-left: 1em;
+  border-left: 3px solid #00ffea;
+  color: #00ffea;
+  font-style: italic;
+}
+.dev-modal-close {
+  background: #00ffea;
+  color: #222;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 32px;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  margin-right: 0;
+  margin-left: 0;
+  cursor: pointer;
+  position: static;
+  display: block;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: background 0.2s, color 0.2s;
+}
+.dev-modal-close:hover, .dev-modal-close:focus {
+  background: #00bfae;
+  color: #fff;
+  outline: 2px solid #00ffea;
+}

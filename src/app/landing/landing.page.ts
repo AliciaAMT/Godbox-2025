@@ -14,4 +14,20 @@ import { FooterLandingComponent } from '../components/footer-landing/footer-land
 })
 export class LandingPage {
   public readonly currentYear = new Date().getFullYear();
+
+  openDevModal() {
+    const modal = document.getElementById('dev-modal');
+    if (modal) {
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+      modal.focus();
+    }
+  }
+  closeDevModal() {
+    const modal = document.getElementById('dev-modal');
+    if (modal) {
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+  }
 }

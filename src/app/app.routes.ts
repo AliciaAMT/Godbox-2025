@@ -166,7 +166,14 @@ export const routes: Routes = [
     path: 'page/:slug',
     loadComponent: () => import('./page/page.component').then(m => m.PageComponent)
   },
-
+  {
+    path: 'privacy',
+    loadComponent: () => import('./pages/privacy/privacy.page').then(m => m.PrivacyPage)
+  },
+  {
+    path: 'license',
+    loadComponent: () => import('./pages/license/license.page').then(m => m.LicensePage)
+  },
   {
     path: '**',
     redirectTo: '',

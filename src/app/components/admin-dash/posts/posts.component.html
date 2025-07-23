@@ -28,20 +28,29 @@
     <!-- Posts Grid -->
     <ion-row *ngIf="!loading">
       <ion-col *ngFor="let post of posts" class="ion-text-center" sizeXl="4" offsetXl="0" sizeLg="4" offsetLg="0" sizeMd="6" offsetMd="0" sizeSm="8" offsetSm="2" sizeXs="10" offsetXs="1">
-        <ion-card style="height: 100%;">
+        <ion-card class="post-card">
+          <ion-img *ngIf="post.imageUrl" [src]="post.imageUrl" class="post-thumbnail"></ion-img>
           <ion-card-header>
-            <ion-img *ngIf="post.imageUrl" [src]="post.imageUrl"></ion-img>
-            <ion-card-title>
-              <h2>{{ post.title }}</h2>
-              <sub>{{ post.date | date }}</sub>
-            </ion-card-title>
+            <ion-card-title class="post-title">{{ post.title }}</ion-card-title>
+            <div class="post-meta">
+              <div class="privacy-date">
+                <ion-icon *ngIf="post.privacy === 'private'" name="lock-closed" aria-label="Private"></ion-icon>
+                <ion-icon *ngIf="post.privacy === 'public'" name="earth" aria-label="Public"></ion-icon>
+                <ion-icon *ngIf="post.privacy === 'anonymous'" name="eye-off" aria-label="Anonymous"></ion-icon>
+                <span class="post-date">{{ post.date | date }}</span>
+              </div>
+              <div class="author-center">
+                <ion-chip class="author-chip" *ngIf="getUserName(post.author) !== 'Unknown User'">
+                  <ion-avatar *ngIf="getUserImageUrl(post.author)">
+                    <img [src]="getUserImageUrl(post.author)" />
+                  </ion-avatar>
+                  <ion-label>{{ getUserName(post.author) }}</ion-label>
+                </ion-chip>
+              </div>
+            </div>
           </ion-card-header>
           <ion-card-content>
-            <p>{{ post.description }}</p>
-            <p><strong>By:</strong> {{ getUserName(post.author) }}</p>
-            <p><strong>Category:</strong> {{ post.category }}</p>
-            <p><strong>Privacy:</strong> {{ post.privacy }}</p>
-
+            <div class="post-description">{{ post.description }}</div>
             <div class="card-actions">
               <ion-button fill="outline" size="small" [routerLink]="['/admin-dash/posts/view-post', post.id]" routerDirection="forward">
                 <ion-icon name="eye" slot="start"></ion-icon>

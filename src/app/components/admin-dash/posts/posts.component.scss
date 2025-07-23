@@ -46,3 +46,29 @@ p {
 ion-content {
   --background: #000000;
 }
+
+.post-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.privacy-date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.author-center {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+.author-chip {
+  background: #222 !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}

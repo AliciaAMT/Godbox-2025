@@ -1,1 +1,7 @@
 // Menu header component styles
+
+// Remove border from avatar in menu header
+ion-avatar, .avatar, .menu-avatar {
+  border: none !important;
+  box-shadow: none;
+}

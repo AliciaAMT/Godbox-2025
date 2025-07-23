@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { IonContent, IonFab, IonFabButton, IonIcon, IonSpinner, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonButton, IonInfiniteScroll, IonInfiniteScrollContent } from '@ionic/angular/standalone';
+import { IonContent, IonFab, IonFabButton, IonIcon, IonSpinner, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonButton, IonInfiniteScroll, IonInfiniteScrollContent, IonChip, IonAvatar, IonLabel } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { DataService, Post, User } from '../../../services/data.service';
 import { BackButtonComponent } from '../../back-button/back-button.component';
 import { addIcons } from 'ionicons';
-import { add, arrowBack, eye, create } from 'ionicons/icons';
+import { add, arrowBack, eye, create, lockClosed, earth, eyeOff } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -32,7 +32,10 @@ import { Subscription } from 'rxjs';
     IonButton,
     BackButtonComponent,
     IonInfiniteScroll,
-    IonInfiniteScrollContent
+    IonInfiniteScrollContent,
+    IonChip,
+    IonAvatar,
+    IonLabel
   ]
 })
 export class PostsComponent implements OnInit, OnDestroy {
@@ -51,7 +54,7 @@ export class PostsComponent implements OnInit, OnDestroy {
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {
-    addIcons({arrowBack, add, eye, create});
+    addIcons({lockClosed,earth,eyeOff,eye,create,add,arrowBack});
   }
 
   ngOnInit() {
@@ -154,5 +157,11 @@ export class PostsComponent implements OnInit, OnDestroy {
     if (!userId) return 'Unknown User';
     const user = this.users.find(u => u.id === userId);
     return user?.userName || 'Unknown User';
+  }
+
+  getUserImageUrl(userId: string): string | undefined {
+    if (!userId) return undefined;
+    const user = this.users.find(u => u.id === userId);
+    return user?.imageUrl;
   }
 }

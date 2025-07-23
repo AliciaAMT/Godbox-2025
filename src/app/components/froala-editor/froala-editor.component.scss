@@ -173,4 +173,13 @@ div {
       }
     }
   }
+
+  .fr-toolbar .fr-btn:focus,
+  .fr-toolbar button:focus,
+  .fr-toolbar [tabindex="0"]:focus {
+    outline: 3px solid #00ffea !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px #00ffea55 !important;
+    background: #222 !important;
+  }
 }

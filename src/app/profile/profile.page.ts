@@ -12,7 +12,9 @@ import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { addIcons } from 'ionicons';
 import { save, person, create, mail, book, documentText, addCircleOutline } from 'ionicons/icons';
 import { BackButtonComponent } from '../components/back-button/back-button.component';
-import { EditProfileModalComponent } from './edit-profile-modal/edit-profile-modal.component';
+// Remove EditProfileModalComponent import
+// import { EditProfileModalComponent } from './edit-profile-modal/edit-profile-modal.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -30,7 +32,8 @@ import { EditProfileModalComponent } from './edit-profile-modal/edit-profile-mod
     IonCardContent,
     IonButton,
     IonIcon,
-    BackButtonComponent
+    BackButtonComponent,
+    RouterModule
   ]
 })
 export class ProfilePage implements OnInit {
@@ -56,7 +59,8 @@ export class ProfilePage implements OnInit {
     private toastCtrl: ToastController,
     private auth: Auth,
     private sanitizer: DomSanitizer,
-    private modalController: ModalController
+    // Remove modalController
+    // private modalController: ModalController
   ) {
     addIcons({person,create,mail,book,documentText,addCircleOutline,save});
 
@@ -147,27 +151,5 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  async openEditModal() {
-    const modal = await this.modalController.create({
-      component: EditProfileModalComponent,
-      componentProps: {
-        user: this.user
-      },
-      breakpoints: [0, 0.5, 0.8],
-      initialBreakpoint: 0.8
-    });
-
-    await modal.present();
-
-    const { data } = await modal.onWillDismiss();
-    if (data) {
-      this.user = data;
-      const toast = await this.toastCtrl.create({
-        message: 'Profile updated successfully!',
-        duration: 2000,
-        color: 'success'
-      });
-      toast.present();
-    }
-  }
+  // Remove openEditModal and all modal logic
 }

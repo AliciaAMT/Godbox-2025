@@ -39,7 +39,7 @@
       </div>
 
       <div class="profile-actions" *ngIf="profile?.id === user.id">
-        <ion-button fill="outline" size="small" (click)="openEditModal()">
+        <ion-button fill="outline" size="small" [routerLink]="['/profile', user.id, 'edit']">
           <ion-icon name="create" slot="start"></ion-icon>
           Edit Profile
         </ion-button>
@@ -101,7 +101,7 @@
           <div class="empty-bio">
             <ion-icon name="add-circle-outline" class="empty-icon"></ion-icon>
             <p>No bio yet</p>
-            <ion-button fill="outline" size="small" (click)="openEditModal()">
+            <ion-button fill="outline" size="small" [routerLink]="['/profile', user.id, 'edit']">
               Add Bio
             </ion-button>
           </div>

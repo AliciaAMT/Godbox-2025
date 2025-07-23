@@ -1,0 +1,50 @@
+<app-back-button></app-back-button>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeLg="6" offsetLg="3" sizeMd="8" offsetMd="2" sizeSm="10" offsetSm="1">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title class="ion-text-center">
+              Edit Profile
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+              <ion-item class="ion-padding">
+                <ion-label position="stacked">Display Name</ion-label>
+                <ion-input formControlName="userName" required></ion-input>
+              </ion-item>
+              <ion-item class="ion-padding">
+                <ion-label position="stacked">Bible Version</ion-label>
+                <ion-select formControlName="bibleVersion" interface="popover">
+                  <ion-select-option value="ESV">ESV (English Standard Version)</ion-select-option>
+                  <ion-select-option value="KJV">KJV (King James Version)</ion-select-option>
+                  <ion-select-option value="HBSS">Holy Bible in Simple Spanish</ion-select-option>
+                  <ion-select-option value="RVR09">RVR09 (Reina-Valera 1909, Spanish)</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <div class="keyboard-notice" tabindex="0">
+                <strong>Keyboard users:</strong> Tab to the text area, then press <kbd>ALT</kbd> + <kbd>F10</kbd> to move focus to the toolbar or any open popup.<br>
+                Once there, use <kbd>Tab</kbd>, <kbd>Shift</kbd>+<kbd>Tab</kbd>, <kbd>Arrow keys</kbd>, <kbd>Enter</kbd>, and <kbd>Esc</kbd> to navigate and activate buttons. Press <kbd>Esc</kbd> to leave the toolbar.
+              </div>
+              <ion-item class="ion-padding">
+                <ion-label position="stacked">Bio</ion-label>
+                <app-froala-editor formControlName="bio"></app-froala-editor>
+              </ion-item>
+              <div class="form-actions">
+                <ion-button expand="block" color="success" type="submit" [disabled]="!profileForm.valid">
+                  <ion-icon name="save" slot="start"></ion-icon>
+                  Save Changes
+                </ion-button>
+                <ion-button expand="block" color="medium" type="button" (click)="cancel()">
+                  Cancel
+                </ion-button>
+              </div>
+            </form>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

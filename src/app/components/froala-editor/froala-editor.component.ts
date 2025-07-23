@@ -111,7 +111,8 @@ export class FroalaEditorComponent implements AfterViewInit, OnDestroy, ControlV
         colorsBackground: ['#000000', '#1a1a1a', '#333333'],
         colorsText: ['#ffffff', '#cccccc', '#999999'],
         height: 300,
-        placeholderText: 'Start writing your rich text here...'
+        placeholderText: 'Start writing your rich text here...',
+        shortcutsHint: true
       }, () => {
         // Set initial content
         this.editorInstance.html.set(this.content);

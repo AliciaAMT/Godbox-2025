@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonIcon, IonFab, IonFabButton, IonSpinner } from '@ionic/angular/standalone';
+import { IonContent, IonSpinner } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
@@ -15,9 +15,7 @@ import { BackButtonComponent } from '../../../back-button/back-button.component'
     CommonModule,
     RouterModule,
     IonContent,
-    IonIcon,
-    IonFab,
-    IonFabButton,
+
     IonSpinner,
     BackButtonComponent
   ]

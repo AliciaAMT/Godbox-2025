@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonFab, IonFabButton, IonIcon, IonGrid, IonRow, IonCol, IonItem } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonRow, IonCol, IonItem } from '@ionic/angular/standalone';
 import { MenuHeaderComponent } from '../components/menu-header/menu-header.component';
 import { DataService } from '../services/data.service';
 import { Post } from '../services/data.service';
@@ -13,9 +13,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [
     IonContent,
-    IonFab,
-    IonFabButton,
-    IonIcon,
+
     IonGrid,
     IonRow,
     IonCol,

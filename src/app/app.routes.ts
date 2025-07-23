@@ -70,6 +70,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'admin-dash/categories/add-category',
+    loadComponent: () => import('./components/admin-dash/categories/add-category/add-category.component').then(m => m.AddCategoryComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'admin-dash/posts',
     loadComponent: () => import('./components/admin-dash/posts/posts.component').then(m => m.PostsComponent),
     canActivate: [AuthGuard]
@@ -100,6 +105,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'admin-dash/collections/add-collection',
+    loadComponent: () => import('./components/admin-dash/collections/add-collection/add-collection.component').then(m => m.AddCollectionComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'admin-dash/notes',
     loadComponent: () => import('./components/admin-dash/notes/notes.component').then(m => m.NotesComponent),
     canActivate: [AuthGuard]
@@ -107,6 +117,11 @@ export const routes: Routes = [
   {
     path: 'admin-dash/notes/edit-note/:id',
     loadComponent: () => import('./components/admin-dash/notes/edit-note/edit-note.component').then(m => m.EditNoteComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'admin-dash/notes/add-note',
+    loadComponent: () => import('./components/admin-dash/notes/add-note/add-note.component').then(m => m.AddNoteComponent),
     canActivate: [AuthGuard]
   },
   {

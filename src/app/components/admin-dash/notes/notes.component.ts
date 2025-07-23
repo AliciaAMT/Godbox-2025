@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonGrid, IonRow, IonCol, IonList, IonItem, IonLabel, IonFab, IonFabButton, IonIcon, AlertController } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonRow, IonCol, IonList, IonItem, IonLabel, IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { DataService, Note, User } from '../../../services/data.service';
@@ -34,8 +34,7 @@ export class NotesComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
-    private router: Router,
-    private alertController: AlertController
+    private router: Router
   ) {
     addIcons({ add });
     this.dataService.getNotes().subscribe(res => {
@@ -54,34 +53,5 @@ export class NotesComponent implements OnInit {
     return user?.userName || 'Unknown User';
   }
 
-  async addNote() {
-    const alert = await this.alertController.create({
-      header: 'Add Note',
-      message: 'Enter a title and description for your note.',
-      inputs: [
-        {
-          name: 'title',
-          placeholder: 'My cool note',
-          type: 'text'
-        },
-        {
-          name: 'text',
-          placeholder: 'Learn Ionic',
-          type: 'textarea'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        }, {
-          text: 'Add',
-          handler: res => {
-            this.dataService.addNote({ text: res.text, title: res.title });
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
+
 }

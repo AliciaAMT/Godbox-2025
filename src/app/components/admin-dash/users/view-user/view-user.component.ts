@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, IonInput, IonLabel, IonItem, IonFab, IonFabButton } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, IonInput, IonLabel, IonItem } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { DataService, User } from '../../../../services/data.service';
 import { addIcons } from 'ionicons';
-import { save } from 'ionicons/icons';
+import { save, trash } from 'ionicons/icons';
+import { BackButtonComponent } from '../../../back-button/back-button.component';
 
 @Component({
   selector: 'app-view-user',
@@ -17,9 +18,7 @@ import { save } from 'ionicons/icons';
     FormsModule,
     RouterModule,
     IonContent,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
+
     IonGrid,
     IonRow,
     IonCol,
@@ -32,8 +31,7 @@ import { save } from 'ionicons/icons';
     IonInput,
     IonLabel,
     IonItem,
-    IonFab,
-    IonFabButton
+    BackButtonComponent
   ]
 })
 export class ViewUserComponent implements OnInit {
@@ -45,7 +43,7 @@ export class ViewUserComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router
   ) {
-    addIcons({ save });
+    addIcons({save,trash});
   }
 
   ngOnInit() {

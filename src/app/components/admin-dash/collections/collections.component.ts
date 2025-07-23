@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonGrid, IonRow, IonCol, IonList, IonItem, IonLabel, IonFab, IonFabButton, IonIcon, AlertController } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonRow, IonCol, IonList, IonItem, IonLabel, IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { DataService, Serie, User } from '../../../services/data.service';
@@ -34,8 +34,7 @@ export class CollectionsComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
-    private router: Router,
-    private alertController: AlertController
+    private router: Router
   ) {
     addIcons({ add });
     this.dataService.getSeries().subscribe(res => {
@@ -54,36 +53,5 @@ export class CollectionsComponent implements OnInit {
     return user?.userName || 'Unknown User';
   }
 
-  async addSeries() {
-    const alert = await this.alertController.create({
-      header: 'Add Collection',
-      inputs: [
-        {
-          name: 'serieName',
-          placeholder: 'Collection',
-          type: 'text'
-        },
-        {
-          name: 'privacy',
-          placeholder: 'Privacy',
-          type: 'radio',
-          label: 'Private',
-          value: 'private',
-          checked: true
-        },
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        }, {
-          text: 'Add',
-          handler: res => {
-            this.dataService.addSerie({ serieName: res.serieName, privacy: res.privacy });
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
+
 }

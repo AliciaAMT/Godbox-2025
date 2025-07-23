@@ -453,6 +453,33 @@ export class DailyReadingsPage implements OnInit {
     `;
     footer.textContent = 'ESV Bible';
 
+    // Add bottom close button for ESV modal
+    const bottomCloseButton = document.createElement('button');
+    bottomCloseButton.textContent = 'Close';
+    bottomCloseButton.style.cssText = `
+      background-color: var(--ion-color-primary, #3880ff);
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 20px;
+      width: 100%;
+      transition: background-color 0.2s ease;
+    `;
+    bottomCloseButton.setAttribute('aria-label', 'Close modal');
+    bottomCloseButton.setAttribute('role', 'button');
+    bottomCloseButton.setAttribute('tabindex', '0');
+
+    bottomCloseButton.addEventListener('mouseenter', () => {
+      bottomCloseButton.style.backgroundColor = 'var(--ion-color-primary-shade, #3171e0)';
+    });
+    bottomCloseButton.addEventListener('mouseleave', () => {
+      bottomCloseButton.style.backgroundColor = 'var(--ion-color-primary, #3880ff)';
+    });
+
     header.appendChild(title);
     header.appendChild(closeButton);
     scriptureContainer.appendChild(reference);
@@ -460,6 +487,7 @@ export class DailyReadingsPage implements OnInit {
     modalContent.appendChild(header);
     modalContent.appendChild(scriptureContainer);
     modalContent.appendChild(footer);
+    modalContent.appendChild(bottomCloseButton);
 
     const closeModal = () => {
       document.body.removeChild(modalOverlay);
@@ -472,6 +500,15 @@ export class DailyReadingsPage implements OnInit {
 
     closeButton.addEventListener('click', closeModal);
     closeButton.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        closeModal();
+      }
+    });
+
+    // Add event listeners for bottom close button
+    bottomCloseButton.addEventListener('click', closeModal);
+    bottomCloseButton.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         closeModal();
@@ -666,6 +703,33 @@ export class DailyReadingsPage implements OnInit {
     `;
     footer.textContent = 'Bible API (Fallback)';
 
+    // Add bottom close button for Bible API modal
+    const bottomCloseButton = document.createElement('button');
+    bottomCloseButton.textContent = 'Close';
+    bottomCloseButton.style.cssText = `
+      background-color: var(--ion-color-primary, #3880ff);
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 20px;
+      width: 100%;
+      transition: background-color 0.2s ease;
+    `;
+    bottomCloseButton.setAttribute('aria-label', 'Close modal');
+    bottomCloseButton.setAttribute('role', 'button');
+    bottomCloseButton.setAttribute('tabindex', '0');
+
+    bottomCloseButton.addEventListener('mouseenter', () => {
+      bottomCloseButton.style.backgroundColor = 'var(--ion-color-primary-shade, #3171e0)';
+    });
+    bottomCloseButton.addEventListener('mouseleave', () => {
+      bottomCloseButton.style.backgroundColor = 'var(--ion-color-primary, #3880ff)';
+    });
+
     header.appendChild(title);
     header.appendChild(closeButton);
     scriptureContainer.appendChild(reference);
@@ -673,6 +737,7 @@ export class DailyReadingsPage implements OnInit {
     modalContent.appendChild(header);
     modalContent.appendChild(scriptureContainer);
     modalContent.appendChild(footer);
+    modalContent.appendChild(bottomCloseButton);
 
     const closeModal = () => {
       document.body.removeChild(modalOverlay);
@@ -685,6 +750,15 @@ export class DailyReadingsPage implements OnInit {
 
     closeButton.addEventListener('click', closeModal);
     closeButton.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        closeModal();
+      }
+    });
+
+    // Add event listeners for bottom close button
+    bottomCloseButton.addEventListener('click', closeModal);
+    bottomCloseButton.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         closeModal();

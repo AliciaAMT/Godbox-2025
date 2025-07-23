@@ -71,7 +71,79 @@ html, body, ion-app, ion-content, .selectable, * {
   user-select: text !important;
 }
 
+/* Additional mobile-specific text selection */
+ion-label, ion-text, p, span, div, h1, h2, h3, h4, h5, h6 {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default !important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Ensure buttons and interactive elements don't interfere with text selection */
+ion-button, button, a {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Force text selection on specific content areas */
+ion-card-content, ion-item, .verse, .ion-text-center, .ion-text-left, .ion-text-right {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+  cursor: text !important;
+}
+
+/* Override any Ionic default text selection prevention */
+*:not(ion-button):not(button):not(a):not(input):not(select):not(textarea) {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+
 /* Froala Editor Styles */
 @import "froala-editor/css/froala_editor.pkgd.min.css";
 @import "froala-editor/css/froala_style.min.css";
 @import "froala-editor/css/themes/gray.min.css";
+
+/* FAB Button Focus Styling for Accessibility */
+ion-fab-button {
+  transition: all 0.2s ease;
+}
+
+ion-fab-button:focus {
+  outline: 3px solid #ffffff !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3) !important;
+  transform: scale(1.05) !important;
+}
+
+ion-fab-button:focus-visible {
+  outline: 3px solid #ffffff !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3) !important;
+  transform: scale(1.05) !important;
+}
+
+/* Ensure FAB buttons are keyboard accessible */
+ion-fab-button {
+  tabindex: 0;
+}
+
+/* Screen reader only class for accessibility */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}

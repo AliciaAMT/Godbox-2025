@@ -1,0 +1,40 @@
+<app-back-button></app-back-button>
+
+<ion-content>
+  <h2 class="ion-text-center">Create Collection</h2>
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeLg="6" offsetLg="3" sizeMd="8" offsetMd="2" sizeSm="10" offsetSm="1">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title class="ion-text-center">
+              Create Collection
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <form [formGroup]="collectionForm" (ngSubmit)="addCollection()">
+              <div class="input-group">
+                <ion-item class="ion-padding">
+                  <ion-label position="stacked">Collection Name</ion-label>
+                  <ion-input formControlName="serieName" placeholder="Enter collection name"></ion-input>
+                </ion-item>
+                <ion-item class="ion-padding">
+                  <ion-label position="stacked">Privacy</ion-label>
+                  <ion-select formControlName="privacy">
+                    <ion-select-option value="private">Private</ion-select-option>
+                    <ion-select-option value="public">Public</ion-select-option>
+                    <ion-select-option value="anonymous">Anonymous</ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </div>
+              <ion-button expand="block" color="success" type="submit">
+                <ion-icon name="add" slot="start"></ion-icon>
+                Create Collection
+              </ion-button>
+            </form>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

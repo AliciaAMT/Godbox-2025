@@ -11,7 +11,14 @@
   <h2 class="ion-text-center">Profile</h2>
 
   <div class="preview" *ngIf="profile?.id === user?.id">
-    <ion-avatar (click)="changeImage()">
+    <ion-avatar
+      (click)="changeImage()"
+      (keydown.enter)="changeImage()"
+      (keydown.space)="changeImage()"
+      tabindex="0"
+      role="button"
+      aria-label="Change profile picture"
+      [attr.aria-describedby]="profile?.imageUrl ? 'avatar-selected' : 'avatar-not-selected'">
       <img *ngIf="profile?.imageUrl; else placeholder_avatar;" [src]="profile?.imageUrl" [alt]="profile?.userName || 'Profile Picture'">
       <ng-template #placeholder_avatar>
         <div class="fallback">
@@ -19,6 +26,8 @@
         </div>
       </ng-template>
     </ion-avatar>
+    <div id="avatar-not-selected" class="sr-only" *ngIf="!profile?.imageUrl">No profile picture selected. Press Enter or Space to select a profile picture.</div>
+    <div id="avatar-selected" class="sr-only" *ngIf="profile?.imageUrl">Profile picture selected. Press Enter or Space to change profile picture.</div>
     <!-- Bible Version Dropdown -->
     <ion-item style="margin-top: 1em;">
       <ion-label position="stacked">Bible Version</ion-label>

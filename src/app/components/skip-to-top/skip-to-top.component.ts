@@ -1,5 +1,11 @@
 import { Component } from '@angular/core';
+import { IonIcon } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { arrowUp } from 'ionicons/icons';
 import { CommonModule } from '@angular/common';
+
+// Register the icon
+addIcons({ arrowUp });
 
 @Component({
   selector: 'app-skip-to-top',
@@ -7,6 +13,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./skip-to-top.component.scss'],
   standalone: true,
   imports: [
+    IonIcon,
     CommonModule
   ]
 })
@@ -17,18 +24,37 @@ export class SkipToTopComponent {
       event.preventDefault();
     }
 
-    const menuButton = document.querySelector('ion-menu-button') as HTMLElement;
-    if (menuButton) {
-      menuButton.focus();
-      return;
-    }
+    // Find the ion-content element
+    const ionContent = document.querySelector('ion-content');
+    if (ionContent) {
+      // Scroll the ion-content to top
+      ionContent.scrollToTop(500);
 
-    const firstFocusable = document.querySelector('ion-header, ion-button, ion-item, a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])') as HTMLElement;
-    if (firstFocusable) {
-      firstFocusable.focus();
-      return;
-    }
+      // After scrolling, focus the top element
+      setTimeout(() => {
+        const topElement = document.getElementById('top');
+        if (topElement) {
+          topElement.focus();
+          return;
+        }
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Fallback to menu button
+        const menuButton = document.querySelector('ion-menu-button') as HTMLElement;
+        if (menuButton) {
+          menuButton.focus();
+          return;
+        }
+      }, 600);
+    } else {
+      // Fallback for non-Ionic scrolling
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      setTimeout(() => {
+        const topElement = document.getElementById('top');
+        if (topElement) {
+          topElement.focus();
+        }
+      }, 600);
+    }
   }
 }

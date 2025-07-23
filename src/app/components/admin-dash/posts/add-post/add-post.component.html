@@ -1,15 +1,6 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Add Post</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-back-button></app-back-button>
 
 <ion-content>
-  <ion-fab vertical="top" horizontal="start" slot="fixed">
-    <ion-fab-button routerLink="/admin-dash/posts">
-      <ion-icon name="arrow-back"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
   <h2 class="ion-text-center">Create Post</h2>
   <ion-grid>
     <ion-row>
@@ -22,7 +13,15 @@
           </ion-card-header>
           <ion-card-content>
             <form [formGroup]="postForm" (ngSubmit)="addPost()">
-              <div class="preview" (click)="onImageSelectedClick()">
+              <div
+                class="preview"
+                (click)="onImageSelectedClick()"
+                (keydown.enter)="onImageSelectedClick()"
+                (keydown.space)="onImageSelectedClick()"
+                tabindex="0"
+                role="button"
+                aria-label="Select image for post"
+                [attr.aria-describedby]="postForm.get('imageUrl')?.value ? 'image-selected' : 'image-not-selected'">
                 <div *ngIf="!postForm.get('imageUrl')?.value; else placeholder">
                   <div class="fallback">
                     <p>Select Image</p>
@@ -31,6 +30,8 @@
                 <ng-template #placeholder>
                   <img [src]="postForm.get('imageUrl')?.value" style="max-width: 100%; max-height: 300px; border-radius: 8px;" />
                 </ng-template>
+                <div id="image-not-selected" class="sr-only" *ngIf="!postForm.get('imageUrl')?.value">No image selected. Press Enter or Space to select an image.</div>
+                <div id="image-selected" class="sr-only" *ngIf="postForm.get('imageUrl')?.value">Image selected. Press Enter or Space to change image.</div>
               </div>
               <input id="hiddenImageInput" type="file" accept="image/*" style="display:none" (change)="onImageSelected($event)" />
               <div class="input-group">

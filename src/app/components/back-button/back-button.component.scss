@@ -1,6 +1,6 @@
 ion-button {
-  --color: #ffffff;
-  --background: #3880ff;
+  --color: var(--ion-color-primary);
+  --background: transparent;
   --border-radius: 8px;
   --padding-start: 12px;
   --padding-end: 12px;

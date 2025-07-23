@@ -1,25 +1,30 @@
 .skip-to-top-link {
-  position: absolute;
-  top: -40px;
-  left: 6px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
   background: var(--ion-color-primary);
-  color: #fff;
-  padding: 8px 16px;
+  color: #000;
+  padding: 12px 20px;
   text-decoration: none;
-  border-radius: 4px;
+  border-radius: 25px;
   font-size: 14px;
   font-weight: 500;
   z-index: 1000;
-  transition: top 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .skip-to-top-link:focus {
-  top: 6px;
   outline: 2px solid #fff;
   outline-offset: 2px;
+  background: var(--ion-color-primary-shade);
 }
 
 .skip-to-top-link:hover {
   background: var(--ion-color-primary-shade);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }

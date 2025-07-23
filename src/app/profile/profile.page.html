@@ -1,102 +1,112 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Profile</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-back-button></app-back-button>
 
 <ion-content>
-  <h2 class="ion-text-center">Profile</h2>
+  <div class="profile-container">
+    <!-- Profile Header Section -->
+    <div class="profile-header">
+      <div class="avatar-section">
+        <ion-avatar
+          *ngIf="profile?.id === user.id"
+          (click)="changeImage()"
+          (keydown.enter)="changeImage()"
+          (keydown.space)="changeImage()"
+          tabindex="0"
+          role="button"
+          aria-label="Change profile picture"
+          class="profile-avatar">
+          <img *ngIf="user.imageUrl; else placeholder_avatar;" [src]="user.imageUrl" [alt]="user.userName || 'Profile Picture'">
+          <ng-template #placeholder_avatar>
+            <div class="avatar-placeholder">
+              <ion-icon name="person"></ion-icon>
+            </div>
+          </ng-template>
+        </ion-avatar>
 
-  <div class="preview" *ngIf="profile?.id === user?.id">
-    <ion-avatar
-      (click)="changeImage()"
-      (keydown.enter)="changeImage()"
-      (keydown.space)="changeImage()"
-      tabindex="0"
-      role="button"
-      aria-label="Change profile picture"
-      [attr.aria-describedby]="profile?.imageUrl ? 'avatar-selected' : 'avatar-not-selected'">
-      <img *ngIf="profile?.imageUrl; else placeholder_avatar;" [src]="profile?.imageUrl" [alt]="profile?.userName || 'Profile Picture'">
-      <ng-template #placeholder_avatar>
-        <div class="fallback">
-          <p>Select avatar</p>
-        </div>
-      </ng-template>
-    </ion-avatar>
-    <div id="avatar-not-selected" class="sr-only" *ngIf="!profile?.imageUrl">No profile picture selected. Press Enter or Space to select a profile picture.</div>
-    <div id="avatar-selected" class="sr-only" *ngIf="profile?.imageUrl">Profile picture selected. Press Enter or Space to change profile picture.</div>
-    <!-- Bible Version Dropdown -->
-    <ion-item style="margin-top: 1em;">
-      <ion-label position="stacked">Bible Version</ion-label>
-      <ion-select [(ngModel)]="user.bibleVersion" interface="popover" placeholder="Select Version">
-        <ion-select-option value="ESV">ESV (English Standard Version)</ion-select-option>
-        <ion-select-option value="KJV">KJV (King James Version)</ion-select-option>
-        <ion-select-option value="HBSS">Holy Bible in Simple Spanish</ion-select-option>
-        <ion-select-option value="RVR09">RVR09 (Reina-Valera 1909, Spanish)</ion-select-option>
-      </ion-select>
-    </ion-item>
+        <ion-avatar *ngIf="profile?.id !== user.id" class="profile-avatar">
+          <img *ngIf="user.imageUrl; else placeholder_avatar;" [src]="user.imageUrl" [alt]="user.userName || 'Profile Picture'">
+          <ng-template #placeholder_avatar>
+            <div class="avatar-placeholder">
+              <ion-icon name="person"></ion-icon>
+            </div>
+          </ng-template>
+        </ion-avatar>
+      </div>
+
+      <div class="profile-info">
+        <h1 class="profile-name">{{ user.userName || 'User' }}</h1>
+        <p class="profile-role">{{ user.userRole || 'Member' }}</p>
+        <p class="profile-joined">{{ getJoinedDate(user.createdAt) }}</p>
+      </div>
+
+      <div class="profile-actions" *ngIf="profile?.id === user.id">
+        <ion-button fill="outline" size="small" (click)="openEditModal()">
+          <ion-icon name="create" slot="start"></ion-icon>
+          Edit Profile
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Profile Stats Section -->
+    <div class="profile-stats">
+      <ion-card class="stat-card">
+        <ion-card-content>
+          <div class="stat-item">
+            <ion-icon name="mail" class="stat-icon"></ion-icon>
+            <div class="stat-content">
+              <h3>Email</h3>
+              <p>{{ user.email || 'No email available' }}</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card class="stat-card">
+        <ion-card-content>
+          <div class="stat-item">
+            <ion-icon name="book" class="stat-icon"></ion-icon>
+            <div class="stat-content">
+              <h3>Bible Version</h3>
+              <p>{{ getBibleVersionName(user.bibleVersion) }}</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Bio Section -->
+    <div class="bio-section" *ngIf="user.bio">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="document-text" slot="start"></ion-icon>
+            About
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="bio-content" [innerHTML]="getSafeHtml(user.bio || '')"></div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Empty Bio State -->
+    <div class="bio-section" *ngIf="!user.bio && profile?.id === user.id">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="document-text" slot="start"></ion-icon>
+            About
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="empty-bio">
+            <ion-icon name="add-circle-outline" class="empty-icon"></ion-icon>
+            <p>No bio yet</p>
+            <ion-button fill="outline" size="small" (click)="openEditModal()">
+              Add Bio
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
   </div>
-
-  <div class="preview" *ngIf="profile?.id !== user?.id">
-    <ion-avatar>
-      <img *ngIf="user.imageUrl; else placeholder_avatar;" [src]="user.imageUrl" [alt]="user.userName || 'Profile Picture'">
-      <ng-template #placeholder_avatar>
-        <div class="fallback">
-          <p>Select avatar</p>
-        </div>
-      </ng-template>
-    </ion-avatar>
-  </div>
-
-  <h3 class="ion-text-center" *ngIf="user.userName">{{ user.userName }}</h3>
-
-  <ion-grid>
-    <ion-row>
-      <ion-col sizeSm="8" offsetSm="2">
-        <ion-card *ngIf="user?.userRole">
-          <ion-card-header>
-            <ion-card-title>
-              <h4 class="ion-text-center">Bio</h4>
-            </ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <div *ngIf="user.bio" [innerHTML]="getSafeHtml(user.bio)"></div>
-            <p *ngIf="!user.bio" class="ion-text-center">No bio available</p>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-
-    <ion-row *ngIf="profile?.id === id">
-      <ion-col sizeSm="8" offsetSm="2">
-        <div class="ion-padding">
-          <ion-item>
-            <ion-label position="stacked">User Name</ion-label>
-            <ion-input [(ngModel)]="user.userName"></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked">Bio</ion-label>
-          </ion-item>
-
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>Rich Text Bio Editor</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              <app-froala-editor [content]="user.bio || ''" (contentChange)="user.bio = $event"></app-froala-editor>
-            </ion-card-content>
-          </ion-card>
-
-          <ion-button expand="block" color="warning" (click)="updateUser()">
-            <ion-icon name="save" slot="start"></ion-icon>
-            Update
-          </ion-button>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
 </ion-content>

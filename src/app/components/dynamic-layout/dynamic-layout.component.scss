@@ -32,18 +32,29 @@ ion-item.user-profile {
   background: transparent !important;
   --background: transparent !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: 10px;
-  padding: 20px 0 20px 0;
   display: flex;
   align-items: center;
-  gap: 15px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   box-shadow: none !important;
+  border-radius: 8px;
+  padding: 8px;
 }
+
+ion-item.user-profile:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  --background: rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
 ion-item.user-profile:focus {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
+  outline: 3px solid #ffffff !important;
+  outline-offset: 2px !important;
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  --background: rgba(255, 255, 255, 0.15) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
 .profile-avatar {
@@ -57,6 +68,20 @@ ion-item.user-profile:focus {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
+  margin-right: 12px;
+}
+
+ion-item.user-profile:hover .profile-avatar {
+  border-color: #ffffff;
+  transform: scale(1.05);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+ion-item.user-profile:focus .profile-avatar {
+  border-color: #ffffff;
+  transform: scale(1.05);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
 }
 .profile-avatar img {
   width: 100%;
@@ -75,18 +100,40 @@ ion-item.user-profile:focus {
   flex: 1;
 }
 
+
+
 .user-name {
   margin: 0 0 5px 0;
   font-size: 18px;
   font-weight: 600;
   color: var(--ion-color-light);
+  transition: color 0.2s ease;
 }
 
-.user-email {
+.user-creation-date {
   margin: 0;
   font-size: 14px;
   color: var(--ion-color-medium);
   opacity: 0.8;
+  transition: color 0.2s ease;
+}
+
+ion-item.user-profile:hover .user-name {
+  color: #ffffff;
+}
+
+ion-item.user-profile:hover .user-creation-date {
+  color: var(--ion-color-light);
+  opacity: 1;
+}
+
+ion-item.user-profile:focus .user-name {
+  color: #ffffff;
+}
+
+ion-item.user-profile:focus .user-creation-date {
+  color: var(--ion-color-light);
+  opacity: 1;
 }
 
 /* Accessibility: visible focus for profile and logout */

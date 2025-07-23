@@ -45,6 +45,7 @@ export interface User {
   email?: string;
   bio?: string;
   bibleVersion?: string;
+  createdAt?: string;
 }
 
 export interface Readings {

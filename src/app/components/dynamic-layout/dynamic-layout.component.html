@@ -18,7 +18,7 @@
       </ion-avatar>
       <div class="user-info">
         <h3 class="user-name">{{ profile.userName || 'User' }}</h3>
-        <p class="user-email">{{ profile.email }}</p>
+        <p class="user-creation-date">{{ getCreationDateText(profile.createdAt) }}</p>
       </div>
     </ion-item>
 

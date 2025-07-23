@@ -2,16 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { LoadingController, AlertController, ToastController } from '@ionic/angular/standalone';
-import { IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonAvatar, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonIcon, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
+import { LoadingController, AlertController, ToastController, ModalController } from '@ionic/angular/standalone';
+import { IonContent, IonAvatar, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AvatarService } from '../services/avatar.service';
 import { DataService, User } from '../services/data.service';
 import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { addIcons } from 'ionicons';
-import { save } from 'ionicons/icons';
-import { FroalaEditorComponent } from '../components/froala-editor/froala-editor.component';
+import { save, person, create, mail, book, documentText, addCircleOutline } from 'ionicons/icons';
+import { BackButtonComponent } from '../components/back-button/back-button.component';
+import { EditProfileModalComponent } from './edit-profile-modal/edit-profile-modal.component';
 
 @Component({
   selector: 'app-profile',
@@ -21,28 +22,15 @@ import { FroalaEditorComponent } from '../components/froala-editor/froala-editor
   imports: [
     CommonModule,
     FormsModule,
-    IonHeader,
-    IonToolbar,
-    IonButtons,
-    IonBackButton,
-    IonTitle,
     IonContent,
     IonAvatar,
-    IonGrid,
-    IonRow,
-    IonCol,
     IonCard,
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonItem,
-    IonLabel,
-    IonInput,
     IonButton,
     IonIcon,
-    IonSelect,
-    IonSelectOption,
-    FroalaEditorComponent
+    BackButtonComponent
   ]
 })
 export class ProfilePage implements OnInit {
@@ -67,9 +55,10 @@ export class ProfilePage implements OnInit {
     private route: ActivatedRoute,
     private toastCtrl: ToastController,
     private auth: Auth,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private modalController: ModalController
   ) {
-    addIcons({ save });
+    addIcons({person,create,mail,book,documentText,addCircleOutline,save});
 
     // Listen for authentication state changes
     onAuthStateChanged(this.auth, (user) => {
@@ -129,5 +118,56 @@ export class ProfilePage implements OnInit {
 
   getSafeHtml(html: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+
+  getJoinedDate(createdAt?: string): string {
+    if (!createdAt) {
+      return 'Since 2024';
+    }
+    try {
+      const date = new Date(createdAt);
+      return `Since ${date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+    } catch {
+      return 'Since 2024';
+    }
+  }
+
+  getBibleVersionName(version?: string): string {
+    switch (version) {
+      case 'ESV':
+        return 'ESV (English Standard Version)';
+      case 'KJV':
+        return 'KJV (King James Version)';
+      case 'HBSS':
+        return 'Holy Bible in Simple Spanish';
+      case 'RVR09':
+        return 'RVR09 (Reina-Valera 1909, Spanish)';
+      default:
+        return 'ESV (Default)';
+    }
+  }
+
+  async openEditModal() {
+    const modal = await this.modalController.create({
+      component: EditProfileModalComponent,
+      componentProps: {
+        user: this.user
+      },
+      breakpoints: [0, 0.5, 0.8],
+      initialBreakpoint: 0.8
+    });
+
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+      this.user = data;
+      const toast = await this.toastCtrl.create({
+        message: 'Profile updated successfully!',
+        duration: 2000,
+        color: 'success'
+      });
+      toast.present();
+    }
   }
 }

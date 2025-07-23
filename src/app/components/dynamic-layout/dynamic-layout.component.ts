@@ -109,4 +109,10 @@ export class DynamicLayoutComponent implements OnInit {
     }
     return page.title ? page.title.toLowerCase().replace(/\s+/g, '-') : '';
   }
+
+    getCreationDateText(createdAt?: string): string {
+    // For now, use a fallback since createdAt might not be in the database yet
+    // You can update this when you add createdAt to your user documents
+    return 'Since 2024';
+  }
 }

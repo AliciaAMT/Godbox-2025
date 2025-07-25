@@ -1,6 +1,6 @@
 {
-  "name": "The Way - Godbox",
-  "short_name": "The Way",
+  "name": "Kahal - Godbox",
+  "short_name": "Kahal",
   "description": "A spiritual growth platform with daily Bible readings, growth blog, and meditation tools",
   "start_url": "/",
   "display": "fullscreen",
@@ -84,7 +84,7 @@
       "sizes": "1280x720",
       "type": "image/webp",
       "form_factor": "wide",
-      "label": "Home page of The Way application"
+      "label": "Home page of Kahal application"
     }
   ]
 }

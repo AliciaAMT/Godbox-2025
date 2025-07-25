@@ -184,6 +184,10 @@ export const routes: Routes = [
     loadComponent: () => import('./license/license.page').then(m => m.LicensePage)
   },
   {
+    path: 'hebrew-calendar-education',
+    loadComponent: () => import('./hebrew-calendar-education/hebrew-calendar-education.page').then(m => m.HebrewCalendarEducationPage)
+  },
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full'

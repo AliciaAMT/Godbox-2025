@@ -26,8 +26,6 @@
   <p>No readings found for today ({{today}}).</p>
 </div>
 
-
-
 <!-- Readings Display -->
 <div *ngFor="let reading of readings; trackBy: trackByReading">
 
@@ -91,6 +89,13 @@
     </ion-item>
   </div>
 </div>
+
+<!-- Educational Link -->
+<ion-item routerLink="/hebrew-calendar-education" button="true" style="margin-top: 24px;">
+  <ion-label>
+    <h4>What is this schedule? Learn about the Hebrew calendar, holidays, and the Bible reading plan</h4>
+  </ion-label>
+</ion-item>
     </ion-col>
   </ion-row>
 </ion-grid>

@@ -131,7 +131,12 @@ export class LoginPage {
         const { email, password } = this.loginForm.value;
         await this.authService.register({ email, password });
         await loading.dismiss();
-        this.router.navigate(['/auth/verify-email']);
+        console.log('Navigating to /auth/verify-email');
+        this.router.navigate(['/auth/verify-email']).then(() => {
+          console.log('Navigation to verify-email complete');
+        }).catch(navError => {
+          console.error('Navigation to verify-email failed:', navError);
+        });
       } catch (error: any) {
         await loading.dismiss();
         this.showError('Registration Failed', error);

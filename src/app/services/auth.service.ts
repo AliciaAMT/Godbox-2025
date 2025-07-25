@@ -27,9 +27,10 @@ export class AuthService {
 
   constructor() {
     // Listen to auth state changes
-    onAuthStateChanged(this.auth, (user) => {
+    onAuthStateChanged(this.auth, async (user) => {
       this.currentUserSubject.next(user);
       if (user) {
+        await user.reload(); // Ensure latest emailVerified status
         if (!user.emailVerified && !user.isAnonymous) {
           this.router.navigate(['/auth/verify-email']);
         } else if (window.location.pathname === '/landing' || window.location.pathname === '/') {

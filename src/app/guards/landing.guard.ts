@@ -10,12 +10,17 @@ export class LandingGuard {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  canActivate() {
+  canActivate(route: any, state: any) {
     return this.authService.currentUser$.pipe(
       take(1),
       map(user => {
+        const isVerifyEmailRoute = state && state.url && state.url.includes('verify-email');
         if (user) {
-          // User is already logged in, redirect to home
+          if (!user.emailVerified && !user.isAnonymous && isVerifyEmailRoute) {
+            // Allow unverified users to access /verify-email
+            return true;
+          }
+          // User is logged in and either verified or not on verify-email page, redirect to home
           this.router.navigate(['/home']);
           return false;
         } else {

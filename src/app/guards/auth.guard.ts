@@ -15,6 +15,10 @@ export class AuthGuard {
       take(1),
       map(user => {
         if (user) {
+          if (!user.emailVerified && !user.isAnonymous) {
+            this.router.navigate(['/auth/verify-email']);
+            return false;
+          }
           return true;
         } else {
           this.router.navigate(['/landing']);

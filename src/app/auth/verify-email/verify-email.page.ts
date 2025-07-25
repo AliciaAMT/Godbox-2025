@@ -19,6 +19,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { doc, setDoc, getDoc, Firestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-verify-email',
@@ -47,6 +48,7 @@ export class VerifyEmailPage {
   public router = inject(Router);
   private alertController = inject(AlertController);
   private loadingController = inject(LoadingController);
+  private firestore = inject(Firestore);
 
   isLoading = false;
 
@@ -93,6 +95,38 @@ export class VerifyEmailPage {
       await this.authService.currentUser?.reload();
 
       if (this.authService.isEmailVerified()) {
+        // Create Firestore user document if it doesn't exist
+        const user = this.authService.currentUser;
+        if (user) {
+          const userDocRef = doc(this.firestore, `users/${user.uid}`);
+          const userDocSnap = await getDoc(userDocRef);
+          if (!userDocSnap.exists()) {
+            try {
+              await setDoc(userDocRef, {
+                userRole: 'user',
+                bio: '',
+                imageUrl: '',
+                bibleVersion: 'ESV',
+                createdAt: new Date().toISOString(),
+                email: user.email || '',
+                userName: ''
+              });
+            } catch (firestoreError) {
+              await loading.dismiss();
+              const alert = await this.alertController.create({
+                header: 'Error',
+                message: 'Failed to create your user profile. Please try again or contact support.\n' +
+                  (typeof firestoreError === 'object' && firestoreError && 'message' in firestoreError
+                    ? (firestoreError as any).message
+                    : String(firestoreError)),
+                buttons: ['OK']
+              });
+              await alert.present();
+              this.isLoading = false;
+              return;
+            }
+          }
+        }
         await loading.dismiss();
         this.router.navigate(['/home']);
       } else {

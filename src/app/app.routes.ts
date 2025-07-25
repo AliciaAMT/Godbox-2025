@@ -177,11 +177,11 @@ export const routes: Routes = [
   },
   {
     path: 'privacy',
-    loadComponent: () => import('./pages/privacy/privacy.page').then(m => m.PrivacyPage)
+    loadComponent: () => import('./privacy/privacy.page').then(m => m.PrivacyPage)
   },
   {
     path: 'license',
-    loadComponent: () => import('./pages/license/license.page').then(m => m.LicensePage)
+    loadComponent: () => import('./license/license.page').then(m => m.LicensePage)
   },
   {
     path: '**',

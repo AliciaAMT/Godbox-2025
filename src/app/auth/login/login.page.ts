@@ -22,6 +22,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { doc, setDoc, getDoc, Firestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-login',
@@ -52,6 +53,7 @@ export class LoginPage {
   public router = inject(Router);
   private alertController = inject(AlertController);
   private loadingController = inject(LoadingController);
+  private firestore = inject(Firestore);
 
   loginForm: FormGroup;
   isLoading = false;
@@ -103,9 +105,24 @@ export class LoginPage {
 
     try {
       const userCredential = await this.authService.loginWithGoogle();
+      // Create Firestore user document if it doesn't exist
+      const user = userCredential?.user;
+      if (user) {
+        const userDocRef = doc(this.firestore, `users/${user.uid}`);
+        const userDocSnap = await getDoc(userDocRef);
+        if (!userDocSnap.exists()) {
+          await setDoc(userDocRef, {
+            userRole: 'user',
+            bio: '',
+            imageUrl: '',
+            bibleVersion: 'ESV',
+            createdAt: new Date().toISOString(),
+            email: user.email || '',
+            userName: ''
+          });
+        }
+      }
       await loading.dismiss();
-
-      // Google users are automatically verified
       this.router.navigate(['/home']);
     } catch (error: any) {
       await loading.dismiss();

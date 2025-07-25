@@ -1,4 +1,29 @@
-# Godbox
+# Kahal - Godbox
+
+## Build and Deploy Instructions
+
+### Important: Copy manifest.webmanifest Before Deploying
+
+When building and deploying the app, you **must** copy the `manifest.webmanifest` file from the `src` directory to the `www` directory **after building** and **before deploying** to Firebase Hosting. This ensures the PWA manifest is served correctly.
+
+#### Example Workflow
+
+1. Build the app:
+   ```bash
+   ionic build --prod
+   ```
+2. Copy the manifest:
+   ```bash
+   cp src/manifest.webmanifest www/manifest.webmanifest
+   ```
+3. Deploy to Firebase:
+   ```bash
+   firebase deploy
+   ```
+
+If you skip this step, your PWA will not be installable and may show a manifest error in the browser.
+
+---
 
 A modern, feature-rich web application built with Ionic and Angular for content management and spiritual resources.
 

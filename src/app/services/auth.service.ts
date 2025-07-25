@@ -29,10 +29,12 @@ export class AuthService {
     // Listen to auth state changes
     onAuthStateChanged(this.auth, (user) => {
       this.currentUserSubject.next(user);
-
-      // If user is logged in and on landing or root page, redirect to home
-      if (user && (window.location.pathname === '/landing' || window.location.pathname === '/')) {
-        this.router.navigate(['/home']);
+      if (user) {
+        if (!user.emailVerified && !user.isAnonymous) {
+          this.router.navigate(['/auth/verify-email']);
+        } else if (window.location.pathname === '/landing' || window.location.pathname === '/') {
+          this.router.navigate(['/home']);
+        }
       }
     });
   }

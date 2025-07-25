@@ -36,6 +36,9 @@
     ],
     "rewrites": [
       { "source": "/__/auth/**", "destination": "/index.html" },
+      { "source": "/manifest.webmanifest", "destination": "/manifest.webmanifest" },
+      { "source": "/ngsw-worker.js", "destination": "/ngsw-worker.js" },
+      { "source": "/ngsw-config.json", "destination": "/ngsw-config.json" },
       { "source": "**", "destination": "/index.html" }
     ],
     "headers": [

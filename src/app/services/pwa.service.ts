@@ -9,16 +9,17 @@ export class PwaService {
   public isInstalled$ = this.isInstalled.asObservable();
 
   constructor() {
+    console.log('PWA Service: Initializing...');
     this.checkInstallationStatus();
     this.setupInstallationListeners();
+    console.log('PWA Service: Initialized');
   }
 
   private checkInstallationStatus(): void {
     // Check if running in standalone mode (installed)
     if (window.matchMedia('(display-mode: standalone)').matches) {
       this.isInstalled.next(true);
-      // Switch to fullscreen mode when installed
-      this.switchToFullscreen();
+      // Do NOT call switchToFullscreen() here!
     } else {
       this.isInstalled.next(false);
     }
@@ -27,6 +28,7 @@ export class PwaService {
   private setupInstallationListeners(): void {
     // Listen for beforeinstallprompt event
     window.addEventListener('beforeinstallprompt', (e) => {
+      console.log('PWA: beforeinstallprompt event fired');
       // Store the event to trigger installation later
       (window as any).deferredPrompt = e;
     });
@@ -171,6 +173,13 @@ export class PwaService {
   }
 
   public canInstall(): boolean {
-    return !!(window as any).deferredPrompt;
+    try {
+      const canInstall = !!(window as any).deferredPrompt;
+      console.log('PWA: canInstall check -', canInstall);
+      return canInstall;
+    } catch (error) {
+      console.log('PWA: canInstall check error -', error);
+      return false;
+    }
   }
 }

@@ -8,7 +8,7 @@ import { MenuHeaderComponent } from '../components/menu-header/menu-header.compo
 import { SkipToTopComponent } from '../components/skip-to-top/skip-to-top.component';
 import { PwaService } from '../services/pwa.service';
 import { addIcons } from 'ionicons';
-import { download } from 'ionicons/icons';
+import { download, expand } from 'ionicons/icons';
 
 @Component({
   selector: 'app-home',
@@ -47,7 +47,7 @@ export class HomePage implements OnInit {
   @ViewChild(IonContent) ionContent!: IonContent;
 
   constructor() {
-    addIcons({ download });
+    addIcons({download,expand});
 
     this.dataService.getPostsForCollection().subscribe({
       next: (data) => {
@@ -78,6 +78,7 @@ export class HomePage implements OnInit {
   ngOnInit() {
     // Check if app can be installed
     this.canInstall = this.pwaService.canInstall();
+    console.log('HomePage: ngOnInit - canInstall:', this.canInstall, 'isInstalled:', this.isInstalled);
     this.cd.detectChanges();
   }
 
@@ -85,5 +86,11 @@ export class HomePage implements OnInit {
     await this.pwaService.installApp();
     this.canInstall = this.pwaService.canInstall();
     this.cd.detectChanges();
+  }
+
+  goFullscreen() {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    }
   }
 }

@@ -1,5 +1,5 @@
 <app-menu-header></app-menu-header>
-<ion-content>
+<ion-content #ionContent>
   <!-- Hidden anchor for skip-to-top functionality -->
   <div id="top" tabindex="-1" style="position: absolute; top: 0; left: 0; width: 1px; height: 1px; overflow: hidden;"></div>
 
@@ -72,4 +72,4 @@
   <app-footer-landing></app-footer-landing>
 </ion-content>
 
-<app-skip-to-top></app-skip-to-top>
+<app-skip-to-top [ionContentRef]="ionContent"></app-skip-to-top>

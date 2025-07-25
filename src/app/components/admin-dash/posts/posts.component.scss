@@ -71,4 +71,25 @@ ion-content {
   font-weight: 600;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+.author-chip:hover {
+  box-shadow: 0 4px 16px rgba(0,255,255,0.3);
+}
+
+/* Add high contrast only to filter buttons */
+.filter-buttons ion-button,
+.filter-buttons ion-button::part(native),
+.filter-buttons ion-button::part(inner) {
+  color: #000 !important;
+}
+
+.filter-buttons ion-button:focus,
+.filter-buttons ion-button:focus::part(native),
+.filter-buttons ion-button:focus::part(inner) {
+  outline: 3px solid #fff !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px #fff !important;
+  z-index: 2;
 }

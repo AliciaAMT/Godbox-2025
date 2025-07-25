@@ -17,3 +17,17 @@ ion-card-title {
 ion-card-content {
   color: var(--ion-color-medium);
 }
+
+ion-button:focus {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px #fff;
+  z-index: 2;
+}
+
+ion-card:focus {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px #fff;
+  z-index: 1;
+}

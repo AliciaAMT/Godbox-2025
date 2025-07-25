@@ -8,7 +8,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col class="ion-text-center">
+      <ion-col class="ion-text-center filter-buttons">
         <ion-button size="small" [color]="filterMode === 'recent' ? 'primary' : 'medium'" (click)="setFilterMode('recent')">Most Recent</ion-button>
         <ion-button size="small" [color]="filterMode === 'private' ? 'primary' : 'medium'" (click)="setFilterMode('private')">Private</ion-button>
         <ion-button size="small" [color]="filterMode === 'public' ? 'primary' : 'medium'" (click)="setFilterMode('public')">Public</ion-button>
@@ -40,7 +40,7 @@
                 <span class="post-date">{{ post.date | date }}</span>
               </div>
               <div class="author-center">
-                <ion-chip class="author-chip" *ngIf="getUserName(post.author) !== 'Unknown User'">
+                <ion-chip class="author-chip" *ngIf="getUserName(post.author) !== 'Unknown User'" [routerLink]="['/public-profile', post.author]">
                   <ion-avatar *ngIf="getUserImageUrl(post.author)">
                     <img [src]="getUserImageUrl(post.author)" />
                   </ion-avatar>
@@ -80,7 +80,7 @@
   </ion-infinite-scroll>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button routerLink="/admin-dash/posts/add-post">
+    <ion-fab-button routerLink="/admin-dash/posts/add-post" aria-label="Add new post">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

@@ -1,33 +1,38 @@
 <app-back-button></app-back-button>
 
-<ion-content>
-  <ion-grid style="margin-top: 30px;">
-    <ion-row>
-      <ion-col class="ion-text-center">
-        <h2 class="title">Growth Blog</h2>
-        <img src="../../../../assets/images/istockphoto-1085122436-612x612(1).webp" />
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ng-container *ngFor="let post of posts">
-        <ion-col class="ion-text-center" sizeXl="4" offsetXl="0" sizeLg="4" offsetLg="0" sizeMd="6" offsetMd="0" sizeSm="8" offsetSm="2" sizeXs="10" offsetXs="1">
-          <div *ngIf="post.privacy !== 'private'" style="height: 100%;">
-            <ion-card style="height: 100%;" [routerLink]="['/admin-dash/posts/view-post', post.id]" routerDirection="root">
-              <ion-card-header>
-                <ion-img [src]="post.imageUrl"></ion-img>
-                <ion-card-title><h2>
-                  {{ post.title }}</h2>
-                <sub>{{ post.date | date }}</sub>
-                </ion-card-title>
-              </ion-card-header>
-              <ion-card-content>
-                <p>{{post.description}}</p>
-              </ion-card-content>
-            </ion-card>
-          </div>
+<ion-content #ionContent>
+  <div id="top" tabindex="-1" style="position: absolute; top: 0; left: 0; width: 1px; height: 1px; overflow: hidden;"></div>
+  <main role="main" aria-label="Growth Blog main content">
+    <ion-grid style="margin-top: 30px;">
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <h1 class="title">Growth Blog</h1>
+          <img src="../../../../assets/images/istockphoto-1085122436-612x612(1).webp" alt="" aria-hidden="true" />
         </ion-col>
-      </ng-container>
-    </ion-row>
-  </ion-grid>
-  <app-footer-landing></app-footer-landing>
+      </ion-row>
+      <ion-row>
+        <ng-container *ngFor="let post of posts">
+          <ion-col class="ion-text-center" sizeXl="4" offsetXl="0" sizeLg="4" offsetLg="0" sizeMd="6" offsetMd="0" sizeSm="8" offsetSm="2" sizeXs="10" offsetXs="1">
+            <div *ngIf="post.privacy !== 'private'" style="height: 100%;">
+              <ion-card style="height: 100%;" [routerLink]="['/admin-dash/posts/view-post', post.id]" routerDirection="root" tabindex="0" class="focusable-card" [attr.aria-label]="'View post: ' + post.title">
+                <ion-card-header>
+                  <ion-img [src]="post.imageUrl" alt="" aria-hidden="true"></ion-img>
+                  <ion-card-title><h2>
+                    {{ post.title }}</h2>
+                  <sub>{{ post.date | date }}</sub>
+                  </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                  <p>{{post.description}}</p>
+                </ion-card-content>
+              </ion-card>
+            </div>
+          </ion-col>
+        </ng-container>
+      </ion-row>
+    </ion-grid>
+    <app-footer-landing></app-footer-landing>
+  </main>
 </ion-content>
+
+<app-skip-to-top [ionContentRef]="ionContent"></app-skip-to-top>

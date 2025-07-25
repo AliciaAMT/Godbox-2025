@@ -1,0 +1,79 @@
+<app-back-button></app-back-button>
+<ion-content>
+  <div class="profile-container">
+    <!-- Profile Header Section -->
+    <div class="profile-header">
+      <div class="avatar-section">
+        <ion-avatar class="profile-avatar">
+          <img *ngIf="(user$ | async)?.imageUrl; else placeholder_avatar" [src]="(user$ | async)?.imageUrl" [alt]="(user$ | async)?.userName || 'Profile Picture'">
+          <ng-template #placeholder_avatar>
+            <div class="avatar-placeholder">
+              <ion-icon name="person"></ion-icon>
+            </div>
+          </ng-template>
+        </ion-avatar>
+      </div>
+      <div class="profile-info">
+        <h1 class="profile-name">{{ (user$ | async)?.userName || 'User' }}</h1>
+        <p class="profile-role">{{ (user$ | async)?.userRole || 'Member' }}</p>
+        <p class="profile-joined">{{ getJoinedDate((user$ | async)?.createdAt) }}</p>
+      </div>
+    </div>
+    <!-- Profile Stats Section -->
+    <div class="profile-stats">
+      <ion-card class="stat-card">
+        <ion-card-content>
+          <div class="stat-item">
+            <ion-icon name="mail" class="stat-icon"></ion-icon>
+            <div class="stat-content">
+              <h3>Email</h3>
+              <p>{{ (user$ | async)?.email || 'No email available' }}</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+      <ion-card class="stat-card">
+        <ion-card-content>
+          <div class="stat-item">
+            <ion-icon name="book" class="stat-icon"></ion-icon>
+            <div class="stat-content">
+              <h3>Bible Version</h3>
+              <p>{{ getBibleVersionName((user$ | async)?.bibleVersion) }}</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+    <!-- Bio Section -->
+    <div class="bio-section" *ngIf="(user$ | async)?.bio">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="document-text" slot="start"></ion-icon>
+            About
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="bio-content" [innerHTML]="getSafeHtml((user$ | async)?.bio || '')"></div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+    <!-- Empty Bio State -->
+    <div class="bio-section" *ngIf="!(user$ | async)?.bio">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="document-text" slot="start"></ion-icon>
+            About
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="empty-bio">
+            <ion-icon name="add-circle-outline" class="empty-icon"></ion-icon>
+            <p>No bio yet</p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>

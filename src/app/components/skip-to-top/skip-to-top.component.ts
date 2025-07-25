@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { arrowUp } from 'ionicons/icons';
 import { CommonModule } from '@angular/common';
+import type { IonContent as IonContentRef } from '@ionic/angular/standalone';
 
 // Register the icon
 addIcons({ arrowUp });
@@ -18,17 +19,17 @@ addIcons({ arrowUp });
   ]
 })
 export class SkipToTopComponent {
+  @Input() ionContentRef?: IonContentRef;
 
   skipToTop(event?: Event) {
     if (event) {
       event.preventDefault();
     }
 
-    // Find the ion-content element
-    const ionContent = document.querySelector('ion-content');
+    const ionContent = this.ionContentRef || document.querySelector('ion-content');
     if (ionContent) {
       // Scroll the ion-content to top
-      ionContent.scrollToTop(500);
+      (ionContent as any).scrollToTop(500);
 
       // After scrolling, focus the top element
       setTimeout(() => {

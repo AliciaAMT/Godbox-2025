@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject, ViewChild } from '@angular/core';
 import { IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -35,6 +35,8 @@ export class HomePage implements OnInit {
 
   posts: Post[] = [];
   users: User[] = [];
+
+  @ViewChild(IonContent) ionContent!: IonContent;
 
   constructor() {
     this.dataService.getPostsForCollection().subscribe({

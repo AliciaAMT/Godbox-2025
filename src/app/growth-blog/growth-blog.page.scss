@@ -17,3 +17,9 @@ ion-col.ion-text-center {
   flex-direction: column;
   align-items: center;
 }
+
+.focusable-card:focus {
+  outline: 3px solid var(--ion-color-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px var(--ion-color-primary-tint, #5cb3fd);
+}

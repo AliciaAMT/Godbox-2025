@@ -163,6 +163,10 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'public-profile/:id',
+    loadComponent: () => import('./profile/public-profile.component').then(m => m.PublicProfileComponent)
+  },
+  {
     path: 'page/:slug',
     loadComponent: () => import('./page/page.component').then(m => m.PageComponent)
   },

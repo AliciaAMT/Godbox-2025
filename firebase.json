@@ -35,9 +35,8 @@
       "**/node_modules/**"
     ],
     "rewrites": [
-      { "source": "/__/auth/**", "destination": "/__/auth/index.html" },
+      { "source": "/__/auth/**", "destination": "/index.html" },
       { "source": "**", "destination": "/index.html" }
-    
     ],
     "headers": [
       {

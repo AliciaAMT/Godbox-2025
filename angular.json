@@ -33,6 +33,16 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
+              },
+              {
+                "glob": "manifest.json",
+                "input": "src",
+                "output": ""
+              },
+              {
+                "glob": "ngsw-config.json",
+                "input": "src",
+                "output": ""
               }
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
@@ -46,13 +56,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "4mb",
+                  "maximumError": "8mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "8kb",
+                  "maximumError": "16kb"
                 }
               ],
               "fileReplacements": [
@@ -61,7 +71,8 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "serviceWorker": "src/ngsw-config.json"
             },
             "development": {
               "optimization": false,

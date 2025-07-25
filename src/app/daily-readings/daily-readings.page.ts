@@ -249,6 +249,21 @@ export class DailyReadingsPage implements OnInit {
       z-index: 10000;
       backdrop-filter: blur(5px);
     `;
+    modalOverlay.setAttribute('role', 'dialog');
+    modalOverlay.setAttribute('aria-modal', 'true');
+
+    // Live region for screen reader announcement
+    const liveRegion = document.createElement('div');
+    liveRegion.setAttribute('aria-live', 'assertive');
+    liveRegion.setAttribute('role', 'status');
+    liveRegion.style.position = 'absolute';
+    liveRegion.style.width = '1px';
+    liveRegion.style.height = '1px';
+    liveRegion.style.overflow = 'hidden';
+    liveRegion.style.clip = 'rect(1px, 1px, 1px, 1px)';
+    liveRegion.style.whiteSpace = 'nowrap';
+    liveRegion.textContent = 'Scripture modal opened';
+    modalOverlay.appendChild(liveRegion);
 
     const modalContent = document.createElement('div');
     modalContent.style.cssText = `
@@ -356,12 +371,14 @@ export class DailyReadingsPage implements OnInit {
 
     const title = document.createElement('h2');
     title.textContent = this.getReadingTypeName(kiriyah);
+    title.id = 'scripture-modal-title';
     title.style.cssText = `
       color: #ffffff;
       margin: 0;
       font-size: 24px;
       font-weight: 600;
     `;
+    modalOverlay.setAttribute('aria-labelledby', 'scripture-modal-title');
 
     const closeButton = document.createElement('button');
     closeButton.textContent = '×';
@@ -534,7 +551,32 @@ export class DailyReadingsPage implements OnInit {
 
     modalOverlay.appendChild(modalContent);
     document.body.appendChild(modalOverlay);
-    closeButton.focus();
+
+    // Focus trap logic
+    const focusableEls: HTMLElement[] = [audioButton, closeButton, bottomCloseButton].filter(Boolean) as HTMLElement[];
+    if (this.bibleVersion !== 'ESV') {
+      focusableEls.splice(0, 1); // Remove audioButton if not ESV
+    }
+    let focusIndex = 0;
+    modalOverlay.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        if (focusableEls.length === 0) return;
+        e.preventDefault();
+        if (e.shiftKey) {
+          focusIndex = (focusIndex - 1 + focusableEls.length) % focusableEls.length;
+        } else {
+          focusIndex = (focusIndex + 1) % focusableEls.length;
+        }
+        focusableEls[focusIndex].focus();
+      }
+    });
+    if (this.bibleVersion === 'ESV') {
+      audioButton.focus();
+      focusIndex = 0;
+    } else {
+      closeButton.focus();
+      focusIndex = 0;
+    }
   }
 
   private getReadingTypeName(kiriyah: string): string {

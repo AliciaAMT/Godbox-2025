@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DataService, User } from '../services/data.service';
-import { IonContent, IonAvatar, IonLabel, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonAvatar, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonIcon } from '@ionic/angular/standalone';
 import { Observable, of } from 'rxjs';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BackButtonComponent } from '../components/back-button/back-button.component';
@@ -14,7 +14,7 @@ import { person, mail, book, documentText, addCircleOutline } from 'ionicons/ico
   templateUrl: './public-profile.component.html',
   styleUrls: ['./public-profile.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonContent, IonAvatar, IonLabel, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonIcon, BackButtonComponent]
+  imports: [CommonModule, IonContent, IonAvatar, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonIcon, BackButtonComponent]
 })
 export class PublicProfileComponent implements OnInit {
   user$: Observable<User | null> = of(null);

@@ -1,0 +1,242 @@
+<app-back-button></app-back-button>
+
+<ion-content #ionContent>
+  <!-- Hidden anchor for skip-to-top functionality -->
+  <div id="top" tabindex="-1" style="position: absolute; top: 0; left: 0; width: 1px; height: 1px; overflow: hidden;"></div>
+
+  <div class="ion-text-center ion-padding">
+    <h1>
+      <ion-icon name="information-circle"></ion-icon>
+      Admin Dashboard Help
+    </h1>
+
+    <main role="main">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>
+                  <h2><ion-icon name="people"></ion-icon> Users Management</h2>
+                </ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <p>Manage user accounts, view user profiles, and monitor user activity. This section allows you to:</p>
+                <ul>
+                  <li>View all registered users</li>
+                  <li>Check user profiles and activity</li>
+                  <li>Monitor user engagement</li>
+                </ul>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>
+                  <h2><ion-icon name="document-text"></ion-icon> Posts Management</h2>
+                </ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <h3>Creating and Managing Posts</h3>
+                <p>Posts are the main content pieces on the platform. Each post can be configured with different privacy settings:</p>
+
+                <h4>Privacy Settings:</h4>
+                <ul>
+                  <li><strong>Private:</strong> Only visible to the author. Won't show to other users.</li>
+                  <li><strong>Anonymous:</strong> Shows publicly but without author information.</li>
+                  <li><strong>Public:</strong> Shows everything - content and author information - to all users.</li>
+                </ul>
+
+                <h4>Post Sequencing:</h4>
+                <p>To ensure posts appear in the correct order:</p>
+                <ol>
+                  <li>Set the sequence number when creating or editing posts</li>
+                  <li>Lower numbers appear first (1, 2, 3, etc.)</li>
+                  <li>Posts with the same sequence number will be ordered by creation date</li>
+                </ol>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>
+                  <h2><ion-icon name="folder-open"></ion-icon> Collections</h2>
+                </ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <h3>How Collections Work</h3>
+                <p>Collections are groups of related posts that create a cohesive reading experience:</p>
+
+                <h4>Collection Structure:</h4>
+                <ul>
+                  <li><strong>Cover Page:</strong> The post with sequence number 1 serves as the collection's cover page</li>
+                  <li><strong>Table of Contents:</strong> The cover page automatically includes a table of contents listing all posts in the collection</li>
+                  <li><strong>Menu Link:</strong> Collections create a menu link that users can access</li>
+                </ul>
+
+                <h4>Creating a Collection:</h4>
+                <ol>
+                  <li>Create multiple posts with the same collection name</li>
+                  <li>Set sequence numbers (1, 2, 3, etc.) for proper ordering</li>
+                  <li>The post with sequence 1 becomes the cover page</li>
+                  <li>All posts will be automatically linked together</li>
+                </ol>
+
+                <h4>Collection Display:</h4>
+                <ul>
+                  <li>Posts appear in the table of contents in sequence order</li>
+                  <li>Users can navigate through the collection using the cover page</li>
+                  <li>Each collection creates its own menu item for easy access</li>
+                </ul>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>
+                  <h2><ion-icon name="list"></ion-icon> Categories</h2>
+                </ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <h3>Category Management</h3>
+                <p>Categories help organize and sort posts for better user experience:</p>
+
+                <h4>Current Status:</h4>
+                <p><em>Categories are not fully functional yet, but will include:</em></p>
+                <ul>
+                  <li>Creating new categories</li>
+                  <li>Assigning posts to categories</li>
+                  <li>Filtering posts by category</li>
+                  <li>Category-based navigation</li>
+                </ul>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>
+                  <h2><ion-icon name="chatbubbles"></ion-icon> Comments</h2>
+                </ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <h3>Comment System</h3>
+                <p><em>Comments functionality is not yet implemented but will include:</em></p>
+                <ul>
+                  <li>User comments on posts</li>
+                  <li>Comment moderation tools</li>
+                  <li>Spam detection and filtering</li>
+                  <li>Comment approval workflow</li>
+                </ul>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>
+                  <h2><ion-icon name="archive"></ion-icon> Archive</h2>
+                </ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <h3>Archive System</h3>
+                <p><em>Archive functionality is not yet implemented but will include:</em></p>
+                <ul>
+                  <li>Archiving old posts</li>
+                  <li>Historical content preservation</li>
+                  <li>Archive browsing and search</li>
+                  <li>Content restoration capabilities</li>
+                </ul>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>
+                  <h2><ion-icon name="library"></ion-icon> Bible Readings Database</h2>
+                </ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <h3>Database Management</h3>
+                <p><strong>Note: This feature is deprecated and will be removed in future updates.</strong></p>
+                <p>The database management feature is no longer necessary as the system now uses automated processes for daily readings.</p>
+
+                <h4>Future Plans:</h4>
+                <p>This card may be replaced with:</p>
+                <ul>
+                  <li>Daily readings log</li>
+                  <li>Site activity monitoring</li>
+                  <li>System performance metrics</li>
+                  <li>User engagement analytics</li>
+                </ul>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12">
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>
+                  <h2><ion-icon name="settings"></ion-icon> Best Practices</h2>
+                </ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <h3>Admin Dashboard Best Practices</h3>
+
+                <h4>Content Organization:</h4>
+                <ul>
+                  <li>Use descriptive titles for posts and collections</li>
+                  <li>Set appropriate privacy settings for each post</li>
+                  <li>Use sequence numbers to control post order</li>
+                  <li>Create collections for related content</li>
+                </ul>
+
+                <h4>User Experience:</h4>
+                <ul>
+                  <li>Regularly review and moderate content</li>
+                  <li>Monitor user engagement and feedback</li>
+                  <li>Keep content fresh and relevant</li>
+                  <li>Test navigation and user flows</li>
+                </ul>
+
+                <h4>Privacy Considerations:</h4>
+                <ul>
+                  <li>Use private posts for draft content</li>
+                  <li>Use anonymous posts for sensitive topics</li>
+                  <li>Use public posts for general audience content</li>
+                  <li>Review privacy settings before publishing</li>
+                </ul>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </main>
+  </div>
+</ion-content>
+
+<app-skip-to-top [ionContentRef]="ionContent"></app-skip-to-top>

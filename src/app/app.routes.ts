@@ -145,6 +145,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'admin-dash/help',
+    loadComponent: () => import('./components/admin-dash/help/help.component').then(m => m.HelpComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'sabbath-test',
     loadComponent: () => import('./components/sabbath-readings-test/sabbath-readings-test.component').then(m => m.SabbathReadingsTestComponent)
   },

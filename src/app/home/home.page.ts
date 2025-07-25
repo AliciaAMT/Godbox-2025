@@ -1,11 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef, inject, ViewChild } from '@angular/core';
-import { IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DataService, Post, User } from '../services/data.service';
 import { FooterLandingComponent } from '../components/footer-landing/footer-landing.component';
 import { MenuHeaderComponent } from '../components/menu-header/menu-header.component';
 import { SkipToTopComponent } from '../components/skip-to-top/skip-to-top.component';
+import { PwaService } from '../services/pwa.service';
+import { addIcons } from 'ionicons';
+import { download } from 'ionicons/icons';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +27,8 @@ import { SkipToTopComponent } from '../components/skip-to-top/skip-to-top.compon
     IonCardTitle,
     IonCardContent,
     IonImg,
+    IonButton,
+    IonIcon,
     FooterLandingComponent,
     MenuHeaderComponent,
     SkipToTopComponent
@@ -32,13 +37,18 @@ import { SkipToTopComponent } from '../components/skip-to-top/skip-to-top.compon
 export class HomePage implements OnInit {
   private dataService = inject(DataService);
   private cd = inject(ChangeDetectorRef);
+  private pwaService = inject(PwaService);
 
   posts: Post[] = [];
   users: User[] = [];
+  canInstall = false;
+  isInstalled = false;
 
   @ViewChild(IonContent) ionContent!: IonContent;
 
   constructor() {
+    addIcons({ download });
+
     this.dataService.getPostsForCollection().subscribe({
       next: (data) => {
         this.posts = data;
@@ -57,7 +67,23 @@ export class HomePage implements OnInit {
         console.error('Error loading users:', error);
       }
     });
+
+    // Subscribe to PWA service
+    this.pwaService.isInstalled$.subscribe(installed => {
+      this.isInstalled = installed;
+      this.cd.detectChanges();
+    });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Check if app can be installed
+    this.canInstall = this.pwaService.canInstall();
+    this.cd.detectChanges();
+  }
+
+  async installApp() {
+    await this.pwaService.installApp();
+    this.canInstall = this.pwaService.canInstall();
+    this.cd.detectChanges();
+  }
 }

@@ -21,6 +21,14 @@
           </div>
           <div class="ion-text-right">-John 14:5-6</div>
         </span>
+
+        <!-- PWA Install Button -->
+        <div *ngIf="canInstall && !isInstalled" class="ion-text-center" style="margin-top: 20px;">
+          <ion-button (click)="installApp()" color="primary" fill="outline">
+            <ion-icon name="download" slot="start"></ion-icon>
+            Install App
+          </ion-button>
+        </div>
       </ion-col>
     </ion-row>
     <ion-row>

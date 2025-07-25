@@ -92,10 +92,31 @@ ion-button, button, a {
 /* Force text selection on specific content areas */
 ion-card-content, ion-item, .verse, .ion-text-center, .ion-text-left, .ion-text-right {
   -webkit-user-select: text !important;
-  -moz-user-select: text !important;
+  -moz-user-select: none !important;
   -ms-user-select: text !important;
   user-select: text !important;
   cursor: text !important;
+}
+
+/* PWA System UI Hiding - Hide status bar and navigation in standalone mode */
+@media (display-mode: standalone) {
+  /* Hide status bar area */
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Ensure content fills the full screen */
+  ion-app {
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile */
+  }
+
+  /* Hide any browser chrome that might show */
+  ion-content {
+    --padding-top: 0;
+    --padding-bottom: 0;
+  }
 }
 
 /* Override any Ionic default text selection prevention */

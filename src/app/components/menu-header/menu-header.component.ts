@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonBackButton } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonBackButton, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 
@@ -15,11 +15,20 @@ import { CommonModule } from '@angular/common';
     IonMenuButton,
     IonTitle,
     IonBackButton,
+    IonButton,
+    IonIcon,
     CommonModule
   ]
 })
 export class MenuHeaderComponent {
-  constructor(public location: Location) {}
+  isFullscreen = false;
+
+  constructor(public location: Location) {
+    // Listen for fullscreen changes
+    document.addEventListener('fullscreenchange', () => {
+      this.isFullscreen = !!document.fullscreenElement;
+    });
+  }
 
   goBack() {
     this.location.back();
@@ -27,5 +36,11 @@ export class MenuHeaderComponent {
 
   canGoBack(): boolean {
     return window.history.length > 1;
+  }
+
+  goFullscreen() {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    }
   }
 }

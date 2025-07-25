@@ -5,5 +5,10 @@
       <ion-menu-button menu="first" aria-label="menu"></ion-menu-button>
     </ion-buttons>
     <ion-title aria-label="Kahal - Main Navigation">Kahal</ion-title>
+    <ion-buttons slot="end">
+      <ion-button *ngIf="!isFullscreen" (click)="goFullscreen()" aria-label="Go Fullscreen">
+        <ion-icon name="expand"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>

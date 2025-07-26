@@ -11,12 +11,18 @@ export class PwaService {
   private canInstallSubject = new BehaviorSubject<boolean>(false);
   public canInstall$ = this.canInstallSubject.asObservable();
 
+  private updateAvailableSubject = new BehaviorSubject<boolean>(false);
+  public updateAvailable$ = this.updateAvailableSubject.asObservable();
+
+  private readonly APP_VERSION = '1.0.1'; // Update this when you deploy new versions
+
   constructor() {
     console.log('PWA Service: Initializing...');
     this.checkInstallationStatus();
     this.setupInstallationListeners();
+    this.setupUpdateListeners();
 
-    // Check installability periodically (in case beforeinstallprompt doesn't fire immediately)
+    // Check installability periodically
     setTimeout(() => {
       this.updateCanInstallStatus();
     }, 1000);
@@ -25,7 +31,50 @@ export class PwaService {
       this.updateCanInstallStatus();
     }, 3000);
 
+    // Check for updates weekly
+    this.checkForUpdates();
+
     console.log('PWA Service: Initialized');
+  }
+
+  private setupUpdateListeners(): void {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+          console.log('PWA: Update available');
+          this.updateAvailableSubject.next(true);
+        }
+      });
+    }
+  }
+
+  private checkForUpdates(): void {
+    if ('serviceWorker' in navigator) {
+      // Check for updates every week
+      setInterval(() => {
+        navigator.serviceWorker.getRegistration().then(registration => {
+          if (registration) {
+            console.log('PWA: Checking for updates...');
+            registration.update();
+          }
+        });
+      }, 7 * 24 * 60 * 60 * 1000); // 7 days
+    }
+  }
+
+  public forceUpdate(): void {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistration().then(registration => {
+        if (registration && registration.waiting) {
+          // Send message to waiting service worker to skip waiting
+          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+      });
+    }
+  }
+
+  public reloadApp(): void {
+    window.location.reload();
   }
 
   private checkInstallationStatus(): void {

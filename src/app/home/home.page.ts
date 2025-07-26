@@ -8,7 +8,7 @@ import { MenuHeaderComponent } from '../components/menu-header/menu-header.compo
 import { SkipToTopComponent } from '../components/skip-to-top/skip-to-top.component';
 import { PwaService } from '../services/pwa.service';
 import { addIcons } from 'ionicons';
-import { download, expand } from 'ionicons/icons';
+import { download, expand, refresh } from 'ionicons/icons';
 
 @Component({
   selector: 'app-home',
@@ -43,11 +43,12 @@ export class HomePage implements OnInit {
   users: User[] = [];
   canInstall = false;
   isInstalled = false;
+  updateAvailable = false;
 
   @ViewChild(IonContent) ionContent!: IonContent;
 
   constructor() {
-    addIcons({download,expand});
+    addIcons({download,refresh,expand});
   }
 
   ngOnInit() {
@@ -64,6 +65,13 @@ export class HomePage implements OnInit {
     this.pwaService.isInstalled$.subscribe(installed => {
       console.log('HomePage: isInstalled changed to:', installed);
       this.isInstalled = installed;
+      this.cd.detectChanges();
+    });
+
+    // Subscribe to update availability
+    this.pwaService.updateAvailable$.subscribe(updateAvailable => {
+      console.log('HomePage: updateAvailable changed to:', updateAvailable);
+      this.updateAvailable = updateAvailable;
       this.cd.detectChanges();
     });
 
@@ -97,9 +105,19 @@ export class HomePage implements OnInit {
   }
 
   async installApp() {
-    await this.pwaService.installApp();
-    this.canInstall = this.pwaService.canInstall();
-    this.cd.detectChanges();
+    try {
+      await this.pwaService.installApp();
+      this.canInstall = this.pwaService.canInstall();
+    } catch (error) {
+      console.error('Failed to install app:', error);
+    }
+  }
+
+  updateApp() {
+    this.pwaService.forceUpdate();
+    setTimeout(() => {
+      this.pwaService.reloadApp();
+    }, 1000);
   }
 
   goFullscreen() {

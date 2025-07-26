@@ -41,6 +41,24 @@
           </ion-card>
         </div>
 
+        <!-- Update Available Notification -->
+        <div *ngIf="updateAvailable" class="ion-text-center" style="margin-top: 20px;">
+          <ion-card style="background: rgba(255, 193, 7, 0.1); border: 1px solid #ffc107;">
+            <ion-card-content>
+              <h3 style="color: #ffc107; margin-bottom: 10px;">
+                <ion-icon name="refresh" style="margin-right: 8px;"></ion-icon>
+                Update Available
+              </h3>
+              <p style="margin-bottom: 15px; color: #ffffff;">
+                A new version of Kahal is available. Update now for the latest features and improvements.
+              </p>
+              <ion-button (click)="updateApp()" fill="outline" style="--color: #ffc107; --border-color: #ffc107;">
+                <ion-icon name="refresh" slot="start"></ion-icon>
+                Update Now
+              </ion-button>
+            </ion-card-content>
+          </ion-card>
+        </div>
 
       </ion-col>
     </ion-row>

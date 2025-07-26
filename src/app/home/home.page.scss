@@ -22,6 +22,27 @@ ion-card:focus {
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
+/* Use proper primary color for buttons */
+ion-button {
+  --color: var(--ion-color-primary-contrast) !important;
+  --background: var(--ion-color-primary) !important;
+  --border-color: var(--ion-color-primary) !important;
+  --background-activated: var(--ion-color-primary-shade) !important;
+  --background-focused: var(--ion-color-primary-shade) !important;
+  --background-hover: var(--ion-color-primary-shade) !important;
+}
+
+ion-button:focus {
+  --color: var(--ion-color-primary-contrast) !important;
+  --background: var(--ion-color-primary) !important;
+  --border-color: var(--ion-color-primary) !important;
+}
+
+/* Use the proper primary color for buttons */
+:host {
+  --ion-color-primary-contrast: #ffffff !important;
+}
+
 ion-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);

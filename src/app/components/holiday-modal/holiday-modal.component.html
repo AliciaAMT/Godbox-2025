@@ -1,0 +1,59 @@
+<div *ngIf="isOpen" class="modal-overlay" (click)="onBackdropClick($event)">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ holidayInfo?.name }}</h2>
+      <button class="close-button" (click)="onClose()" aria-label="Close modal">
+        <span>&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="holiday-section">
+        <h3>Description</h3>
+        <p>{{ holidayInfo?.description }}</p>
+      </div>
+
+      <div class="holiday-section" *ngIf="holidayInfo?.significance">
+        <h3>Significance</h3>
+        <p>{{ holidayInfo?.significance }}</p>
+      </div>
+
+      <div class="holiday-section" *ngIf="holidayReadings && holidayReadings.length > 0">
+        <h3>Readings</h3>
+        <div class="readings-container">
+          <div *ngFor="let reading of holidayReadings" class="reading-item">
+            <h4>{{ reading.reference }}</h4>
+
+            <!-- Loading state -->
+            <div *ngIf="reading.isLoading" class="loading-state">
+              <div class="spinner"></div>
+              <p>Loading passage...</p>
+            </div>
+
+            <!-- Error state -->
+            <div *ngIf="reading.error && !reading.isLoading" class="error-state">
+              <p class="error-message">{{ reading.error || '' }}</p>
+              <p class="reference-only">{{ reading.reference || '' }}</p>
+            </div>
+
+            <!-- Success state -->
+            <div *ngIf="reading.passage && !reading.isLoading" class="passage-content">
+              <div class="passage-text" [innerHTML]="reading.passage?.content || ''"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="holiday-section" *ngIf="customsArray.length > 0">
+        <h3>Customs & Traditions</h3>
+        <ul>
+          <li *ngFor="let custom of customsArray">{{ custom }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="close-btn" (click)="onClose()">Close</button>
+    </div>
+  </div>
+</div>

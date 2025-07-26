@@ -40,8 +40,7 @@ export class AdminDashComponent implements OnInit {
     // Check if user is admin
     const user1 = this.auth.currentUser;
     if (user1) {
-      const userDocRef = doc(this.firestore, `users/${user1.uid}`);
-      this.dataService.getUserById(userDocRef.id).subscribe(res => {
+      this.dataService.getUserById(user1.uid).subscribe(res => {
         this.user = res;
         if (this.user?.userRole !== 'admin') {
           this.router.navigateByUrl('/home', { replaceUrl: true });

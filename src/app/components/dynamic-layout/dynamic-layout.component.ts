@@ -53,10 +53,17 @@ export class DynamicLayoutComponent implements OnInit {
       if (user) {
         console.log('User authenticated, loading profile...');
         // Load user profile using the Firebase Auth UID
-        this.dataService.getUserById(user.uid).subscribe(res => {
-          this.profile = res;
-          console.log('Profile loaded:', this.profile);
-          console.log('User role:', this.profile?.userRole);
+        this.dataService.getUserById(user.uid).subscribe({
+          next: (res) => {
+            this.profile = res;
+            console.log('Profile loaded:', this.profile);
+            console.log('User role:', this.profile?.userRole);
+          },
+          error: (error) => {
+            console.error('🔍 DynamicLayout - Error loading profile:', error);
+            // Don't let Firebase errors block the UI
+            this.profile = null;
+          }
         });
       } else {
         console.log('User not authenticated, clearing profile...');
@@ -72,18 +79,27 @@ export class DynamicLayoutComponent implements OnInit {
       },
       error: (error) => {
         console.error('🔍 DynamicLayout - Error loading series:', error);
+        // Don't let Firebase errors block the UI
+        this.series = [];
       }
     });
   }
 
   ngOnInit() {
     // Load special pages (e.g., privacy policy, license, meditation, etc.)
-    this.dataService.getPosts().subscribe(posts => {
-      // Assume special pages have a 'slug' in keywords or a type field
-      this.specialPages = posts.filter(p => {
-        const slugs = ['privacy-policy', 'license', 'meditation-for-christians'];
-        return p.keywords && slugs.some(slug => p.keywords.toLowerCase().includes(slug));
-      });
+    this.dataService.getPosts().subscribe({
+      next: (posts) => {
+        // Assume special pages have a 'slug' in keywords or a type field
+        this.specialPages = posts.filter(p => {
+          const slugs = ['privacy-policy', 'license', 'meditation-for-christians'];
+          return p.keywords && slugs.some(slug => p.keywords.toLowerCase().includes(slug));
+        });
+      },
+      error: (error) => {
+        console.error('🔍 DynamicLayout - Error loading posts:', error);
+        // Don't let Firebase errors block the UI
+        this.specialPages = [];
+      }
     });
   }
 

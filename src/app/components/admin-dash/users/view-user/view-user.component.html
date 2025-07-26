@@ -18,11 +18,20 @@
             </ion-item>
             <ion-item>
               <ion-label position="stacked"><h5>Email</h5></ion-label>
-              <ion-input [(ngModel)]="user.email"></ion-input>
+              <ion-input [(ngModel)]="user.email" readonly></ion-input>
             </ion-item>
             <ion-item>
               <ion-label position="stacked"><h5>Role</h5></ion-label>
-              <ion-input [(ngModel)]="user.userRole"></ion-input>
+              <ion-select [(ngModel)]="user.userRole" placeholder="Select role">
+                <ion-select-option *ngFor="let role of availableRoles" [value]="role.value">
+                  {{role.display}}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item *ngIf="user.userRole">
+              <ion-label>
+                <small>Current Role: {{getRoleDisplayName(user.userRole)}}</small>
+              </ion-label>
             </ion-item>
           </ion-card-content>
         </ion-card>

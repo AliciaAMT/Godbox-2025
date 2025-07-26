@@ -8,16 +8,18 @@
   <!-- Current Time -->
   <p class="current-time">{{ hebrewTime }}</p>
 
-  <!-- Current Parashah -->
-  <p *ngIf="currentParashah" class="current-parashah">
-    <strong>Parashah:</strong> {{ currentParashah }}
-  </p>
-
   <!-- Current Holiday -->
-  <p *ngIf="currentHoliday" class="current-holiday">
+  <p *ngIf="currentHoliday" class="current-holiday" (click)="onHolidayClick()" style="cursor: pointer;">
     <strong>Holiday:</strong> {{ currentHoliday }}
   </p>
 
   <!-- Day of Week -->
   <p class="day-of-week">{{ days }}</p>
 </div>
+
+<!-- Holiday Modal -->
+<app-holiday-modal
+  [isOpen]="isModalOpen"
+  [holidayName]="currentHoliday"
+  (closeModal)="onCloseModal()">
+</app-holiday-modal>

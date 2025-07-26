@@ -97,6 +97,7 @@ export class DataService {
   ) {}
 
   getUsers(): Observable<User[]> {
+    console.log('🔍 DataService - getUsers() called');
     const userRef = collection(this.firestore, 'users');
     return collectionData(userRef, { idField: 'id' }) as Observable<User[]>;
   }

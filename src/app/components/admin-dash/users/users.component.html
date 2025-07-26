@@ -2,17 +2,30 @@
 
 <ion-content class="ion-text-center">
   <h2>Users</h2>
-  <ion-grid>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" style="padding: 20px;">
+    <p>Loading users...</p>
+  </div>
+
+  <!-- Users List -->
+  <ion-grid *ngIf="!isLoading">
     <ion-row>
       <ion-col sizeSm="4" offsetSm="4">
         <ion-list>
           <ion-item *ngFor="let user of users" [routerLink]="['/admin-dash/users/view-user', user.id]" router-direction="forward">
             <ion-label>
-              <h2>{{user.userName}}</h2>
-              <p>{{user.email}}</p>
+              <h2>{{user.userName || 'No Name'}}</h2>
+              <p>{{user.email || 'No Email'}}</p>
+              <p><small>Role: {{getRoleDisplayName(user.userRole)}}</small></p>
             </ion-label>
           </ion-item>
         </ion-list>
+
+        <!-- No Users Message -->
+        <div *ngIf="users.length === 0" style="padding: 20px; color: #888;">
+          <p>No users found.</p>
+        </div>
       </ion-col>
     </ion-row>
   </ion-grid>

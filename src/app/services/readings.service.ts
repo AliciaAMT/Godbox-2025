@@ -39,6 +39,9 @@ export class ReadingsService {
     };
 
     try {
+      // Check if today is Rosh Chodesh
+      const isRoshChodesh = this.isRoshChodesh(date);
+
       // Get the parashah for this week by finding the Saturday of this week
       const parashah = this.getParashahForWeek(date);
       if (parashah) {
@@ -79,6 +82,12 @@ export class ReadingsService {
         }
       }
 
+      // If it's Rosh Chodesh, mark it as such but keep the regular readings
+      if (isRoshChodesh) {
+        readings.parashah = 'Rosh Chodesh';
+        console.log('🔍 Rosh Chodesh detected - regular readings preserved, holiday readings will be shown separately');
+      }
+
       // Get Writings and Prophets from Tanakh Yomi (we'll implement this next)
       const tanakhReadings = this.getTanakhReadings(hdate);
       console.log('Tanakh readings result:', tanakhReadings);
@@ -102,6 +111,32 @@ export class ReadingsService {
     }
 
     return readings;
+  }
+
+  /**
+   * Check if a date is Rosh Chodesh (New Moon)
+   */
+  private isRoshChodesh(date: Date): boolean {
+    try {
+      const hdate = new HDate(date);
+      const events = HebrewCalendar.calendar({
+        start: date,
+        end: date,
+        sedrot: true,
+        candlelighting: false
+      });
+
+      // Check if any event is Rosh Chodesh
+      const roshChodeshEvent = events.find((event: any) => {
+        const desc = event.getDesc();
+        return desc && desc.includes('Rosh Chodesh');
+      });
+
+      return !!roshChodeshEvent;
+    } catch (error) {
+      console.error('Error checking Rosh Chodesh:', error);
+      return false;
+    }
   }
 
     /**

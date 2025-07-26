@@ -48,7 +48,14 @@ export class HomePage implements OnInit {
 
   constructor() {
     addIcons({download,expand});
+  }
 
+  ngOnInit() {
+    // Check if app can be installed
+    this.canInstall = this.pwaService.canInstall();
+    console.log('HomePage: ngOnInit - canInstall:', this.canInstall, 'isInstalled:', this.isInstalled);
+
+    // Load posts
     this.dataService.getPostsForCollection().subscribe({
       next: (data) => {
         this.posts = data;
@@ -56,8 +63,13 @@ export class HomePage implements OnInit {
       },
       error: (error) => {
         console.error('Error loading posts:', error);
+        // Don't let Firebase errors block the UI
+        this.posts = [];
+        this.cd.detectChanges();
       }
     });
+
+    // Load users
     this.dataService.getUsers().subscribe({
       next: (data) => {
         this.users = data;
@@ -65,6 +77,9 @@ export class HomePage implements OnInit {
       },
       error: (error) => {
         console.error('Error loading users:', error);
+        // Don't let Firebase errors block the UI
+        this.users = [];
+        this.cd.detectChanges();
       }
     });
 
@@ -73,13 +88,6 @@ export class HomePage implements OnInit {
       this.isInstalled = installed;
       this.cd.detectChanges();
     });
-  }
-
-  ngOnInit() {
-    // Check if app can be installed
-    this.canInstall = this.pwaService.canInstall();
-    console.log('HomePage: ngOnInit - canInstall:', this.canInstall, 'isInstalled:', this.isInstalled);
-    this.cd.detectChanges();
   }
 
   async installApp() {

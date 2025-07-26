@@ -119,6 +119,9 @@ export class DailyReadingsPage implements OnInit {
               case 'haftarah':
                 reference = fallbackReading.haftarah || '';
                 break;
+              case 'holiday':
+                reference = this.getHolidayReading(fallbackReading) || '';
+                break;
               default:
                 return;
             }
@@ -141,6 +144,9 @@ export class DailyReadingsPage implements OnInit {
               break;
             case 'haftarah':
               reference = reading.haftarah || '';
+              break;
+            case 'holiday':
+              reference = this.getHolidayReading(reading) || '';
               break;
             default:
               return;
@@ -591,6 +597,8 @@ export class DailyReadingsPage implements OnInit {
         return 'Brit Chadashah Reading';
       case 'haftarah':
         return 'Haftarah Reading';
+      case 'holiday':
+        return 'Holiday Reading';
       default:
         return 'Scripture Reading';
     }
@@ -645,6 +653,8 @@ export class DailyReadingsPage implements OnInit {
       displayTitle = 'Nevi\'im';
     } else if (type === 'writings') {
       displayTitle = 'Ketuvim';
+    } else if (type === 'holiday') {
+      displayTitle = 'Holiday';
     }
     // Only show (Bible API Fallback) if not KJV or Spanish
     let suffix = '';
@@ -858,6 +868,21 @@ export class DailyReadingsPage implements OnInit {
     const date = new Date(year, month - 1, day);
     const dayOfWeek = date.getDay();
     return dayOfWeek === 6;
+  }
+
+  isRoshChodesh(reading: DailyReadings): boolean {
+    return reading.parashah === 'Rosh Chodesh';
+  }
+
+  getHolidayReading(reading: DailyReadings): string | null {
+    if (reading.parashah === 'Rosh Chodesh') {
+      if (this.isSabbath(reading)) {
+        return 'Isaiah 66:1-24';
+      } else {
+        return 'Psalm 104:19, Colossians 2:16';
+      }
+    }
+    return null;
   }
 
   getDayName(reading: DailyReadings): string {

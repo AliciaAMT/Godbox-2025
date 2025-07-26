@@ -20,23 +20,39 @@ import { BackButtonComponent } from '../../back-button/back-button.component';
     IonList,
     IonItem,
     IonLabel,
-
     BackButtonComponent
   ]
 })
 export class UsersComponent implements OnInit {
   users: User[] = [];
+  isLoading = true;
 
   constructor(
     private dataService: DataService,
     private router: Router
   ) {
     this.dataService.getUsers().subscribe(res => {
+      console.log('🔍 UsersComponent - Retrieved users:', res);
       this.users = res;
+      this.isLoading = false;
+    }, error => {
+      console.error('❌ UsersComponent - Error fetching users:', error);
+      this.isLoading = false;
     });
   }
 
   ngOnInit() {
   }
 
+  getRoleDisplayName(role: string | undefined): string {
+    if (!role) return 'No Role';
+    switch (role) {
+      case 'admin':
+        return 'Administrator';
+      case 'user':
+        return 'User';
+      default:
+        return role;
+    }
+  }
 }

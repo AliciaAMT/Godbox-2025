@@ -49,7 +49,33 @@
       </ion-label>
     </ion-item>
 
+    <!-- Writings Reading for Sabbath -->
+    <ion-item *ngIf="reading.writings" button="true" (click)="handleReadingClick($event, reading.date, 'writings')" style="cursor: pointer; pointer-events: auto;">
+      <ion-label>
+        <h4>Ketuvium:</h4>
+        <p>{{reading.writings}}</p>
+      </ion-label>
+    </ion-item>
+
+    <!-- Prophets Reading for Sabbath -->
+    <ion-item *ngIf="reading.prophets" button="true" (click)="handleReadingClick($event, reading.date, 'prophets')" style="cursor: pointer; pointer-events: auto;">
+      <ion-label>
+        <h4>Nevi'im:</h4>
+        <p>{{reading.prophets}}</p>
+      </ion-label>
+    </ion-item>
+
+    <!-- Holiday Reading for Sabbath -->
+    <ion-item *ngIf="getHolidayReading(reading)" button="true" (click)="handleReadingClick($event, reading.date, 'holiday')" style="cursor: pointer; pointer-events: auto;">
+      <ion-label>
+        <h4>Holiday:</h4>
+        <p>{{getHolidayReading(reading)}}</p>
+      </ion-label>
+    </ion-item>
+
   </div>
+
+
 
   <!-- Regular Daily Reading Display -->
   <div *ngIf="!isSabbath(reading)">
@@ -85,6 +111,14 @@
       <ion-label>
         <h4>Brit Chadashah:</h4>
         <p>{{reading.britChadashah}}</p>
+      </ion-label>
+    </ion-item>
+
+    <!-- Holiday Reading for Regular Days -->
+    <ion-item *ngIf="getHolidayReading(reading)" button="true" (click)="handleReadingClick($event, reading.date, 'holiday')" style="cursor: pointer; pointer-events: auto;">
+      <ion-label>
+        <h4>Holiday:</h4>
+        <p>{{getHolidayReading(reading)}}</p>
       </ion-label>
     </ion-item>
   </div>

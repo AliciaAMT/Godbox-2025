@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, IonInput, IonLabel, IonItem } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonRow, IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon, IonInput, IonLabel, IonItem, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -18,7 +18,6 @@ import { BackButtonComponent } from '../../../back-button/back-button.component'
     FormsModule,
     RouterModule,
     IonContent,
-
     IonGrid,
     IonRow,
     IonCol,
@@ -31,12 +30,18 @@ import { BackButtonComponent } from '../../../back-button/back-button.component'
     IonInput,
     IonLabel,
     IonItem,
+    IonSelect,
+    IonSelectOption,
     BackButtonComponent
   ]
 })
 export class ViewUserComponent implements OnInit {
   user: User | null = null;
   id: string | null = null;
+  availableRoles = [
+    { value: 'user', display: 'User' },
+    { value: 'admin', display: 'Administrator' }
+  ];
 
   constructor(
     private dataService: DataService,
@@ -56,9 +61,17 @@ export class ViewUserComponent implements OnInit {
   }
 
   async saveUser() {
-    if (this.user && this.user.userName) {
-      await this.dataService.updateUser(this.user);
-      this.router.navigateByUrl('/admin-dash/users');
+    if (this.user && this.user.userName && this.user.userRole) {
+      try {
+        await this.dataService.updateUser(this.user);
+        console.log('✅ User updated successfully');
+        this.router.navigateByUrl('/admin-dash/users');
+      } catch (error) {
+        console.error('❌ Error updating user:', error);
+        // You could add a toast notification here
+      }
+    } else {
+      console.warn('⚠️ User data incomplete - cannot save');
     }
   }
 
@@ -68,8 +81,25 @@ export class ViewUserComponent implements OnInit {
 
   async deleteUser() {
     if (this.user) {
-      await this.dataService.deleteUser(this.user);
-      this.router.navigateByUrl('/admin-dash/users');
+      try {
+        await this.dataService.deleteUser(this.user);
+        console.log('✅ User deleted successfully');
+        this.router.navigateByUrl('/admin-dash/users');
+      } catch (error) {
+        console.error('❌ Error deleting user:', error);
+      }
+    }
+  }
+
+  getRoleDisplayName(role: string | undefined): string {
+    if (!role) return 'No Role';
+    switch (role) {
+      case 'admin':
+        return 'Administrator';
+      case 'user':
+        return 'User';
+      default:
+        return role;
     }
   }
 }

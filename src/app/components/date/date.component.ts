@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HebrewCalendar, HDate } from '@hebcal/core';
+import { HolidayModalComponent } from '../holiday-modal/holiday-modal.component';
 
 @Component({
   selector: 'app-date',
   templateUrl: './date.component.html',
   styleUrls: ['./date.component.scss'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, HolidayModalComponent]
 })
 export class DateComponent implements OnInit, OnDestroy {
   monthname: any;
@@ -19,6 +20,7 @@ export class DateComponent implements OnInit, OnDestroy {
   hebrewTime: string = '';
   currentParashah: string = '';
   currentHoliday: string = '';
+  isModalOpen: boolean = false;
   private intervalId: any;
 
   constructor() {
@@ -36,6 +38,16 @@ export class DateComponent implements OnInit, OnDestroy {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
+  }
+
+  onHolidayClick() {
+    if (this.currentHoliday) {
+      this.isModalOpen = true;
+    }
+  }
+
+  onCloseModal() {
+    this.isModalOpen = false;
   }
 
   private updateDateTime() {
@@ -107,16 +119,46 @@ export class DateComponent implements OnInit, OnDestroy {
       });
       this.currentParashah = parashahEvent ? parashahEvent.basename() : '';
 
-      // Find holiday
-      const holidayEvent = events.find((event: any) => {
+      // Find holiday - prioritize Rosh Chodesh
+      let holidayEvent = events.find((event: any) => {
         const desc = event.getDesc();
-        return desc && (desc.includes('Holiday') || desc.includes('Rosh Chodesh'));
+        return desc && desc.includes('Rosh Chodesh');
       });
-      this.currentHoliday = holidayEvent ? holidayEvent.basename() : '';
+
+      if (!holidayEvent) {
+        holidayEvent = events.find((event: any) => {
+          const desc = event.getDesc();
+          return desc && desc.includes('Holiday');
+        });
+      }
+
+      if (holidayEvent) {
+        const desc = holidayEvent.getDesc();
+        if (desc && desc.includes('Rosh Chodesh')) {
+          // Format Rosh Chodesh with the month name
+          const monthName = this.getHebrewMonthName(hDate);
+          this.currentHoliday = `Rosh Chodesh ${monthName}`;
+        } else {
+          this.currentHoliday = holidayEvent.basename();
+        }
+      } else {
+        this.currentHoliday = '';
+      }
     } catch (error) {
       console.log('Error getting Hebrew events:', error);
       this.currentParashah = '';
       this.currentHoliday = '';
     }
+  }
+
+  private getHebrewMonthName(hDate: HDate): string {
+    const monthNames = [
+      'Nisan', 'Iyar', 'Sivan', 'Tammuz', 'Av', 'Elul',
+      'Tishrei', 'Cheshvan', 'Kislev', 'Tevet', 'Shevat', 'Adar'
+    ];
+
+    // Get the month number (0-based)
+    const month = hDate.getMonth();
+    return monthNames[month] || 'Unknown';
   }
 }

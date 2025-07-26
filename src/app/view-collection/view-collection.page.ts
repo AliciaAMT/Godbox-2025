@@ -6,13 +6,14 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DataService, Post, Serie } from '../services/data.service';
 import { FooterLandingComponent } from '../components/footer-landing/footer-landing.component';
 import { BackButtonComponent } from '../components/back-button/back-button.component';
+import { SkipToTopComponent } from '../components/skip-to-top/skip-to-top.component';
 
 @Component({
   selector: 'app-view-collection',
   templateUrl: './view-collection.page.html',
   styleUrls: ['./view-collection.page.scss'],
   standalone: true,
-  imports: [IonContent, IonGrid, IonRow, IonCol, CommonModule, FormsModule, RouterModule, FooterLandingComponent, BackButtonComponent]
+  imports: [IonContent, IonGrid, IonRow, IonCol, CommonModule, FormsModule, RouterModule, FooterLandingComponent, BackButtonComponent, SkipToTopComponent]
 })
 export class ViewCollectionPage implements OnInit {
   collectionId: string = '';

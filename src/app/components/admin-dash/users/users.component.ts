@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent, IonGrid, IonRow, IonCol, IonList, IonItem, IonLabel } from '@ionic/angular/standalone';
+import { IonContent, IonGrid, IonRow, IonCol, IonList, IonItem, IonLabel, IonSearchbar, IonButton } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { DataService, User } from '../../../services/data.service';
 import { BackButtonComponent } from '../../back-button/back-button.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-users',
@@ -12,6 +13,7 @@ import { BackButtonComponent } from '../../back-button/back-button.component';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     RouterModule,
     IonContent,
     IonGrid,
@@ -20,12 +22,16 @@ import { BackButtonComponent } from '../../back-button/back-button.component';
     IonList,
     IonItem,
     IonLabel,
+    IonSearchbar,
+    IonButton,
     BackButtonComponent
   ]
 })
 export class UsersComponent implements OnInit {
   users: User[] = [];
+  filteredUsers: User[] = [];
   isLoading = true;
+  searchTerm: string = '';
 
   constructor(
     private dataService: DataService,
@@ -34,6 +40,7 @@ export class UsersComponent implements OnInit {
     this.dataService.getUsers().subscribe(res => {
       console.log('🔍 UsersComponent - Retrieved users:', res);
       this.users = res;
+      this.filteredUsers = res;
       this.isLoading = false;
     }, error => {
       console.error('❌ UsersComponent - Error fetching users:', error);
@@ -54,5 +61,28 @@ export class UsersComponent implements OnInit {
       default:
         return role;
     }
+  }
+
+  onSearchChange(event: any) {
+    this.searchTerm = event.detail.value || '';
+    this.filterUsers();
+  }
+
+  filterUsers() {
+    if (!this.searchTerm.trim()) {
+      this.filteredUsers = this.users;
+      return;
+    }
+
+    const searchLower = this.searchTerm.toLowerCase().trim();
+    this.filteredUsers = this.users.filter(user => {
+      const email = user.email || '';
+      return email.toLowerCase().includes(searchLower);
+    });
+  }
+
+  clearSearch() {
+    this.searchTerm = '';
+    this.filteredUsers = this.users;
   }
 }

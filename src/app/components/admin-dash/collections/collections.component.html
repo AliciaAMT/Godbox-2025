@@ -12,6 +12,11 @@
             </ion-label>
           </ion-item>
         </ion-list>
+
+        <!-- No Series Message -->
+        <div *ngIf="series.length === 0" style="padding: 20px; color: #888;">
+          <p>No collections found.</p>
+        </div>
       </ion-col>
     </ion-row>
   </ion-grid>

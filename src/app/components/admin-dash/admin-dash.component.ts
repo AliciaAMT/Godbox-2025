@@ -50,9 +50,4 @@ export class AdminDashComponent implements OnInit {
   }
 
   ngOnInit() {}
-
-  async uploadData() {
-    // Database upload functionality
-    console.log('Uploading database data...');
-  }
 }

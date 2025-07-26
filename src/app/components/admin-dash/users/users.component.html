@@ -12,8 +12,19 @@
   <ion-grid *ngIf="!isLoading">
     <ion-row>
       <ion-col sizeSm="4" offsetSm="4">
+        <!-- Search Bar -->
+        <ion-searchbar
+          [(ngModel)]="searchTerm"
+          (ionInput)="onSearchChange($event)"
+          placeholder="Search by email..."
+          showClearButton="focus"
+          (ionClear)="clearSearch()"
+          style="margin-bottom: 20px;">
+        </ion-searchbar>
+
+        <!-- Users List -->
         <ion-list>
-          <ion-item *ngFor="let user of users" [routerLink]="['/admin-dash/users/view-user', user.id]" router-direction="forward">
+          <ion-item *ngFor="let user of filteredUsers" [routerLink]="['/admin-dash/users/view-user', user.id]" router-direction="forward">
             <ion-label>
               <h2>{{user.userName || 'No Name'}}</h2>
               <p>{{user.email || 'No Email'}}</p>
@@ -21,6 +32,14 @@
             </ion-label>
           </ion-item>
         </ion-list>
+
+        <!-- No Users Message -->
+        <div *ngIf="filteredUsers.length === 0 && users.length > 0" style="padding: 20px; color: #888;">
+          <p>No users found matching "{{searchTerm}}".</p>
+          <ion-button fill="outline" size="small" (click)="clearSearch()">
+            Clear Search
+          </ion-button>
+        </div>
 
         <!-- No Users Message -->
         <div *ngIf="users.length === 0" style="padding: 20px; color: #888;">

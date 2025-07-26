@@ -56,12 +56,19 @@ export class ViewUserComponent implements OnInit {
     if (this.id) {
       this.dataService.getUserById(this.id).subscribe(res => {
         this.user = res;
+      }, error => {
+        console.error('❌ ViewUserComponent - Error fetching user:', error);
       });
     }
   }
 
   async saveUser() {
-    if (this.user && this.user.userName && this.user.userRole) {
+    if (this.user && this.user.userRole) {
+      // Ensure the user has the correct ID
+      if (!this.user.id && this.id) {
+        this.user.id = this.id;
+      }
+
       try {
         await this.dataService.updateUser(this.user);
         console.log('✅ User updated successfully');

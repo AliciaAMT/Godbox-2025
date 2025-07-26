@@ -262,6 +262,7 @@ export class DataService {
 
   updateUser(user: User) {
     const userDocRef = doc(this.firestore, `users/${user.id}`);
+
     // Only include fields that are defined
     const updateData: any = {};
     if (user.userName !== undefined) updateData.userName = user.userName;
@@ -269,6 +270,7 @@ export class DataService {
     if (user.imageUrl !== undefined) updateData.imageUrl = user.imageUrl;
     if (user.bio !== undefined) updateData.bio = user.bio;
     if (user.bibleVersion !== undefined) updateData.bibleVersion = user.bibleVersion;
+
     return updateDoc(userDocRef, updateData);
   }
 

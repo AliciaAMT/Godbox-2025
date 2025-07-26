@@ -1,6 +1,8 @@
 <app-back-button></app-back-button>
 
-<ion-content class="ion-text-center">
+<ion-content #ionContent class="ion-text-center">
+  <!-- Hidden anchor for skip-to-top functionality -->
+  <div id="top" tabindex="-1" style="position: absolute; top: 0; left: 0; width: 1px; height: 1px; overflow: hidden;"></div>
   <h2 class="ion-text-center">Collection</h2>
   <ion-grid>
     <ion-row>
@@ -37,5 +39,6 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+  <app-skip-to-top [ionContentRef]="ionContent"></app-skip-to-top>
   <app-footer-landing></app-footer-landing>
 </ion-content>

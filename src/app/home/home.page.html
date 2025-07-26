@@ -24,11 +24,24 @@
 
         <!-- PWA Install Button -->
         <div *ngIf="canInstall && !isInstalled" class="ion-text-center" style="margin-top: 20px;">
-          <ion-button (click)="installApp()" fill="outline">
-            <ion-icon name="download" slot="start"></ion-icon>
-            Install App
-          </ion-button>
+          <ion-card style="background: rgba(56, 252, 255, 0.1); border: 1px solid var(--ion-color-primary);">
+            <ion-card-content>
+              <h3 style="color: var(--ion-color-primary); margin-bottom: 10px;">
+                <ion-icon name="download" style="margin-right: 8px;"></ion-icon>
+                Install Kahal App
+              </h3>
+              <p style="margin-bottom: 15px; color: #ffffff;">
+                Get the full app experience with offline access and faster loading.
+              </p>
+              <ion-button (click)="installApp()" fill="outline" color="primary">
+                <ion-icon name="download" slot="start"></ion-icon>
+                Install Now
+              </ion-button>
+            </ion-card-content>
+          </ion-card>
         </div>
+
+
       </ion-col>
     </ion-row>
     <ion-row>

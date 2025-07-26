@@ -2,6 +2,7 @@ import { ApplicationConfig } from '@angular/core';
 import { provideRouter, withPreloading, PreloadAllModules, RouteReuseStrategy } from '@angular/router';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideServiceWorker } from '@angular/service-worker';
 import { addIcons } from 'ionicons';
 import {
   settingsOutline,
@@ -83,6 +84,7 @@ export const appConfig: ApplicationConfig = {
     providePerformance(() => getPerformance()),
     provideRemoteConfig(() => getRemoteConfig()),
     provideStorage(() => getStorage()),
+    provideServiceWorker('ngsw-worker.js'),
     ScreenTrackingService,
     UserTrackingService
   ],

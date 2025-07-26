@@ -4,6 +4,7 @@
   "description": "A spiritual growth platform with daily Bible readings, growth blog, and meditation tools",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "background_color": "#000000",
   "theme_color": "#000000",
   "orientation": "portrait-primary",
@@ -11,6 +12,9 @@
   "lang": "en",
   "categories": ["lifestyle", "education", "religion"],
   "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
   "icons": [
     {
       "src": "assets/android/android-launchericon-512-512.png",

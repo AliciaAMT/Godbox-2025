@@ -51,9 +51,21 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit() {
-    // Check if app can be installed
-    this.canInstall = this.pwaService.canInstall();
-    console.log('HomePage: ngOnInit - canInstall:', this.canInstall, 'isInstalled:', this.isInstalled);
+    console.log('HomePage: ngOnInit - initial canInstall:', this.pwaService.canInstall(), 'isInstalled:', this.isInstalled);
+
+    // Subscribe to PWA installability changes
+    this.pwaService.canInstall$.subscribe(canInstall => {
+      console.log('HomePage: canInstall changed to:', canInstall);
+      this.canInstall = canInstall;
+      this.cd.detectChanges();
+    });
+
+    // Subscribe to PWA installation status
+    this.pwaService.isInstalled$.subscribe(installed => {
+      console.log('HomePage: isInstalled changed to:', installed);
+      this.isInstalled = installed;
+      this.cd.detectChanges();
+    });
 
     // Load posts
     this.dataService.getPostsForCollection().subscribe({
@@ -81,12 +93,6 @@ export class HomePage implements OnInit {
         this.users = [];
         this.cd.detectChanges();
       }
-    });
-
-    // Subscribe to PWA service
-    this.pwaService.isInstalled$.subscribe(installed => {
-      this.isInstalled = installed;
-      this.cd.detectChanges();
     });
   }
 

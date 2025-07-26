@@ -38,7 +38,7 @@
 
             <!-- Success state -->
             <div *ngIf="reading.passage && !reading.isLoading" class="passage-content">
-              <div class="passage-text" [innerHTML]="reading.passage?.content || ''"></div>
+              <div class="passage-text" [innerHTML]="reading.passage.content || ''"></div>
             </div>
           </div>
         </div>

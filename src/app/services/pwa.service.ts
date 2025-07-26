@@ -8,10 +8,23 @@ export class PwaService {
   private isInstalled = new BehaviorSubject<boolean>(false);
   public isInstalled$ = this.isInstalled.asObservable();
 
+  private canInstallSubject = new BehaviorSubject<boolean>(false);
+  public canInstall$ = this.canInstallSubject.asObservable();
+
   constructor() {
     console.log('PWA Service: Initializing...');
     this.checkInstallationStatus();
     this.setupInstallationListeners();
+
+    // Check installability periodically (in case beforeinstallprompt doesn't fire immediately)
+    setTimeout(() => {
+      this.updateCanInstallStatus();
+    }, 1000);
+
+    setTimeout(() => {
+      this.updateCanInstallStatus();
+    }, 3000);
+
     console.log('PWA Service: Initialized');
   }
 
@@ -31,7 +44,36 @@ export class PwaService {
       console.log('PWA: beforeinstallprompt event fired');
       // Store the event to trigger installation later
       (window as any).deferredPrompt = e;
+      // Update canInstall status
+      this.updateCanInstallStatus();
     });
+
+    // Listen for service worker registration
+    if ('serviceWorker' in navigator) {
+      console.log('PWA: Checking Service Worker registrations...');
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        console.log('PWA: Current Service Worker registrations:', registrations);
+
+        // Unregister any existing Service Workers to force a fresh registration
+        if (registrations.length > 0) {
+          console.log('PWA: Unregistering existing Service Workers...');
+          Promise.all(registrations.map(registration => registration.unregister())).then(() => {
+            console.log('PWA: Service Workers unregistered, registering fresh...');
+            this.registerServiceWorker();
+          });
+        } else {
+          console.log('PWA: No Service Workers registered, attempting to register...');
+          this.registerServiceWorker();
+        }
+      });
+
+      navigator.serviceWorker.ready.then((registration) => {
+        console.log('PWA: Service Worker is ready:', registration);
+        this.updateCanInstallStatus();
+      }).catch((error) => {
+        console.log('PWA: Service Worker ready error:', error);
+      });
+    }
 
     // Listen for appinstalled event
     window.addEventListener('appinstalled', () => {
@@ -172,14 +214,86 @@ export class PwaService {
     }
   }
 
-  public canInstall(): boolean {
+    private updateCanInstallStatus(): void {
     try {
-      const canInstall = !!(window as any).deferredPrompt;
-      console.log('PWA: canInstall check -', canInstall);
-      return canInstall;
+      // Check for deferred prompt (Chrome/Edge)
+      const hasDeferredPrompt = !!(window as any).deferredPrompt;
+
+      // Check if running in standalone mode (already installed)
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+
+      // Check if on mobile and can install
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+      // Check if HTTPS (required for PWA)
+      const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost';
+
+      // Additional checks for PWA criteria
+      const hasManifest = !!document.querySelector('link[rel="manifest"]');
+      const hasServiceWorker = 'serviceWorker' in navigator;
+
+      // Check if service worker is actually registered
+      let serviceWorkerRegistered = false;
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          serviceWorkerRegistered = registrations.length > 0;
+          console.log('PWA: Service Worker registrations:', registrations);
+        });
+      }
+
+      const canInstall = hasDeferredPrompt && !isStandalone && isSecure;
+
+      console.log('PWA: updateCanInstallStatus -', {
+        hasDeferredPrompt,
+        isStandalone,
+        isMobile,
+        isSecure,
+        hasManifest,
+        hasServiceWorker,
+        serviceWorkerRegistered,
+        canInstall,
+        userAgent: navigator.userAgent,
+        protocol: window.location.protocol,
+        hostname: window.location.hostname,
+        url: window.location.href
+      });
+
+      this.canInstallSubject.next(canInstall);
     } catch (error) {
-      console.log('PWA: canInstall check error -', error);
-      return false;
+      console.log('PWA: updateCanInstallStatus error -', error);
+      this.canInstallSubject.next(false);
     }
+  }
+
+  private registerServiceWorker(): void {
+    console.log('PWA: Registering Service Worker...');
+    navigator.serviceWorker.register('/ngsw-worker.js', { scope: '/' }).then((registration) => {
+      console.log('PWA: Service Worker registration successful:', registration);
+
+      // Wait for the Service Worker to be ready
+      if (registration.installing) {
+        registration.installing.addEventListener('statechange', () => {
+          if (registration.installing?.state === 'installed') {
+            console.log('PWA: Service Worker installed and ready');
+            this.updateCanInstallStatus();
+          }
+        });
+      } else if (registration.waiting) {
+        console.log('PWA: Service Worker waiting, activating...');
+        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      } else if (registration.active) {
+        console.log('PWA: Service Worker is active and ready');
+        this.updateCanInstallStatus();
+      }
+
+      this.updateCanInstallStatus();
+    }).catch((error) => {
+      console.log('PWA: Service Worker registration failed:', error);
+      this.updateCanInstallStatus();
+    });
+  }
+
+  public canInstall(): boolean {
+    return this.canInstallSubject.value;
   }
 }

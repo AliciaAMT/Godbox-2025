@@ -1,7 +1,7 @@
 // Custom Service Worker for Kahal App
 // This handles updates more aggressively than the default Angular Service Worker
 
-const CACHE_NAME = 'kahal-v1.0.1';
+const CACHE_NAME = 'kahal-v1.0.2'; // Current production version
 const urlsToCache = [
   '/',
   '/index.html',

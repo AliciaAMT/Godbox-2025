@@ -60,6 +60,17 @@
           </ion-card>
         </div>
 
+        <!-- Test Update Notification Button (development only) -->
+        <div *ngIf="!isProduction && environment.production === false" class="ion-text-center" style="margin-top: 20px;">
+          <ion-button (click)="testUpdateNotification()" fill="outline" color="secondary" size="small">
+            <ion-icon name="bug" slot="start"></ion-icon>
+            Test Update Notification (Dev Only)
+          </ion-button>
+          <p style="font-size: 12px; color: #666; margin-top: 5px;">
+            Environment: {{environment.production ? 'Production' : 'Development'}}
+          </p>
+        </div>
+
       </ion-col>
     </ion-row>
     <ion-row>

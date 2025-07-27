@@ -8,7 +8,8 @@ import { MenuHeaderComponent } from '../components/menu-header/menu-header.compo
 import { SkipToTopComponent } from '../components/skip-to-top/skip-to-top.component';
 import { PwaService } from '../services/pwa.service';
 import { addIcons } from 'ionicons';
-import { download, expand, refresh } from 'ionicons/icons';
+import { download, expand, refresh, bug } from 'ionicons/icons';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -44,11 +45,13 @@ export class HomePage implements OnInit {
   canInstall = false;
   isInstalled = false;
   updateAvailable = false;
+  isProduction = environment.production;
+  environment = environment;
 
   @ViewChild(IonContent) ionContent!: IonContent;
 
   constructor() {
-    addIcons({download,refresh,expand});
+    addIcons({download,refresh,bug,expand});
   }
 
   ngOnInit() {
@@ -118,6 +121,13 @@ export class HomePage implements OnInit {
     setTimeout(() => {
       this.pwaService.reloadApp();
     }, 1000);
+  }
+
+  // Test method to simulate update notification
+  testUpdateNotification() {
+    console.log('Testing update notification...');
+    this.updateAvailable = true;
+    this.cd.detectChanges();
   }
 
   goFullscreen() {

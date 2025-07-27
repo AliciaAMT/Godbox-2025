@@ -14,7 +14,7 @@ export class PwaService {
   private updateAvailableSubject = new BehaviorSubject<boolean>(false);
   public updateAvailable$ = this.updateAvailableSubject.asObservable();
 
-  private readonly APP_VERSION = '1.0.1'; // Update this when you deploy new versions
+  private readonly APP_VERSION = '1.0.2'; // Current production version
 
   constructor() {
     console.log('PWA Service: Initializing...');
